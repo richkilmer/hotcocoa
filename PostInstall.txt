@@ -1,5 +1,0 @@
-
-For more information on hotcocoa, see http://hotcocoa.rubyforge.org
-
-
-
