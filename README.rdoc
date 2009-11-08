@@ -1,6 +1,6 @@
 = hotcocoa
 
-* http://github.com/rich_kilmer/hotcocoa
+* http://github.com/richkilmer/hotcocoa
 
 == DESCRIPTION:
 
