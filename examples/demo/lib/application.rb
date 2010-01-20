@@ -1,3 +1,4 @@
+require 'rubygems'
 require 'hotcocoa'
 
 framework 'WebKit'

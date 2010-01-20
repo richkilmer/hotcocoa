@@ -1,3 +1,4 @@
+require 'rubygems'
 require 'hotcocoa'
 
 # Replace the following code with your own hotcocoa code

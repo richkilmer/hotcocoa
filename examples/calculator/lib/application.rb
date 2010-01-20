@@ -1,6 +1,7 @@
 #
 # Port of Jon Lipsky's weblog post: http://blog.elevenworks.com/?p=38
 #
+require 'rubygems'
 require 'hotcocoa'
 
 include HotCocoa

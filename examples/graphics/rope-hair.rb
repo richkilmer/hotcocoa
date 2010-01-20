@@ -1,3 +1,4 @@
+require 'rubygems'
 require 'hotcocoa/graphics'
 include HotCocoa
 include Graphics

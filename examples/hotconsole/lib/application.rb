@@ -1,4 +1,5 @@
 require 'lib/eval_thread' # for EvalThread and standard output redirection
+require 'rubygems'
 require 'hotcocoa'
 framework 'WebKit'
 include HotCocoa

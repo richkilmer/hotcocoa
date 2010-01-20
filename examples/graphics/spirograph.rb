@@ -1,4 +1,5 @@
 #!/usr/bin/env macruby
+require 'rubygems'
 require 'hotcocoa/graphics'
 include HotCocoa
 include Graphics
