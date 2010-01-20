@@ -4,29 +4,21 @@
 
 == DESCRIPTION:
 
-FIX (describe your package)
-
-== FEATURES/PROBLEMS:
-
-* FIX (list of features or problems)
-
-== SYNOPSIS:
-
-  FIX (code sample of usage)
+HotCocoa is a thin, idiomatic Ruby layer that sits above Cocoa and other frameworks. HotCocoa used to be included in MacRuby but is not managed as a separate gem.  This will allow HotCocoa to accept contributions and evolve more quickly. To see more information on HotCocoa (including tutorial) see http://macruby.org.
 
 == REQUIREMENTS:
 
-* FIX (list of requirements)
+* MacRuby 0.5
 
 == INSTALL:
 
-* FIX (sudo gem install, anything else)
+* sudo gem install hotcocoa
 
 == LICENSE:
 
 (The MIT License)
 
-Copyright (c) 2009 FIXME full name
+Copyright (c) 2009-2010 Richard Kilmer
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
