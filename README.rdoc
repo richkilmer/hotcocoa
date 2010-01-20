@@ -12,7 +12,9 @@ HotCocoa is a thin, idiomatic Ruby layer that sits above Cocoa and other framewo
 
 == INSTALL:
 
-* sudo gem install hotcocoa
+* sudo macgem install hotcocoa
+
+(Please note 'macgem' instead of 'gem')
 
 == LICENSE:
 

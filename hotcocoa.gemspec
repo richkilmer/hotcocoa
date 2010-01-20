@@ -15,7 +15,7 @@ spec = Gem::Specification.new do |s|
   s.author = "Richard Kilmer"
   s.email = "rich@infoether.com"
   s.rubyforge_project = "hotcocoa"
-  s.homepage = "http://www.rubyforge.org/projects/hotcocoa"
+  s.homepage = "http://github.com/richkilmer/hotcocoa"
 
 end
 
