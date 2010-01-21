@@ -1,3 +1,4 @@
+require 'rubygems'
 require 'hotcocoa'
 
 class MyView < NSView
