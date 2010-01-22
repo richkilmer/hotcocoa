@@ -4,7 +4,7 @@
 
 == DESCRIPTION:
 
-HotCocoa is a thin, idiomatic Ruby layer that sits above Cocoa and other frameworks. HotCocoa used to be included in MacRuby but is not managed as a separate gem.  This will allow HotCocoa to accept contributions and evolve more quickly. To see more information on HotCocoa (including tutorial) see http://macruby.org.
+HotCocoa is a thin, idiomatic Ruby layer that sits above Cocoa and other frameworks. HotCocoa used to be included in MacRuby but is now managed as a separate gem.  This will allow HotCocoa to accept contributions and evolve more quickly. To see more information on HotCocoa (including tutorial) see http://macruby.org.
 
 == REQUIREMENTS:
 
