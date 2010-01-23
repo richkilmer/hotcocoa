@@ -101,7 +101,13 @@ module HotCocoa
     
     # Returns whether or not the framework has been loaded yet.
     def self.loaded_framework?(name)
-      NSBundle.allFrameworks.map {|bundle| bundle.bundlePath.split("/").last}.select {|framework| framework.split(".")[1] == 'framework'}.map {|framework| framework.split(".")[0]}.include?(name.to_s)
+      NSBundle.allFrameworks.map { |bundle|
+        bundle.bundlePath.split("/").last
+      }.select { |framework|
+        framework.split(".")[1] == 'framework'
+      }.map { |framework|
+        framework.split(".")[0]
+      }.include?(name.to_s)
     end
     
   end
