@@ -51,11 +51,13 @@ HotCocoa::Mappings.map :toolbar => :NSToolbar do
       def build_custom_items
         if @allowed && @default
           ary = @default.select { |x| x.is_a?(NSToolbarItem) }
-          @default -= ary
+
+          @default.map! { |x| x.is_a?(NSToolbarItem) ? x.itemIdentifier : x }
+          @allowed.map! { |x| x.is_a?(NSToolbarItem) ? x.itemIdentifier : x }
+
           @custom_items = {}
-          ary.each { |x| @custom_items[x.itemIdentifier] = x } 
+          ary.each { |x| @custom_items[x.itemIdentifier] = x }
           @allowed.concat(@custom_items.keys)
-          @default.concat(@custom_items.keys)
 
           [@allowed, @default].each do |a|
             a.map! do |i|
@@ -81,6 +83,7 @@ HotCocoa::Mappings.map :toolbar => :NSToolbar do
           end
           allowed_items { @allowed }
           default_items { @default }
+
           item_for_identifier { |identifier, will_be_inserted| @custom_items[identifier] }
         end
       end
