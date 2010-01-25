@@ -3,7 +3,7 @@ require 'rubygems'
 spec = Gem::Specification.new do |s|
 
   s.name = 'hotcocoa'
-  s.version = "0.5"
+  s.version = "0.5.1"
   s.platform = Gem::Platform::RUBY
   s.summary = "Cococa mapping library for MacRuby"
   s.description = "HotCocoa is a Cococa mapping library for MacRuby.  It simplifies the use of complex Cocoa classes using DSL techniques."
