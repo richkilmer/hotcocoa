@@ -2,7 +2,6 @@ require 'rubygems'
 require 'hotcocoa'
 SOURCE_DIR = File.expand_path(File.dirname(__FILE__))
 require SOURCE_DIR + '/nib_controller'
-require SOURCE_DIR + '/controller'
 require SOURCE_DIR + '/custom_view'
 require SOURCE_DIR + '/custom_window'
 
