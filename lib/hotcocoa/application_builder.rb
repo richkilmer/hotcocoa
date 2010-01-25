@@ -22,17 +22,12 @@ module HotCocoa
         @resources = yml["resources"] || []
         @data_models = yml["data_models"] || []
         @overwrite = yml["overwrite"] == true ? true : false
-        @secure = yml["secure"] == true ? true : false
       end
       
       def overwrite?
         @overwrite
       end
 
-      def secure?
-        @secure
-      end
-      
       def icon_exist?
         @icon ? File.exist?(@icon) : false
       end
@@ -41,7 +36,7 @@ module HotCocoa
     
     ApplicationBundlePackage = "APPL????"
     
-    attr_accessor :name, :load_file, :sources, :overwrite, :icon, :version, :info_string, :secure, :resources, :deploy, :data_models
+    attr_accessor :name, :load_file, :sources, :overwrite, :icon, :version, :info_string, :resources, :deploy, :data_models
     
     def self.build(config, options={:deploy => false})
       if !config.kind_of?(Configuration) || !$LOADED_FEATURES.detect {|f| f.include?("standard_rake_tasks")}
@@ -52,7 +47,6 @@ module HotCocoa
       end
       builder = new
       builder.deploy = options[:deploy] == true ? true : false
-      builder.secure = config.secure?
       builder.name = config.name
       builder.load_file = config.load
       builder.icon = config.icon if config.icon_exist?
@@ -131,10 +125,6 @@ module HotCocoa
     def add_data_model(model)
       Dir.glob(model).each { |data| data_models << data }
     end
-
-    def secure?
-      secure
-    end
     
     private
     
@@ -168,22 +158,11 @@ module HotCocoa
       end
       
       def copy_sources
-        if secure?
-          data = {}
-          data["/"+load_file] = File.open(load_file, "r") {|f| f.read}
-          sources.each do |source|
-            data["/"+source] = File.open(source, "r") {|f| f.read}
-          end
-          File.open(File.join(resources_root, "vfs.db"), "wb") do |db|
-            db.write Marshal.dump(data)
-          end
-        else
-          FileUtils.cp_r load_file, resources_root unless sources.include?(load_file)
-          sources.each do |source|
-            destination = File.join(resources_root, source)
-            FileUtils.mkdir_p(File.dirname(destination)) unless File.exist?(File.dirname(destination))
-            FileUtils.cp_r source, destination
-          end
+        FileUtils.cp_r load_file, resources_root unless sources.include?(load_file)
+        sources.each do |source|
+          destination = File.join(resources_root, source)
+          FileUtils.mkdir_p(File.dirname(destination)) unless File.exist?(File.dirname(destination))
+          FileUtils.cp_r source, destination
         end
       end
       
@@ -261,14 +240,9 @@ module HotCocoa
       
       def write_ruby_main
         File.open(main_ruby_source_file, "wb") do |f|
-          if secure?
-            require 'hotcocoa/virtual_file_system'
-            f.puts VirtualFileSystem.code_to_load(load_file)
-          else
-            f.puts "$:.map! { |x| x.sub(/^\\/Library\\/Frameworks/, NSBundle.mainBundle.privateFrameworksPath) }" if deploy?
-            f.puts "$:.unshift NSBundle.mainBundle.resourcePath.fileSystemRepresentation"
-            f.puts "load '#{load_file}'"
-          end
+          f.puts "$:.map! { |x| x.sub(/^\\/Library\\/Frameworks/, NSBundle.mainBundle.privateFrameworksPath) }" if deploy?
+          f.puts "$:.unshift NSBundle.mainBundle.resourcePath.fileSystemRepresentation"
+          f.puts "load '#{load_file}'"
         end
       end
       

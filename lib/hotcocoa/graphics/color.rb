@@ -196,7 +196,8 @@ module HotCocoa::Graphics
     ]
 
     COLORNAMES.each_key do |name|
-      (class << self; self; end).instance_eval do
+      metaclass = (class << self; self; end)
+      metaclass.instance_eval do
         define_method(name) do
           named(name)
         end
