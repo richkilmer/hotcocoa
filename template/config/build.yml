@@ -1,6 +1,6 @@
 name: __APPLICATION_NAME__
-identifier: com.yourcompany.__APPLICATION_NAME__
 load: lib/application.rb
+identifier: com.yourcompany.__APPLICATION_NAME__
 version: "1.0"
 icon: resources/HotCocoa.icns
 resources:
