@@ -8,12 +8,13 @@ module HotCocoa
     
     class Configuration
       
-      attr_reader :name, :version, :icon, :resources, :sources, :info_string, :load
+      attr_reader :name, :identifier, :version, :icon, :resources, :sources, :info_string, :load
       
       def initialize(file)
         require 'yaml'
         yml = YAML.load(File.read(file))
         @name = yml["name"]
+        @identifier = yml["identifier"]
         @load = yml["load"]
         @version = yml["version"] || "1.0"
         @icon = yml["icon"]
@@ -35,7 +36,7 @@ module HotCocoa
     
     ApplicationBundlePackage = "APPL????"
     
-    attr_accessor :name, :load_file, :sources, :overwrite, :icon, :version, :info_string, :resources, :deploy
+    attr_accessor :name, :identifier, :load_file, :sources, :overwrite, :icon, :version, :info_string, :resources, :deploy
     
     def self.build(config, options={:deploy => false})
       if !config.kind_of?(Configuration) || !$LOADED_FEATURES.detect {|f| f.include?("standard_rake_tasks")}
@@ -47,6 +48,7 @@ module HotCocoa
       builder = new
       builder.deploy = options[:deploy] == true ? true : false
       builder.name = config.name
+      builder.identifier = config.identifier
       builder.load_file = config.load
       builder.icon = config.icon if config.icon_exist?
       builder.version = config.version
@@ -182,7 +184,7 @@ module HotCocoa
           f.puts %{	<key>CFBundleExecutable</key>}
           f.puts %{	<string>#{name.gsub(/ /, '')}</string>}
           f.puts %{	<key>CFBundleIdentifier</key>}
-          f.puts %{	<string>com.yourcompany.#{name}</string>}
+          f.puts %{	<string>#{identifier}</string>}
           f.puts %{	<key>CFBundleInfoDictionaryVersion</key>}
           f.puts %{	<string>6.0</string>}
           f.puts %{	<key>CFBundleName</key>}
