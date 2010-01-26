@@ -221,7 +221,12 @@ module HotCocoa
         File.open(main_ruby_source_file, "wb") do |f|
           f.puts "$:.map! { |x| x.sub(/^\\/Library\\/Frameworks/, NSBundle.mainBundle.privateFrameworksPath) }" if deploy?
           f.puts "$:.unshift NSBundle.mainBundle.resourcePath.fileSystemRepresentation"
-          f.puts "load '#{load_file}'"
+          f.puts "begin"
+          f.puts "  load '#{load_file}'"
+          f.puts "rescue Exception => e"
+          f.puts "  STDERR.puts e.message"
+          f.puts "  e.backtrace.each { |bt| STDERR.puts bt }"
+          f.puts "end"
         end
       end
       
