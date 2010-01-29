@@ -1,7 +1,10 @@
-$:.unshift(File.dirname(__FILE__)) unless
-  $:.include?(File.dirname(__FILE__)) || $:.include?(File.expand_path(File.dirname(__FILE__)))
+unless $:.include?(File.dirname(__FILE__)) || $:.include?(File.expand_path(File.dirname(__FILE__)))
+  $:.unshift(File.dirname(__FILE__))
+end
 
 framework 'Cocoa'
+
+STDOUT.reopen(IO.for_fd(NSFileHandle.fileHandleWithStandardError.fileDescriptor.to_i, 'w'))
 
 module Hotcocoa
   VERSION = '0.0.1'

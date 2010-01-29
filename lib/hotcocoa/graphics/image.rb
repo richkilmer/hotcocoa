@@ -57,12 +57,9 @@ module HotCocoa::Graphics
         # if it's the path to an image file, load as a CGImage
         @path = img
         File.exists?(@path) or raise "ERROR: file not found: #{@path}"
-
-        nsimage = NSImage.alloc.initWithContentsOfFile(img)
-        nsdata = nsimage.TIFFRepresentation
-        @nsbitmapimage = NSBitmapImageRep.imageRepWithData(nsdata)
-        # cgimagesource = CGImageSourceCreateWithData(nsdata) # argh, doesn't work
-        @ciimage = CIImage.alloc.initWithBitmapImageRep(@nsbitmapimage)
+        image_source = CGImageSourceCreateWithURL(NSURL.fileURLWithPath(@path), nil)
+        @cgimage = CGImageSourceCreateImageAtIndex(image_source, 0, nil)
+        @ciimage = CIImage.imageWithCGImage(@cgimage)
       when Canvas
         puts "Image.new with canvas" if @verbose
         @path = 'canvas'
@@ -80,7 +77,7 @@ module HotCocoa::Graphics
   
     # reload the bitmap image
     def reset
-      @ciimage = CIImage.alloc.initWithBitmapImageRep(@nsbitmapimage)
+      @ciimage = CIImage.imageWithCGImage(@cgimage)
       self
     end
   
