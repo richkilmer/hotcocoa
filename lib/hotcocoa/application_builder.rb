@@ -21,7 +21,6 @@ module HotCocoa
         @info_string = yml["info_string"]
         @sources = yml["sources"] || []
         @resources = yml["resources"] || []
-        @data_models = yml["data_models"] || []
         @overwrite = yml["overwrite"] == true ? true : false
       end
       
@@ -55,20 +54,12 @@ module HotCocoa
       builder.version = config.version
       builder.info_string = config.info_string
       builder.overwrite = config.overwrite?
-
       config.sources.each do |source|
         builder.add_source_path source
       end
-
       config.resources.each do |resource|
         builder.add_resource_path resource
       end
-
-      config.data_models.each do |data|
-        next unless File.extname(data) == ".xcdatamodel"
-        builder.add_data_model data
-      end
-
       builder.build
     end
 
@@ -86,7 +77,6 @@ module HotCocoa
     def initialize
       @sources = []
       @resources = []
-      @data_models = []
     end
       
     def build
@@ -95,7 +85,6 @@ module HotCocoa
       write_bundle_files
       copy_sources
       copy_resources
-      compile_data_models
       deploy if deploy?
       copy_icon_file if icon
     end
@@ -171,13 +160,7 @@ module HotCocoa
           FileUtils.cp_r resource, destination
         end
       end
-
-      def compile_data_models
-        data_models.each do |data|
-          `/Developer/usr/bin/momc #{data} #{resources_root}/#{File.basename(data, ".xcdatamodel")}.mom`
-        end
-      end
-
+      
       def copy_icon_file
         FileUtils.cp(icon, icon_file) unless File.exist?(icon_file)
       end
