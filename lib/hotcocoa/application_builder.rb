@@ -8,7 +8,7 @@ module HotCocoa
     
     class Configuration
       
-      attr_reader :name, :identifier, :version, :icon, :resources, :sources, :info_string, :load, :data_models
+      attr_reader :name, :identifier, :version, :icon, :resources, :sources, :info_string, :load, :agent, :data_models
       
       def initialize(file)
         require 'yaml'
@@ -23,6 +23,7 @@ module HotCocoa
         @resources = yml["resources"] || []
         @data_models = yml["data_models"] || []
         @overwrite = yml["overwrite"] == true ? true : false
+        @agent = yml["agent"] == true ? "1" : "0"
       end
       
       def overwrite?
@@ -37,7 +38,7 @@ module HotCocoa
     
     ApplicationBundlePackage = "APPL????"
     
-    attr_accessor :name, :identifier, :load_file, :sources, :overwrite, :icon, :version, :info_string, :resources, :deploy, :data_models
+    attr_accessor :name, :identifier, :load_file, :sources, :overwrite, :icon, :version, :info_string, :resources, :deploy, :agent, :data_models
     
     def self.build(config, options={:deploy => false})
       if !config.kind_of?(Configuration) || !$LOADED_FEATURES.detect {|f| f.include?("standard_rake_tasks")}
@@ -55,6 +56,7 @@ module HotCocoa
       builder.version = config.version
       builder.info_string = config.info_string
       builder.overwrite = config.overwrite?
+      builder.agent = config.agent
 
       config.sources.each do |source|
         builder.add_source_path source
@@ -218,6 +220,8 @@ module HotCocoa
           f.puts %{	<string>#{version}</string>}
           f.puts %{	<key>NSPrincipalClass</key>}
           f.puts %{	<string>NSApplication</string>}
+          f.puts %{  <key>LSUIElement</key>}
+          f.puts %{  <string>#{agent}</string>}
           f.puts %{</dict>}
           f.puts %{</plist>}
         end
