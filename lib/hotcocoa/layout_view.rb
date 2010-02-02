@@ -202,7 +202,7 @@ class LayoutOptions
   end
   
   def inspect
-    "#<#{self.class} start=#{start?}, expand=#{expand.inspect}, left_padding=#{left_padding}, right_padding=#{right_padding}, top_padding=#{top_padding}, bottom_padding=#{bottom_padding}, align=#{align.inspect}, view=#{view.inspect}>"
+    "#<#{self.class} start=#{start?}, expand=#{expand.inspect}, padding=[l:#{left_padding}, r:#{right_padding}, t:#{top_padding}, b:#{bottom_padding}], align=#{align.inspect}, view=#{view.inspect}>"
   end
 
   def update_layout_views!
@@ -347,102 +347,114 @@ class LayoutView < NSView
     vertical = @mode == :vertical
     view_size = frameSize    
     dimension = @margin
+
     end_dimension = vertical ? view_size.height : view_size.width
     end_dimension -= (@margin * 2)
 
     expandable_size = end_dimension
     expandable_views = 0
+
     subviews.each do |view|
-      next if !view.respond_to?(:layout) || view.layout.nil?
-      if (vertical ? view.layout.expand_height? : view.layout.expand_width?)
+      next unless can_layout?(view)
+
+      if vertical
+        size = view.frameSize.height
+        expand = view.layout.expand_height?
+        padding = view.layout.top_padding + view.layout.bottom_padding
+      else
+        size = view.frameSize.width
+        expand = view.layout.expand_width?
+        padding = view.layout.left_padding + view.layout.right_padding
+      end
+
+      if expand
         expandable_views += 1
       else
-        expandable_size -= vertical ? view.frameSize.height : view.frameSize.width
+        expandable_size -= size
         expandable_size -= @spacing
       end
-      expandable_size -= 
-        vertical ? view.layout.top_padding + view.layout.bottom_padding 
-                 : view.layout.left_padding + view.layout.right_padding
+
+      expandable_size -= padding
     end
+
     expandable_size /= expandable_views
 
     subviews.each do |view|
-      next if !view.respond_to?(:layout) || view.layout.nil?
+      next unless can_layout?(view)
+
       options = view.layout
       subview_size = view.frameSize
       view_frame = NSMakeRect(0, 0, *subview_size)
       subview_dimension = vertical ? subview_size.height : subview_size.width
 
       if vertical
-        view_frame.origin.x = @margin
-        if options.start?
-          view_frame.origin.y = dimension
-        else
-          view_frame.origin.y = end_dimension - subview_dimension
-        end        
+        primary_dimension = 'height'
+        secondary_dimension = 'width'
+        primary_axis = 'x'
+        secondary_axis = 'y'
+        expand_primary = 'expand_height?'
+        expand_secondary = 'expand_width?'
+        padding_first = 'left_padding'
+        padding_second = 'right_padding'
+        padding_third = 'bottom_padding'
+        padding_fourth = 'top_padding'
       else
-        if options.start?
-          view_frame.origin.x = dimension
-        else
-          view_frame.origin.x = end_dimension - subview_dimension
-        end        
-        view_frame.origin.y = @margin
+        primary_dimension = 'width'
+        secondary_dimension = 'height'
+        primary_axis = 'y'
+        secondary_axis = 'x'
+        expand_primary = 'expand_width?'
+        expand_secondary = 'expand_height?'
+        padding_first = 'top_padding'
+        padding_second = 'bottom_padding'
+        padding_third = 'left_padding'
+        padding_fourth = 'right_padding'
       end
 
-      if (vertical ? options.expand_height? : options.expand_width?)
-        if vertical
-          view_frame.size.height = expandable_size
-        else
-          view_frame.size.width = expandable_size
-        end
+      view_frame.origin.send("#{primary_axis}=", @margin)
+      view_frame.origin.send("#{secondary_axis}=", (options.start? ? dimension : (end_dimension - subview_dimension)))
+
+      if options.send(expand_primary)
+        view_frame.size.send("#{primary_dimension}=", expandable_size)
         subview_dimension = expandable_size
       end
-      
-      if (vertical ? options.expand_width? : options.expand_height?)
-        if vertical
-          view_frame.size.width = view_size.width - (2 * @margin) - options.right_padding - options.left_padding
-        else
-          view_frame.size.height = view_size.height - (2 * @margin) - options.top_padding - options.bottom_padding
-        end
+
+      if options.send(expand_secondary)
+        view_frame.size.send("#{secondary_dimension}=",
+                view_size.send("#{secondary_dimension}") - (2 * @margin) - options.send(padding_first) - options.send(padding_second))
       else
+
         case options.align
         when :left, :bottom
           # Nothing to do
 
         when :center
-          if vertical
-            view_frame.origin.x = (view_size.width / 2.0) - (subview_size.width / 2.0)
-          else
-            view_frame.origin.y = (view_size.height / 2.0) - (subview_size.height / 2.0)
-          end
+          view_frame.origin.send("#{primary_axis}=", (view_size.send(secondary_dimension) / 2.0) - (subview_size.send(secondary_dimension) / 2.0))
 
         when :right, :top
-          if vertical
-            view_frame.origin.x = view_size.width - subview_size.width - @margin
-          else
-            view_frame.origin.y = view_size.height - subview_size.height - @margin
-          end
+          view_frame.origin.send("#{primary_axis}=", view_size.send(secondary_dimension) - subview_size.send(secondary_dimension) - @margin)
         end
       end
 
-      puts "view #{view} options #{options} final frame #{view_frame}" if $DEBUG
+      puts "view #{view} options #{options.inspect} " +
+           "final frame [#{view_frame.origin.x}, #{view_frame.origin.y}, #{view_frame.size.width}x#{view_frame.size.height}]" if $DEBUG
 
       view_frame.origin.x += options.left_padding
       view_frame.origin.y += options.bottom_padding
 
       if options.start?
         dimension += subview_dimension + @spacing
-        if vertical
-          dimension += options.bottom_padding + options.top_padding
-        else
-          dimension += options.left_padding + options.right_padding
-        end
+        dimension += options.send(padding_third) + options.send(padding_fourth)
       else
         end_dimension -= subview_dimension + @spacing
       end
 
-      view.frame = view_frame      
-    end    
+      view.frame = view_frame
+    end
+  end
+
+  def can_layout?(view)
+    view.respond_to?(:layout) && !view.layout.nil?
   end
 end
 end
