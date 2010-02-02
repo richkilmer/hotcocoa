@@ -119,9 +119,9 @@ class DemoApplication
     end
 
     def load_demo_files
-      load File.join(File.dirname(__FILE__), 'views', 'buttons.rb')
+      #load File.join(File.dirname(__FILE__), 'views', 'buttons.rb')
       Dir.glob(File.join(File.dirname(__FILE__), 'views', '*.rb')).each do |file|
-        #load file
+        load file
       end
     end
 end
