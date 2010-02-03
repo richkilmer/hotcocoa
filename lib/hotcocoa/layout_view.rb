@@ -1,18 +1,5 @@
 module HotCocoa
   
-module LayoutManaged
-  
-  def layout=(options)
-    @layout = LayoutOptions.new(self, options)
-    @layout.update_layout_views!
-  end
-  
-  def layout
-    @layout
-  end
-  
-end
-
 class LayoutOptions
 
   VALID_EXPANSIONS = [nil, :height, :width, [:height, :width], [:width, :height]]
@@ -56,7 +43,7 @@ class LayoutOptions
   #      :bottom
   #        For vertical layouts, align bottom
   def initialize(view, options={})
-    @view = view
+    @view           = view
     @start          = options[:start]
     @expand         = options[:expand]
     @padding        = options[:padding]
@@ -123,7 +110,7 @@ class LayoutOptions
     if in_layout_view?
       @view.superview.default_layout.left_padding
     else
-      @padding || 0.0
+      padding
     end
   end
 
@@ -139,7 +126,7 @@ class LayoutOptions
     if in_layout_view?
       @view.superview.default_layout.right_padding
     else
-      @padding || 0.0
+      padding
     end
   end
 
@@ -155,7 +142,7 @@ class LayoutOptions
     if in_layout_view?
       @view.superview.default_layout.top_padding
     else
-      @padding || 0.0
+      padding
     end
   end
 
@@ -171,7 +158,7 @@ class LayoutOptions
     if in_layout_view?
       @view.superview.default_layout.bottom_padding
     else
-      @padding || 0.0
+      padding
     end
   end
   
@@ -198,7 +185,7 @@ class LayoutOptions
   end
   
   def padding
-    @padding
+    @padding || 0.0
   end
   
   def inspect
@@ -209,14 +196,12 @@ class LayoutOptions
     @view.superview.views_updated! if in_layout_view?
     @defaults_view.views_updated! if @defaults_view
   end
-  
-  private
-  
-    def in_layout_view?
-      @view && @view.superview.kind_of?(LayoutView)
-    end
 
-    
+  private
+
+  def in_layout_view?
+    @view && @view.superview.kind_of?(LayoutView)
+  end
 end
 
 class LayoutView < NSView
@@ -240,9 +225,10 @@ class LayoutView < NSView
   end
 
   def mode=(mode)
-    if mode != :horizontal and mode != :vertical
+    unless [:horizontal, :vertical].include?(mode)
       raise ArgumentError, "invalid mode value #{mode}"
     end
+
     if mode != @mode
       @mode = mode
       relayout!
@@ -325,8 +311,8 @@ class LayoutView < NSView
   end
 
   def drawRect(frame)
-    if @frame_color 
-      @frame_color.set 
+    if frame_color 
+      frame_color.set 
       NSFrameRect(frame) 
     end
   end
@@ -343,21 +329,14 @@ class LayoutView < NSView
 
   private
 
-  def relayout!
-    vertical = @mode == :vertical
-    view_size = frameSize    
-    dimension = @margin
-
-    end_dimension = vertical ? view_size.height : view_size.width
-    end_dimension -= (@margin * 2)
-
+  def calc_expandable_size(end_dimension)
     expandable_size = end_dimension
     expandable_views = 0
 
     subviews.each do |view|
       next unless can_layout?(view)
 
-      if vertical
+      if vertical?
         size = view.frameSize.height
         expand = view.layout.expand_height?
         padding = view.layout.top_padding + view.layout.bottom_padding
@@ -378,6 +357,16 @@ class LayoutView < NSView
     end
 
     expandable_size /= expandable_views
+    expandable_size
+  end
+
+  def relayout!
+    view_size = frameSize
+    end_dimension = vertical? ? view_size.height : view_size.width
+    end_dimension -= (@margin * 2)
+    dimension = @margin
+
+    expandable_size = calc_expandable_size(end_dimension)
 
     subviews.each do |view|
       next unless can_layout?(view)
@@ -385,9 +374,9 @@ class LayoutView < NSView
       options = view.layout
       subview_size = view.frameSize
       view_frame = NSMakeRect(0, 0, *subview_size)
-      subview_dimension = vertical ? subview_size.height : subview_size.width
+      subview_dimension = vertical? ? subview_size.height : subview_size.width
 
-      if vertical
+      if vertical?
         primary_dimension = 'height'
         secondary_dimension = 'width'
         primary_axis = 'x'
