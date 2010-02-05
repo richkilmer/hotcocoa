@@ -14,14 +14,14 @@ module HotCocoa
         if target && (
           target.instance_variable_get("@action_behavior") || 
           target.instance_variable_get("@double_action_behavior"))
-            object.instance_variable_set("@action_behavior", behavior)
-            object = target
+            @object.instance_variable_set("@action_behavior", behavior)
+            @object = target
         else
-          object = Object.new
-          object.instance_variable_set("@action_behavior", behavior)
-          setTarget(object)
+          @object = Object.new
+          @object.instance_variable_set("@action_behavior", behavior)
+          setTarget(@object)
         end
-        def object.perform_action(sender)
+        def @object.perform_action(sender)
           @action_behavior.call(sender)
         end
         setAction("perform_action:")
