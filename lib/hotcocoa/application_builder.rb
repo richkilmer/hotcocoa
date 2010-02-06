@@ -199,8 +199,8 @@ module HotCocoa
           f.puts %{	<string>#{version}</string>}
           f.puts %{	<key>NSPrincipalClass</key>}
           f.puts %{	<string>NSApplication</string>}
-          f.puts %{	<key>LSUIElement</key>}
-          f.puts %{	<string>#{agent}</string>}
+          f.puts %{  <key>LSUIElement</key>}
+          f.puts %{  <string>#{agent}</string>}
           f.puts %{</dict>}
           f.puts %{</plist>}
         end
