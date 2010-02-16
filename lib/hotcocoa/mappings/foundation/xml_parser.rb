@@ -10,7 +10,7 @@ HotCocoa::Mappings.map :xml_parser => :NSXMLParser do
     elsif options[:data]
       NSXMLParser.alloc.initWithData(options.delete(:data))
     else
-      raise "Must provide either :url or :data when constructing an NSXMLParser"
+      raise "Must provide either :url, :file, or :data when constructing an NSXMLParser"
     end
   end
   
