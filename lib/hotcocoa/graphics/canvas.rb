@@ -701,133 +701,133 @@ module HotCocoa::Graphics
 
     private
 
-      # DRAWING PATHS ON A CANVAS
+    # DRAWING PATHS ON A CANVAS
 
-      def draw_path(p, tx=0, ty=0, iterations=1)
-        new_state do
-          iterations.times do |i|
-            if (i > 0)
-              # INCREMENT TRANSFORM:
-              # translate x, y
-              translate(choose(p.inc[:x]), choose(p.inc[:y]))
-              # choose a rotation factor from the range
-              rotate(choose(p.inc[:rotation]))
-              # choose a scaling factor from the range
-              sc = choose(p.inc[:scale])
-              sx = choose(p.inc[:scalex]) * sc
-              sy = p.inc[:scaley] ? choose(p.inc[:scaley]) * sc : sx * sc
-              scale(sx, sy)
+    def draw_path(p, tx=0, ty=0, iterations=1)
+      new_state do
+        iterations.times do |i|
+          if (i > 0)
+            # INCREMENT TRANSFORM:
+            # translate x, y
+            translate(choose(p.inc[:x]), choose(p.inc[:y]))
+            # choose a rotation factor from the range
+            rotate(choose(p.inc[:rotation]))
+            # choose a scaling factor from the range
+            sc = choose(p.inc[:scale])
+            sx = choose(p.inc[:scalex]) * sc
+            sy = p.inc[:scaley] ? choose(p.inc[:scaley]) * sc : sx * sc
+            scale(sx, sy)
+          end
+
+          new_state do
+            # PICK AND ADJUST FILL/STROKE COLORS:
+            [:fill,:stroke].each do |kind|
+              # PICK A COLOR
+              if (p.inc[kind]) then
+                # increment color from array
+                colorindex = i % p.inc[kind].size
+                c = p.inc[kind][colorindex].copy
+              else
+                c = p.rand[kind]
+                case c
+                when Array
+                  c = choose(c).copy
+                when Color
+                  c = c.copy
+                else
+                  next
+                end
+              end
+
+              if (p.inc[:hue] or p.inc[:saturation] or p.inc[:brightness])
+                # ITERATE COLOR
+                if (p.inc[:hue])
+                  newhue = (c.hue + choose(p.inc[:hue])) % 1
+                  c.hue(newhue)
+                end
+                if (p.inc[:saturation])
+                  newsat = (c.saturation + choose(p.inc[:saturation]))
+                  c.saturation(newsat)
+                end
+                if (p.inc[:brightness])
+                  newbright = (c.brightness + choose(p.inc[:brightness]))
+                  c.brightness(newbright)
+                end
+                if (p.inc[:alpha])
+                  newalpha = (c.a + choose(p.inc[:alpha]))
+                  c.a(newalpha)
+                end
+                p.rand[kind] = c
+              else
+                # RANDOMIZE COLOR
+                c.hue(choose(p.rand[:hue])) if p.rand[:hue]
+                c.saturation(choose(p.rand[:saturation])) if p.rand[:saturation]
+                c.brightness(choose(p.rand[:brightness])) if p.rand[:brightness]
+              end
+
+              # APPLY COLOR
+              fill(c) if kind == :fill
+              stroke(c) if kind == :stroke
+            end
+            # choose a stroke width from the range
+            strokewidth(choose(p.rand[:strokewidth])) if p.rand[:strokewidth]
+            # choose an alpha level from the range
+            alpha(choose(p.rand[:alpha])) if p.rand[:alpha]
+
+            # RANDOMIZE TRANSFORM:
+            # translate x, y
+            translate(choose(p.rand[:x]), choose(p.rand[:y]))
+            # choose a rotation factor from the range
+            rotate(choose(p.rand[:rotation]))
+            # choose a scaling factor from the range
+            sc = choose(p.rand[:scale])
+            sx = choose(p.rand[:scalex]) * sc
+            sy = p.rand[:scaley] ? choose(p.rand[:scaley]) * sc : sx * sc
+            scale(sx,sy)
+
+            # DRAW
+            if (tx > 0 || ty > 0)
+              translate(tx, ty)
             end
 
-            new_state do
-              # PICK AND ADJUST FILL/STROKE COLORS:
-              [:fill,:stroke].each do |kind|
-                # PICK A COLOR
-                if (p.inc[kind]) then
-                  # increment color from array
-                  colorindex = i % p.inc[kind].size
-                  c = p.inc[kind][colorindex].copy
-                else
-                  c = p.rand[kind]
-                  case c
-                  when Array
-                    c = choose(c).copy
-                  when Color
-                    c = c.copy
-                  else
-                    next
-                  end
-                end
+            CGContextAddPath(@ctx, p.path) if p.class == Path
+            CGContextDrawPath(@ctx, KCGPathFillStroke) # apply fill and stroke
 
-                if (p.inc[:hue] or p.inc[:saturation] or p.inc[:brightness])
-                  # ITERATE COLOR
-                  if (p.inc[:hue])
-                    newhue = (c.hue + choose(p.inc[:hue])) % 1
-                    c.hue(newhue)
-                  end
-                  if (p.inc[:saturation])
-                    newsat = (c.saturation + choose(p.inc[:saturation]))
-                    c.saturation(newsat)
-                  end
-                  if (p.inc[:brightness])
-                    newbright = (c.brightness + choose(p.inc[:brightness]))
-                    c.brightness(newbright)
-                  end
-                  if (p.inc[:alpha])
-                    newalpha = (c.a + choose(p.inc[:alpha]))
-                    c.a(newalpha)
-                  end
-                  p.rand[kind] = c
-                else
-                  # RANDOMIZE COLOR
-                  c.hue(choose(p.rand[:hue])) if p.rand[:hue]
-                  c.saturation(choose(p.rand[:saturation])) if p.rand[:saturation]
-                  c.brightness(choose(p.rand[:brightness])) if p.rand[:brightness]
-                end
-
-                # APPLY COLOR
-                fill(c) if kind == :fill
-                stroke(c) if kind == :stroke
-              end
-              # choose a stroke width from the range
-              strokewidth(choose(p.rand[:strokewidth])) if p.rand[:strokewidth]
-              # choose an alpha level from the range
-              alpha(choose(p.rand[:alpha])) if p.rand[:alpha]
-
-              # RANDOMIZE TRANSFORM:
-              # translate x, y
-              translate(choose(p.rand[:x]), choose(p.rand[:y]))
-              # choose a rotation factor from the range
-              rotate(choose(p.rand[:rotation]))
-              # choose a scaling factor from the range
-              sc = choose(p.rand[:scale])
-              sx = choose(p.rand[:scalex]) * sc
-              sy = p.rand[:scaley] ? choose(p.rand[:scaley]) * sc : sx * sc
-              scale(sx,sy)
-
-              # DRAW
-              if (tx > 0 || ty > 0)
-                translate(tx, ty)
-              end
-
-              CGContextAddPath(@ctx, p.path) if p.class == Path
-              CGContextDrawPath(@ctx, KCGPathFillStroke) # apply fill and stroke
-
-              # if there's an image, draw it clipped by the path
-              if (p.image)
-                beginclip(p)
-                image(p.image)
-                endclip
-              end
-
+            # if there's an image, draw it clipped by the path
+            if (p.image)
+              beginclip(p)
+              image(p.image)
+              endclip
             end
+
           end
         end
       end
+    end
 
-      # DRAWING IMAGES ON CANVAS
+    # DRAWING IMAGES ON CANVAS
 
-      # draw the specified image at x,y with dimensions w,h.
-      # "img" may be a path to an image, or an Image instance
-      def draw_image(img, x=0, y=0, w=nil, h=nil, pagenum=1)
-        new_state do
-          if (img.kind_of?(Pdf))
-            w ||= img.width(pagenum)
-            h ||= img.height(pagenum)
-            if(@registration == :center)
-              x = x - w / 2
-              y = y - h / 2
-            end
-            img.draw(@ctx, x, y, w, h, pagenum)
-          elsif(img.kind_of?(String) || img.kind_of?(Image))
-            img = Image.new(img) if img.kind_of?(String)
-            w ||= img.width
-            h ||= img.height
-            img.draw(@ctx, x, y, w, h)
-          else
-            raise ArgumentError.new("canvas.image: not a recognized image type: #{img.class}")
+    # draw the specified image at x,y with dimensions w,h.
+    # "img" may be a path to an image, or an Image instance
+    def draw_image(img, x=0, y=0, w=nil, h=nil, pagenum=1)
+      new_state do
+        if (img.kind_of?(Pdf))
+          w ||= img.width(pagenum)
+          h ||= img.height(pagenum)
+          if(@registration == :center)
+            x = x - w / 2
+            y = y - h / 2
           end
+          img.draw(@ctx, x, y, w, h, pagenum)
+        elsif(img.kind_of?(String) || img.kind_of?(Image))
+          img = Image.new(img) if img.kind_of?(String)
+          w ||= img.width
+          h ||= img.height
+          img.draw(@ctx, x, y, w, h)
+        else
+          raise ArgumentError.new("canvas.image: not a recognized image type: #{img.class}")
         end
       end
+    end
   end
 end

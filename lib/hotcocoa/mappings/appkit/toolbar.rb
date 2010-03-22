@@ -46,45 +46,45 @@ HotCocoa::Mappings.map :toolbar => :NSToolbar do
 
     private
 
-      def build_custom_items
-        if @allowed && @default
-          ary = @default.select { |x| x.is_a?(NSToolbarItem) }
+    def build_custom_items
+      if @allowed && @default
+        ary = @default.select { |x| x.is_a?(NSToolbarItem) }
 
-          @default.map! { |x| x.is_a?(NSToolbarItem) ? x.itemIdentifier : x }
-          @allowed.map! { |x| x.is_a?(NSToolbarItem) ? x.itemIdentifier : x }
+        @default.map! { |x| x.is_a?(NSToolbarItem) ? x.itemIdentifier : x }
+        @allowed.map! { |x| x.is_a?(NSToolbarItem) ? x.itemIdentifier : x }
 
-          @custom_items = {}
-          ary.each { |x| @custom_items[x.itemIdentifier] = x }
-          @allowed.concat(@custom_items.keys)
+        @custom_items = {}
+        ary.each { |x| @custom_items[x.itemIdentifier] = x }
+        @allowed.concat(@custom_items.keys)
 
-          [@allowed, @default].each do |a|
-            a.map! do |i|
-              case i
-                when :separator
-                  NSToolbarSeparatorItemIdentifier
-                when :space
-                  NSToolbarSpaceItemIdentifier
-                when :flexible_space
-                  NSToolbarFlexibleSpaceItemIdentifier
-                when :show_colors
-                  NSToolbarShowColorsItemIdentifier
-                when :show_fonts
-                  NSToolbarShowFontsItemIdentifier
-                when :customize
-                  NSToolbarCustomizeToolbarItemIdentifier
-                when :print
-                  NSToolbarPrintItemIdentifier
-                else
-                  i
-              end
+        [@allowed, @default].each do |a|
+          a.map! do |i|
+            case i
+              when :separator
+                NSToolbarSeparatorItemIdentifier
+              when :space
+                NSToolbarSpaceItemIdentifier
+              when :flexible_space
+                NSToolbarFlexibleSpaceItemIdentifier
+              when :show_colors
+                NSToolbarShowColorsItemIdentifier
+              when :show_fonts
+                NSToolbarShowFontsItemIdentifier
+              when :customize
+                NSToolbarCustomizeToolbarItemIdentifier
+              when :print
+                NSToolbarPrintItemIdentifier
+              else
+                i
             end
           end
-          allowed_items { @allowed }
-          default_items { @default }
-
-          item_for_identifier { |identifier, will_be_inserted| @custom_items[identifier] }
         end
+        allowed_items { @allowed }
+        default_items { @default }
+
+        item_for_identifier { |identifier, will_be_inserted| @custom_items[identifier] }
       end
+    end
   end
 
   delegating "toolbar:itemForItemIdentifier:willBeInsertedIntoToolbar:", :to => :item_for_identifier,         :parameters => [:itemForItemIdentifier, :willBeInsertedIntoToolbar], :required => true

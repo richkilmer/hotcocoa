@@ -1,6 +1,5 @@
 module HotCocoa
   class NotificationListener
-
     DistributedBehaviors = {
       :drop                 => NSNotificationSuspensionBehaviorDrop,
       :coalesce             => NSNotificationSuspensionBehaviorCoalesce,
@@ -42,18 +41,18 @@ module HotCocoa
 
     private
 
-      def observe
-        if distributed?
-          notification_center.addObserver(self, selector:'receive:', name:name,
-                                          object:sender, suspensionBehavior:suspension_behavior)
-        else
-          notification_center.addObserver(self, selector:'receive:', name:name, object:sender)
-        end
+    def observe
+      if distributed?
+        notification_center.addObserver(self, selector:'receive:', name:name,
+                                        object:sender, suspensionBehavior:suspension_behavior)
+      else
+        notification_center.addObserver(self, selector:'receive:', name:name, object:sender)
       end
+    end
 
-      def notification_center
-        @notification_center ||= (distributed? ? NSDistributedNotificationCenter.defaultCenter : NSNotificationCenter.defaultCenter)
-      end
+    def notification_center
+      @notification_center ||= (distributed? ? NSDistributedNotificationCenter.defaultCenter : NSNotificationCenter.defaultCenter)
+    end
   end
 
   def on_notification(options={}, &block)

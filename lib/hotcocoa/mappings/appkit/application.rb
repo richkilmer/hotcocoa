@@ -67,16 +67,16 @@ HotCocoa::Mappings.map :application => :NSApplication do
 
     private
 
-      def find_menu(menu, path)
-        key = path.keys.first
-        value = path.values.first
-        menu = menu[key]
-        if value.kind_of?(Array)
-          find_menu(menu, value.first)
-        else
-          menu[value]
-        end
+    def find_menu(menu, path)
+      key = path.keys.first
+      value = path.values.first
+      menu = menu[key]
+      if value.kind_of?(Array)
+        find_menu(menu, value.first)
+      else
+        menu[value]
       end
+    end
   end
 
   delegating "application:delegateHandlesKey:",                       :to => :delegate_handles_key?,            :parameters => [:delegateHandlesKey]

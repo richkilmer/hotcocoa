@@ -464,18 +464,18 @@ module HotCocoa::Graphics
 
     private
 
-      # apply the named CoreImage filter using a hash of parameters
-      def filter(filtername, parameters)
-        ciimage
-        f = CIFilter.filterWithName(filtername)
-        f.setDefaults
-        f.setValue @ciimage, forKey:'inputImage'
-        parameters.each do |key,value|
-          f.setValue value, forKey:key
-        end
-        puts "image.filter #{filtername}" if @verbose
-        @ciimage = f.valueForKey('outputImage') # CIImageRef
-        self
+    # apply the named CoreImage filter using a hash of parameters
+    def filter(filtername, parameters)
+      ciimage
+      f = CIFilter.filterWithName(filtername)
+      f.setDefaults
+      f.setValue @ciimage, forKey:'inputImage'
+      parameters.each do |key,value|
+        f.setValue value, forKey:key
       end
+      puts "image.filter #{filtername}" if @verbose
+      @ciimage = f.valueForKey('outputImage') # CIImageRef
+      self
+    end
   end
 end

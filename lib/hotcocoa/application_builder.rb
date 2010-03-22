@@ -133,198 +133,198 @@ module HotCocoa
 
     private
 
-      def check_for_bundle_root
-        if File.exist?(bundle_root) && overwrite?
-          `rm -rf #{bundle_root}`
-        end
+    def check_for_bundle_root
+      if File.exist?(bundle_root) && overwrite?
+        `rm -rf #{bundle_root}`
       end
+    end
 
-      def build_bundle_structure
-        Dir.mkdir(bundle_root) unless File.exist?(bundle_root)
-        Dir.mkdir(contents_root) unless File.exist?(contents_root)
-        Dir.mkdir(frameworks_root) unless File.exist?(frameworks_root)
-        Dir.mkdir(macos_root) unless File.exist?(macos_root)
-        Dir.mkdir(resources_root) unless File.exist?(resources_root)
+    def build_bundle_structure
+      Dir.mkdir(bundle_root) unless File.exist?(bundle_root)
+      Dir.mkdir(contents_root) unless File.exist?(contents_root)
+      Dir.mkdir(frameworks_root) unless File.exist?(frameworks_root)
+      Dir.mkdir(macos_root) unless File.exist?(macos_root)
+      Dir.mkdir(resources_root) unless File.exist?(resources_root)
+    end
+
+    def write_bundle_files
+      write_pkg_info_file
+      write_info_plist_file
+      build_executable unless File.exist?(File.join(macos_root, objective_c_executable_file))
+      write_ruby_main
+    end
+
+    def copy_framework
+      `macruby_deploy --embed #{name}.app #{ '--no-stdlib' unless stdlib }`
+    end
+
+    def copy_hotcocoa
+      `macgem unpack hotcocoa`
+      Dir.glob("hotcocoa-*/lib/*").each do |source|
+        destination = File.join(resources_root, source.split('/').last)
+        FileUtils.mkdir_p(File.dirname(destination)) unless File.exist?(File.dirname(destination))
+        FileUtils.cp_r source, destination
       end
+      FileUtils.rm_rf Dir.glob("hotcocoa-*").first
+    end
 
-      def write_bundle_files
-        write_pkg_info_file
-        write_info_plist_file
-        build_executable unless File.exist?(File.join(macos_root, objective_c_executable_file))
-        write_ruby_main
+    def copy_sources
+      FileUtils.cp_r load_file, resources_root unless sources.include?(load_file)
+      sources.each do |source|
+        destination = File.join(resources_root, source)
+        FileUtils.mkdir_p(File.dirname(destination)) unless File.exist?(File.dirname(destination))
+        FileUtils.cp_r source, destination
       end
+    end
 
-      def copy_framework
-        `macruby_deploy --embed #{name}.app #{ '--no-stdlib' unless stdlib }`
+    def copy_resources
+      resources.each do |resource|
+        destination = File.join(resources_root, resource.split("/")[1..-1].join("/"))
+        FileUtils.mkdir_p(File.dirname(destination)) unless File.exist?(File.dirname(destination))
+        FileUtils.cp_r resource, destination
       end
+    end
 
-      def copy_hotcocoa
-        `macgem unpack hotcocoa`
-        Dir.glob("hotcocoa-*/lib/*").each do |source|
-          destination = File.join(resources_root, source.split('/').last)
-          FileUtils.mkdir_p(File.dirname(destination)) unless File.exist?(File.dirname(destination))
-          FileUtils.cp_r source, destination
-        end
-        FileUtils.rm_rf Dir.glob("hotcocoa-*").first
+    def compile_data_models
+      data_models.each do |data|
+        `/Developer/usr/bin/momc #{data} #{resources_root}/#{File.basename(data, ".xcdatamodel")}.mom`
       end
+    end
 
-      def copy_sources
-        FileUtils.cp_r load_file, resources_root unless sources.include?(load_file)
-        sources.each do |source|
-          destination = File.join(resources_root, source)
-          FileUtils.mkdir_p(File.dirname(destination)) unless File.exist?(File.dirname(destination))
-          FileUtils.cp_r source, destination
-        end
+    def copy_icon_file
+      FileUtils.cp(icon, icon_file) unless File.exist?(icon_file)
+    end
+
+    def write_pkg_info_file
+      File.open(pkg_info_file, "wb") {|f| f.write ApplicationBundlePackage}
+    end
+
+    def write_info_plist_file
+      File.open(info_plist_file, "w") do |f|
+        f.puts %{<?xml version="1.0" encoding="UTF-8"?>}
+        f.puts %{<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">}
+        f.puts %{<plist version="1.0">}
+        f.puts %{<dict>}
+        f.puts %{  <key>CFBundleDevelopmentRegion</key>}
+        f.puts %{ <string>English</string>}
+        f.puts %{ <key>CFBundleIconFile</key>} if icon
+        f.puts %{ <string>#{name}.icns</string>} if icon
+        f.puts %{ <key>CFBundleGetInfoString</key>} if info_string
+        f.puts %{ <string>#{info_string}</string>} if info_string
+        f.puts %{  <key>CFBundleExecutable</key>}
+        f.puts %{  <string>#{name.gsub(/ /, '')}</string>}
+        f.puts %{  <key>CFBundleIdentifier</key>}
+        f.puts %{  <string>#{identifier}</string>}
+        f.puts %{  <key>CFBundleInfoDictionaryVersion</key>}
+        f.puts %{  <string>6.0</string>}
+        f.puts %{  <key>CFBundleName</key>}
+        f.puts %{  <string>#{name}</string>}
+        f.puts %{  <key>CFBundlePackageType</key>}
+        f.puts %{  <string>APPL</string>}
+        f.puts %{  <key>CFBundleSignature</key>}
+        f.puts %{  <string>????</string>}
+        f.puts %{  <key>CFBundleVersion</key>}
+        f.puts %{  <string>#{version}</string>}
+        f.puts %{  <key>NSPrincipalClass</key>}
+        f.puts %{  <string>NSApplication</string>}
+        f.puts %{ <key>LSUIElement</key>}
+        f.puts %{ <string>#{agent}</string>}
+        f.puts %{</dict>}
+        f.puts %{</plist>}
       end
+    end
 
-      def copy_resources
-        resources.each do |resource|
-          destination = File.join(resources_root, resource.split("/")[1..-1].join("/"))
-          FileUtils.mkdir_p(File.dirname(destination)) unless File.exist?(File.dirname(destination))
-          FileUtils.cp_r resource, destination
-        end
-      end
+    def build_executable
+      File.open(objective_c_source_file, "wb") do |f|
+        f.puts %{
+          #import <MacRuby/MacRuby.h>
 
-      def compile_data_models
-        data_models.each do |data|
-          `/Developer/usr/bin/momc #{data} #{resources_root}/#{File.basename(data, ".xcdatamodel")}.mom`
-        end
-      end
-
-      def copy_icon_file
-        FileUtils.cp(icon, icon_file) unless File.exist?(icon_file)
-      end
-
-      def write_pkg_info_file
-        File.open(pkg_info_file, "wb") {|f| f.write ApplicationBundlePackage}
-      end
-
-      def write_info_plist_file
-        File.open(info_plist_file, "w") do |f|
-          f.puts %{<?xml version="1.0" encoding="UTF-8"?>}
-          f.puts %{<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">}
-          f.puts %{<plist version="1.0">}
-          f.puts %{<dict>}
-          f.puts %{  <key>CFBundleDevelopmentRegion</key>}
-          f.puts %{ <string>English</string>}
-          f.puts %{ <key>CFBundleIconFile</key>} if icon
-          f.puts %{ <string>#{name}.icns</string>} if icon
-          f.puts %{ <key>CFBundleGetInfoString</key>} if info_string
-          f.puts %{ <string>#{info_string}</string>} if info_string
-          f.puts %{  <key>CFBundleExecutable</key>}
-          f.puts %{  <string>#{name.gsub(/ /, '')}</string>}
-          f.puts %{  <key>CFBundleIdentifier</key>}
-          f.puts %{  <string>#{identifier}</string>}
-          f.puts %{  <key>CFBundleInfoDictionaryVersion</key>}
-          f.puts %{  <string>6.0</string>}
-          f.puts %{  <key>CFBundleName</key>}
-          f.puts %{  <string>#{name}</string>}
-          f.puts %{  <key>CFBundlePackageType</key>}
-          f.puts %{  <string>APPL</string>}
-          f.puts %{  <key>CFBundleSignature</key>}
-          f.puts %{  <string>????</string>}
-          f.puts %{  <key>CFBundleVersion</key>}
-          f.puts %{  <string>#{version}</string>}
-          f.puts %{  <key>NSPrincipalClass</key>}
-          f.puts %{  <string>NSApplication</string>}
-          f.puts %{ <key>LSUIElement</key>}
-          f.puts %{ <string>#{agent}</string>}
-          f.puts %{</dict>}
-          f.puts %{</plist>}
-        end
-      end
-
-      def build_executable
-        File.open(objective_c_source_file, "wb") do |f|
-          f.puts %{
-            #import <MacRuby/MacRuby.h>
-
-            int main(int argc, char *argv[])
-            {
-                return macruby_main("rb_main.rb", argc, argv);
-            }
+          int main(int argc, char *argv[])
+          {
+              return macruby_main("rb_main.rb", argc, argv);
           }
-        end
-        archs = RUBY_ARCH.include?('ppc') ? '-arch ppc' : '-arch i386 -arch x86_64'
-        puts `cd "#{macos_root}" && gcc main.m -o #{objective_c_executable_file} #{archs} -framework MacRuby -framework Foundation -fobjc-gc-only`
-        File.unlink(objective_c_source_file)
+        }
       end
+      archs = RUBY_ARCH.include?('ppc') ? '-arch ppc' : '-arch i386 -arch x86_64'
+      puts `cd "#{macos_root}" && gcc main.m -o #{objective_c_executable_file} #{archs} -framework MacRuby -framework Foundation -fobjc-gc-only`
+      File.unlink(objective_c_source_file)
+    end
 
-      def write_ruby_main
-        File.open(main_ruby_source_file, "wb") do |f|
-          f.puts "$:.map! { |x| x.sub(/^\\/Library\\/Frameworks/, NSBundle.mainBundle.privateFrameworksPath) }" if deploy?
-          f.puts "$:.unshift NSBundle.mainBundle.resourcePath.fileSystemRepresentation"
-          f.puts "begin"
-          f.puts "  load '#{load_file}'"
-          f.puts "rescue Exception => e"
-          f.puts "  STDERR.puts e.message"
-          f.puts "  e.backtrace.each { |bt| STDERR.puts bt }"
-          f.puts "end"
-        end
+    def write_ruby_main
+      File.open(main_ruby_source_file, "wb") do |f|
+        f.puts "$:.map! { |x| x.sub(/^\\/Library\\/Frameworks/, NSBundle.mainBundle.privateFrameworksPath) }" if deploy?
+        f.puts "$:.unshift NSBundle.mainBundle.resourcePath.fileSystemRepresentation"
+        f.puts "begin"
+        f.puts "  load '#{load_file}'"
+        f.puts "rescue Exception => e"
+        f.puts "  STDERR.puts e.message"
+        f.puts "  e.backtrace.each { |bt| STDERR.puts bt }"
+        f.puts "end"
       end
+    end
 
-      def bundle_root
-        "#{name}.app"
-      end
+    def bundle_root
+      "#{name}.app"
+    end
 
-      def contents_root
-        File.join(bundle_root, "Contents")
-      end
+    def contents_root
+      File.join(bundle_root, "Contents")
+    end
 
-      def frameworks_root
-        File.join(contents_root, "Frameworks")
-      end
+    def frameworks_root
+      File.join(contents_root, "Frameworks")
+    end
 
-      def macos_root
-        File.join(contents_root, "MacOS")
-      end
+    def macos_root
+      File.join(contents_root, "MacOS")
+    end
 
-      def resources_root
-        File.join(contents_root, "Resources")
-      end
+    def resources_root
+      File.join(contents_root, "Resources")
+    end
 
-      def bridgesupport_root
-        File.join(resources_root, "BridgeSupport")
-      end
+    def bridgesupport_root
+      File.join(resources_root, "BridgeSupport")
+    end
 
-      def info_plist_file
-        File.join(contents_root, "Info.plist")
-      end
+    def info_plist_file
+      File.join(contents_root, "Info.plist")
+    end
 
-      def icon_file
-        File.join(resources_root, "#{name}.icns")
-      end
+    def icon_file
+      File.join(resources_root, "#{name}.icns")
+    end
 
-      def pkg_info_file
-        File.join(contents_root, "PkgInfo")
-      end
+    def pkg_info_file
+      File.join(contents_root, "PkgInfo")
+    end
 
-      def objective_c_executable_file
-        name.gsub(/ /, '')
-      end
+    def objective_c_executable_file
+      name.gsub(/ /, '')
+    end
 
-      def objective_c_source_file
-        File.join(macos_root, "main.m")
-      end
+    def objective_c_source_file
+      File.join(macos_root, "main.m")
+    end
 
-      def main_ruby_source_file
-        File.join(resources_root, "rb_main.rb")
-      end
+    def main_ruby_source_file
+      File.join(resources_root, "rb_main.rb")
+    end
 
-      def current_macruby_version
-        NSFileManager.defaultManager.pathContentOfSymbolicLinkAtPath(File.join(macruby_versions_path, "Current"))
-      end
+    def current_macruby_version
+      NSFileManager.defaultManager.pathContentOfSymbolicLinkAtPath(File.join(macruby_versions_path, "Current"))
+    end
 
-      def current_macruby_path
-        File.join(macruby_versions_path, current_macruby_version)
-      end
+    def current_macruby_path
+      File.join(macruby_versions_path, current_macruby_version)
+    end
 
-      def macruby_versions_path
-        File.join(macruby_framework_path, "Versions")
-      end
+    def macruby_versions_path
+      File.join(macruby_framework_path, "Versions")
+    end
 
-      def macruby_framework_path
-        "/Library/Frameworks/MacRuby.framework"
-      end
+    def macruby_framework_path
+      "/Library/Frameworks/MacRuby.framework"
+    end
   end
 end

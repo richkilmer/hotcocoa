@@ -763,20 +763,20 @@ module HotCocoa::Graphics
 
     private
 
-      # vary a single color component by a multiplier
-      def vary(original, variance)
-        newvalue = original + (rand * variance * (rand > 0.5 ? 1 : -1))
-        newvalue = inrange(newvalue,0.0,1.0)
-        newvalue
-      end
+    # vary a single color component by a multiplier
+    def vary(original, variance)
+      newvalue = original + (rand * variance * (rand > 0.5 ? 1 : -1))
+      newvalue = inrange(newvalue,0.0,1.0)
+      newvalue
+    end
 
-      # wrap within range
-      def _wrap(x, min, threshold, plus)
-        if x - min < threshold
-          x + plus
-        else
-          x - min
-        end
+    # wrap within range
+    def _wrap(x, min, threshold, plus)
+      if x - min < threshold
+        x + plus
+      else
+        x - min
       end
+    end
   end
 end

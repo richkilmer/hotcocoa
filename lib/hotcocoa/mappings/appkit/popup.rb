@@ -51,7 +51,6 @@ module HotCocoa
     def each(&block)
       control.itemTitles.each(&block)
     end
-
   end
 
   class PopUpMenuItemList < PopUpItemList

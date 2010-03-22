@@ -45,26 +45,26 @@ HotCocoa::Mappings.map :menu => :NSMenu do
 
     private
 
-      def builder
-        @builder || create_builder
-      end
+    def builder
+      @builder || create_builder
+    end
 
-      def create_builder
-        @builder = Object.new
-        @builder.extend HotCocoa
-        @builder
-      end
+    def create_builder
+      @builder = Object.new
+      @builder.extend HotCocoa
+      @builder
+    end
 
-      def item_map
-        @item_map ||= {}
-      end
+    def item_map
+      @item_map ||= {}
+    end
 
-      def titleize(symbol)
-        symbol.to_s.split("_").collect(&:capitalize).join(" ")
-      end
+    def titleize(symbol)
+      symbol.to_s.split("_").collect(&:capitalize).join(" ")
+    end
 
-      def app
-        @app ||= NSApplication.sharedApplication
-      end
+    def app
+      @app ||= NSApplication.sharedApplication
+    end
   end
 end

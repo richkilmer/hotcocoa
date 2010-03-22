@@ -35,25 +35,25 @@ class HotCocoaApplication
 
   private
 
-    def create_controller_instance(controller_name, controller_class)
-      controller_instance = controller_class.new(self)
-      @controllers[controller_name] = controller_instance
-      controller_instance.application_window
-      controller_instance
-    end
+  def create_controller_instance(controller_name, controller_class)
+    controller_instance = controller_class.new(self)
+    @controllers[controller_name] = controller_instance
+    controller_instance.application_window
+    controller_instance
+  end
 
-    def directory_of(application_file)
-      File.dirname(File.expand_path(application_file))
-    end
+  def directory_of(application_file)
+    File.dirname(File.expand_path(application_file))
+  end
 
-    def load_controllers_and_views(directory)
-      Dir.glob(File.join(directory, 'controllers', '**', '*.rb')).each do |controller_file|
-        load(controller_file)
-      end
-      Dir.glob(File.join(directory, 'views', '**', '*.rb')).each do |view_file|
-        load(view_file)
-      end
+  def load_controllers_and_views(directory)
+    Dir.glob(File.join(directory, 'controllers', '**', '*.rb')).each do |controller_file|
+      load(controller_file)
     end
+    Dir.glob(File.join(directory, 'views', '**', '*.rb')).each do |view_file|
+      load(view_file)
+    end
+  end
 end
 
 class HotCocoaController

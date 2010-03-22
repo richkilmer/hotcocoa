@@ -31,13 +31,13 @@ module HotCocoa
 
     private
 
-      def string_value_of_index(i)
-        item = data[i]
-        if item.kind_of?(Hash)
-          item.values.first
-        else
-          item.to_s
-        end
+    def string_value_of_index(i)
+      item = data[i]
+      if item.kind_of?(Hash)
+        item.values.first
+      else
+        item.to_s
       end
+    end
   end
 end
