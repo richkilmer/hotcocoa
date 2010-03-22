@@ -38,10 +38,11 @@ HotCocoa::Mappings.map :outline_view => :NSOutlineView do
 
     def on_double_action=(behavior)
       if target && (
-        target.instance_variable_get("@action_behavior") ||
-        target.instance_variable_get("@double_action_behavior"))
-          object.instance_variable_set("@double_action_behavior", behavior)
-          object = target
+          target.instance_variable_get("@action_behavior") ||
+            target.instance_variable_get("@double_action_behavior"))
+        object.instance_variable_set("@double_action_behavior", behavior)
+        object = target
+
       else
         object = Object.new
         object.instance_variable_set("@double_action_behavior", behavior)

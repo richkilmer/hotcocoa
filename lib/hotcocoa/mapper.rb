@@ -32,39 +32,51 @@ module HotCocoa
       def map_method(builder_method, &block)
         @extension_method = :extend
         @builder_method = builder_method
+
         mod = (class << self; self; end)
         mod.extend MappingMethods
-        mod.module_eval &block
+        mod.module_eval(&block)
+
         @control_module = mod
         inst = self
         HotCocoa.send(:define_method, builder_method) do |*args, &control_block|
           map = (args.length == 1 ? args[0] : args[1]) || {}
           guid = args.length == 1 ? nil : args[0]
+
           map = inst.remap_constants(map)
           inst.map_bindings = map.delete(:map_bindings)
+
           default_empty_rect_used = (map[:frame].__id__ == DefaultEmptyRect.__id__)
           control = inst.respond_to?(:init_with_options) ? inst.init_with_options(inst.control_class.alloc, map) : inst.alloc_with_options(map)
+
           Views[guid] = control if guid
           inst.customize(control)
           map.each do |key, value|
             if control.respond_to?("#{key}=")
               eval "control.#{key} = value"
+
             elsif control.respond_to?(key)
               new_key = (key.start_with?('set') ? key : "set#{key[0].capitalize}#{key[1..(key.length - 1)]}")
               if control.respond_to?(new_key)
                 eval "control.#{new_key}(value)"
+
               else
                 control.send("#{key}")
+
               end
             elsif control.respond_to?("set#{Mapper.camel_case(key.to_s)}")
               eval "control.set#{Mapper.camel_case(key.to_s)}(value)"
+
             else
               NSLog "Unable to map #{key} as a method"
+
             end
           end
+
           if default_empty_rect_used
             control.sizeToFit if control.respondsToSelector(:sizeToFit) == true
           end
+
           if control_block
             if inst.respond_to?(:handle_block)
               inst.handle_block(control, &control_block)
@@ -74,6 +86,7 @@ module HotCocoa
           end
           control
         end
+
         # make the function callable using HotCocoa.xxxx
         HotCocoa.send(:module_function, builder_method)
         # module_function makes the instance method private, but we want it to stay public
@@ -130,20 +143,24 @@ module HotCocoa
           delegate_module = Module.new
           required_methods = []
           delegate_methods = inherited_delegate_methods
+
           if delegate_methods.size > 0
             delegate_methods.each do |delegate_method, mapping|
               required_methods << delegate_method if mapping[:required]
             end
+
             delegate_methods.each do |delegate_method, mapping|
-              parameters = mapping[:parameters] ? ", "+mapping[:parameters].map {|param| %{"#{param}"} }.join(",") : ""
+              parameters = mapping[:parameters] ? ", " + mapping[:parameters].map {|param| %{"#{param}"} }.join(",") : ""
               delegate_module.module_eval %{
                 def #{mapping[:to]}(&block)
                   raise "Must pass in a block to use this delegate method" unless block_given?
+
                   @_delegate_builder ||= HotCocoa::DelegateBuilder.new(self, #{required_methods.inspect})
                   @_delegate_builder.add_delegated_method(block, "#{delegate_method}" #{parameters})
                 end
               }
             end
+
             delegate_module.module_eval %{
               def delegate_to(object)
                 @_delegate_builder ||= HotCocoa::DelegateBuilder.new(self, #{required_methods.inspect})
@@ -151,8 +168,10 @@ module HotCocoa
               end
             }
           end
+
           Mapper.delegate_modules[control_class] = delegate_module
         end
+
         Mapper.delegate_modules[control_class]
       end
 
@@ -163,11 +182,13 @@ module HotCocoa
 
       def bindings_module_for_control(control)
         return Mapper.bindings_modules[control_class] if Mapper.bindings_modules.has_key?(control_class)
+
         instance = if control == control_class
           control_class.alloc.init
         else
           control
         end
+
         bindings_module = Module.new
         instance.exposedBindings.each do |exposed_binding|
           bindings_module.module_eval %{
@@ -181,6 +202,7 @@ module HotCocoa
             end
           }
         end
+
         Mapper.bindings_modules[control_class] = bindings_module
         bindings_module
       end
@@ -192,6 +214,7 @@ module HotCocoa
             tags[key] = value unless tags.has_key?(key)
           end
         end
+
         result = {}
         tags.each do |tag, value|
           if constants[tag]

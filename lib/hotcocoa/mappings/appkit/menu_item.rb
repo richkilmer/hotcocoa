@@ -9,8 +9,9 @@ HotCocoa::Mappings.map :menu_item => :NSMenuItem do
   }
 
   def alloc_with_options(options)
-    NSMenuItem.alloc.initWithTitle options.delete(:title), :action => options.delete(:action),
-                                                           :keyEquivalent => options.delete(:key)
+    NSMenuItem.alloc.initWithTitle(options.delete(:title),
+                                      :action => options.delete(:action),
+                                      :keyEquivalent => options.delete(:key))
   end
 
   custom_methods do

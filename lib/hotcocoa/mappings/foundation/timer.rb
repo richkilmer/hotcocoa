@@ -11,9 +11,11 @@ HotCocoa::Mappings.map :timer => :NSTimer do
 
       target = Object.new
       target.instance_variable_set(:@block, options.delete(:on_action))
+
       def target.fire(timer)
         @block.call(timer)
       end
+
       selector = "fire:"
     end
 

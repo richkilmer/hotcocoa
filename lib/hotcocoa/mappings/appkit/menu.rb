@@ -21,16 +21,19 @@ HotCocoa::Mappings.map :menu => :NSMenu do
 
       item_map[symbol] = submenu
       block.call(submenu) if block
-      setSubmenu submenu, :forItem => item
+
+      setSubmenu(submenu, :forItem => item)
       submenu
     end
 
     def item(symbol, options={})
       options[:title] ||= titleize(symbol)
       options[:action] ||= "on_#{symbol}:"
+
       item = builder.menu_item(options)
       item_map[symbol] = item
-      addItem item
+
+      addItem(item)
       item
     end
 

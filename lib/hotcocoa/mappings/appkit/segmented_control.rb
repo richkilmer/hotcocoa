@@ -71,11 +71,10 @@ HotCocoa::Mappings.map :segmented_control => :NSSegmentedControl do
     end
 
     def <<(data)
-      setSegmentCount(segmentCount+1)
-      segment = HotCocoa::SegmentedControlSegment.new(self, segmentCount-1)
-      data.each do |key, value|
-        segment.send("#{key}=", value)
-      end
+      setSegmentCount(segmentCount + 1)
+
+      segment = HotCocoa::SegmentedControlSegment.new(self, segmentCount - 1)
+      data.each { |key, value| segment.send("#{key}=", value) }
     end
 
     def [](segment_number)

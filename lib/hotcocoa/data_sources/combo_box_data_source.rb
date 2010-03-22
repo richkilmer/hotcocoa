@@ -11,6 +11,7 @@ module HotCocoa
         value = string_value_of_index(index)
         return value if value.start_with?(string)
       end
+
       nil
     end
 
@@ -18,6 +19,7 @@ module HotCocoa
       data.length.times do |index|
         return index if string_value_of_index(index) == string
       end
+
       NSNotFound
     end
 

@@ -13,8 +13,10 @@ HotCocoa::Mappings.map :application => :NSApplication do
     def load_application_menu
       begin
         require 'lib/menu'
+
         o = Object.new
         o.extend HotCocoa
+
         setMainMenu(o.application_menu)
       rescue LoadError => e
       end
@@ -71,6 +73,7 @@ HotCocoa::Mappings.map :application => :NSApplication do
       key = path.keys.first
       value = path.values.first
       menu = menu[key]
+
       if value.kind_of?(Array)
         find_menu(menu, value.first)
       else

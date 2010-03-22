@@ -7,7 +7,7 @@
 # --------------
 #
 HotCocoa::Mappings.map :progress_indicator => :NSProgressIndicator do
-  defaults :layout => {}, :frame => [0,0,250,20]
+  defaults :layout => {}, :frame => [0, 0, 250, 20]
 
   def init_with_options(progress_bar, options)
     progress_bar.initWithFrame(options.delete(:frame))

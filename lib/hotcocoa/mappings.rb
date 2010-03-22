@@ -11,18 +11,22 @@ module HotCocoa
     module TargetActionConvenience
       def on_action=(behavior)
         if target && (
-          target.instance_variable_get("@action_behavior") ||
-          target.instance_variable_get("@double_action_behavior"))
-            @object.instance_variable_set("@action_behavior", behavior)
-            @object = target
+            target.instance_variable_get("@action_behavior") ||
+              target.instance_variable_get("@double_action_behavior"))
+
+          @object.instance_variable_set("@action_behavior", behavior)
+          @object = target
+
         else
           @object = Object.new
           @object.instance_variable_set("@action_behavior", behavior)
           setTarget(@object)
         end
+
         def @object.perform_action(sender)
           @action_behavior.call(sender)
         end
+
         setAction("perform_action:")
       end
 
@@ -41,6 +45,7 @@ module HotCocoa
 
       if mapped_value.kind_of?(Class)
         add_mapping(*args, &block)
+
       else
         if framework.nil? || loaded_framework?(framework)
           add_constant_mapping(*args, &block)
@@ -90,9 +95,7 @@ module HotCocoa
     def self.framework_loaded
       frameworks.keys.each do |key|
         if loaded_framework?(key)
-          frameworks[key].each do |mapper|
-            mapper.call
-          end
+          frameworks[key].each { |mapper| mapper.call }
           frameworks.delete(key)
         end
       end

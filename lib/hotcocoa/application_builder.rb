@@ -46,6 +46,7 @@ module HotCocoa
         puts File.expand_path(File.join(Config::CONFIG['datadir'], "hotcocoa_template", "Rakefile"))
         exit
       end
+
       builder = new
       builder.deploy = options[:deploy] == true ? true : false
       builder.name = config.name
@@ -58,17 +59,11 @@ module HotCocoa
       builder.agent = config.agent
       builder.stdlib = config.stdlib
 
-      config.sources.each do |source|
-        builder.add_source_path source
-      end
-
-      config.resources.each do |resource|
-        builder.add_resource_path resource
-      end
-
+      config.sources.each { |source| builder.add_source_path(source) }
+      config.resources.each { |resource| builder.add_resource_path(resource) }
       config.data_models.each do |data|
         next unless File.extname(data) == ".xcdatamodel"
-        builder.add_data_model data
+        builder.add_data_model(data)
       end
 
       builder.build
@@ -78,6 +73,7 @@ module HotCocoa
     def self.deploy(path)
       raise "Given path `#{path}' does not exist" unless File.exist?(path)
       raise "Given path `#{path}' does not look like an application bundle" unless File.extname(path) == '.app'
+
       deployer = new
       Dir.chdir(File.dirname(path)) do
         deployer.name = File.basename(path, '.app')
@@ -140,11 +136,10 @@ module HotCocoa
     end
 
     def build_bundle_structure
-      Dir.mkdir(bundle_root) unless File.exist?(bundle_root)
-      Dir.mkdir(contents_root) unless File.exist?(contents_root)
-      Dir.mkdir(frameworks_root) unless File.exist?(frameworks_root)
-      Dir.mkdir(macos_root) unless File.exist?(macos_root)
-      Dir.mkdir(resources_root) unless File.exist?(resources_root)
+      [bundle_root, contents_root, frameworks_root,
+       macos_root, resources_root].each do |dir|
+        Dir.mkdir(dir) unless File.exist?(dir)
+      end
     end
 
     def write_bundle_files
@@ -206,11 +201,11 @@ module HotCocoa
         f.puts %{<plist version="1.0">}
         f.puts %{<dict>}
         f.puts %{  <key>CFBundleDevelopmentRegion</key>}
-        f.puts %{ <string>English</string>}
-        f.puts %{ <key>CFBundleIconFile</key>} if icon
-        f.puts %{ <string>#{name}.icns</string>} if icon
-        f.puts %{ <key>CFBundleGetInfoString</key>} if info_string
-        f.puts %{ <string>#{info_string}</string>} if info_string
+        f.puts %{  <string>English</string>}
+        f.puts %{  <key>CFBundleIconFile</key>} if icon
+        f.puts %{  <string>#{name}.icns</string>} if icon
+        f.puts %{  <key>CFBundleGetInfoString</key>} if info_string
+        f.puts %{  <string>#{info_string}</string>} if info_string
         f.puts %{  <key>CFBundleExecutable</key>}
         f.puts %{  <string>#{name.gsub(/ /, '')}</string>}
         f.puts %{  <key>CFBundleIdentifier</key>}
@@ -227,8 +222,8 @@ module HotCocoa
         f.puts %{  <string>#{version}</string>}
         f.puts %{  <key>NSPrincipalClass</key>}
         f.puts %{  <string>NSApplication</string>}
-        f.puts %{ <key>LSUIElement</key>}
-        f.puts %{ <string>#{agent}</string>}
+        f.puts %{  <key>LSUIElement</key>}
+        f.puts %{  <string>#{agent}</string>}
         f.puts %{</dict>}
         f.puts %{</plist>}
       end

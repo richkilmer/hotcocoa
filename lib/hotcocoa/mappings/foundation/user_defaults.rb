@@ -10,6 +10,7 @@ HotCocoa::Mappings.map :user_defaults => :NSUserDefaults do
       options.delete(:defaults).each_pair { |key, value| defs[key.to_s] = value }
       user_defaults.registerDefaults(defs)
     end
+
     user_defaults
   end
 

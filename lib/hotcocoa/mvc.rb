@@ -15,11 +15,14 @@ class HotCocoaApplication
 
   def initialize(application_file)
     HotCocoaApplication.instance = self
+
     @controllers = {}
     load_controllers_and_views(directory_of(application_file))
+
     @shared_application = application(ApplicationView.options[:application])
     @shared_application.load_application_menu
     @application_controller = controller(:application_controller)
+
     shared_application.delegate_to(application_controller)
   end
 
@@ -29,7 +32,13 @@ class HotCocoaApplication
 
   def controller(controller_name)
     controller_name_string = controller_name.to_s
-    controller_class = Object.const_get(controller_name_string !~ /_/ && controller_name_string =~ /[A-Z]+.*/ ? controller_name_string : controller_name_string.split('_').map{|e| e.capitalize}.join)
+
+    controller_class = if Object.const_get(controller_name_string !~ /_/ && controller_name_string =~ /[A-Z]+.*/
+      controller_name_string
+    else
+      controller_name_string.split('_').map {|e| e.capitalize}.join)
+    end
+
     @controllers[controller_name] || create_controller_instance(controller_name, controller_class)
   end
 
@@ -37,7 +46,9 @@ class HotCocoaApplication
 
   def create_controller_instance(controller_name, controller_class)
     controller_instance = controller_class.new(self)
+
     @controllers[controller_name] = controller_instance
+
     controller_instance.application_window
     controller_instance
   end
@@ -108,6 +119,7 @@ class HotCocoaView < HotCocoa::LayoutView
         @name || :application_controller
       end
     end
+
     def options(options=nil)
       if options
         @options = options
@@ -120,11 +132,12 @@ class HotCocoaView < HotCocoa::LayoutView
   def self.inherited(klass)
     klass.extend(ClassMethods)
     klass.send(:include, HotCocoa::Behaviors)
-    class_name = klass.name.gsub(/::/, '/').gsub(/([A-Z]+)([A-Z][a-z])/,'\1_\2').gsub(/([a-z\d])([A-Z])/,'\1_\2').tr("-", "_").downcase
+    class_name = Mapper.underscore(klass.name)
+
     HotCocoaController.class_eval %{
       def #{class_name}
         unless HotCocoaController.view_instances[:#{class_name}]
-          HotCocoaController.view_instances[:#{class_name}] = #{klass.name}.alloc.initWithFrame([0,0,0,0])
+          HotCocoaController.view_instances[:#{class_name}] = #{klass.name}.alloc.initWithFrame([0, 0, 0, 0])
           HotCocoaController.view_instances[:#{class_name}].setup_view
         end
         HotCocoaController.view_instances[:#{class_name}]

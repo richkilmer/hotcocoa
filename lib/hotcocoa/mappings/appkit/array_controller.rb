@@ -54,9 +54,9 @@ HotCocoa::Mappings.map :array_controller => :NSArrayController do
         selector = descriptor.delete(:selector)
         ascending = (descriptor.values.first == :ascending)
         if selector
-          NSSortDescriptor.alloc.initWithKey(descriptor.keys.first.to_s, ascending: ascending, selector: selector)
+          NSSortDescriptor.alloc.initWithKey(descriptor.keys.first.to_s, ascending:ascending, selector:selector)
         else
-          NSSortDescriptor.alloc.initWithKey(descriptor.keys.first.to_s, ascending: ascending)
+          NSSortDescriptor.alloc.initWithKey(descriptor.keys.first.to_s, ascending:ascending)
         end
       end
       setSortDescriptors(descriptors)
