@@ -1,5 +1,4 @@
-HotCocoa::Mappings.map :gradient => :NSGradient do 
-  
+HotCocoa::Mappings.map :gradient => :NSGradient do
   def alloc_with_options(options)
     if options[:colors]
       if options[:locations]
@@ -11,5 +10,4 @@ HotCocoa::Mappings.map :gradient => :NSGradient do
       NSGradient.alloc.initWithStartingColor options.delete(:start), endingColor:options.delete(:end)
     end
   end
-  
 end

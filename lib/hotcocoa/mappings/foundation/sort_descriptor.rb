@@ -1,5 +1,4 @@
 HotCocoa::Mappings.map :sort_descriptor => :NSSortDescriptor do
-
   defaults :ascending => true
 
   def init_with_options(sort_descriptor, opts)
@@ -9,5 +8,4 @@ HotCocoa::Mappings.map :sort_descriptor => :NSSortDescriptor do
       sort_descriptor.initWithKey(opts.delete(:key), ascending:opts.delete(:ascending), selector:opts.delete(:selector))
     end
   end
-
 end

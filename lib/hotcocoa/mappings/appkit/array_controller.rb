@@ -1,5 +1,4 @@
 HotCocoa::Mappings.map :array_controller => :NSArrayController do
-
   def init_with_options(array_controller, options)
     result = array_controller.init
     if options.has_key?(:for)
@@ -9,47 +8,46 @@ HotCocoa::Mappings.map :array_controller => :NSArrayController do
   end
 
   custom_methods do
-    
     def avoids_empty_selection?
       avoidsEmptySelection
     end
-    
+
     def preserves_selection?
       preservesSelection
     end
-    
+
     def rearrange_automatically=(value)
       setAutomaticallyRearrangesObjects(value)
     end
-    
+
     def rearrange_automatically?
       automaticallyRearrangesObjects
     end
-    
+
     def selects_inserted=(value)
       setSelectsInsertedObjects(value)
     end
-    
+
     def selects_inserted?
       selectsInsertedObjects
     end
-    
+
     def <<(object)
       addObject(object)
     end
-    
+
     def [](index)
       arrangedObjects[index]
     end
-    
+
     def each(&block)
       arrangedObjects.each(&block)
     end
-    
+
     def selected
       selectedObjects.first
     end
-    
+
     def sort_by=(sort_descriptors)
       sort_descriptors = [sort_descriptors] if sort_descriptors.kind_of?(Hash)
       descriptors = sort_descriptors.collect do |descriptor|
@@ -63,15 +61,13 @@ HotCocoa::Mappings.map :array_controller => :NSArrayController do
       end
       setSortDescriptors(descriptors)
     end
-    
   end
-
 end
 
 =begin
-array :avoids_empty_selection => true, 
-      :preserves_selection => false, 
-      :selects_inserted => false, 
+array :avoids_empty_selection => true,
+      :preserves_selection => false,
+      :selects_inserted => false,
       :rearrange_automatically => true,
       :sort_by => {:name => :ascending}
 

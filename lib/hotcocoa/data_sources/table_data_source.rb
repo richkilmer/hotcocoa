@@ -13,6 +13,5 @@ module HotCocoa
     def tableView(view, objectValueForTableColumn:column, row:i)
       data[i][column.identifier.intern]
     end
-
   end
 end

@@ -18,5 +18,4 @@ class Object
     end
     obj
   end
-
 end

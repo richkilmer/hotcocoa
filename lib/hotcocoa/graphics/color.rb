@@ -1,12 +1,12 @@
-# Ruby Cocoa Graphics is a graphics library providing a simple object-oriented 
-# interface into the power of Mac OS X's Core Graphics and Core Image drawing libraries.  
-# With a few lines of easy-to-read code, you can write scripts to draw simple or complex 
-# shapes, lines, and patterns, process and filter images, create abstract art or visualize 
+# Ruby Cocoa Graphics is a graphics library providing a simple object-oriented
+# interface into the power of Mac OS X's Core Graphics and Core Image drawing libraries.
+# With a few lines of easy-to-read code, you can write scripts to draw simple or complex
+# shapes, lines, and patterns, process and filter images, create abstract art or visualize
 # scientific data, and much more.
-# 
-# Inspiration for this project was derived from Processing and NodeBox.  These excellent 
-# graphics programming environments are more full-featured than RCG, but they are implemented 
-# in Java and Python, respectively.  RCG was created to offer similar functionality using 
+#
+# Inspiration for this project was derived from Processing and NodeBox.  These excellent
+# graphics programming environments are more full-featured than RCG, but they are implemented
+# in Java and Python, respectively.  RCG was created to offer similar functionality using
 # the Ruby programming language.
 #
 # Author::    James Reynolds  (mailto:drtoast@drtoast.com)
@@ -17,22 +17,22 @@ module HotCocoa::Graphics
 
   # define and manipulate colors in RGBA format
   class Color
-  
+
     # License: GPL - includes ports of some code by Tom De Smedt, Frederik De Bleser
-  
+
     #attr_accessor :r,:g,:b,:a
     attr_accessor :rgb
     # def initialize(r=0.0,g=0.0,b=0.0,a=1.0)
     #   @c = CGColorCreate(@colorspace, [r,g,b,a])
     # end
-  
+
     # create a new color with the given RGBA values
     def initialize(r=0.0, g=0.0, b=1.0, a=1.0)
       @nsColor = NSColor.colorWithDeviceRed r, green:g, blue:b, alpha:a
       @rgb = @nsColor.colorUsingColorSpaceName NSDeviceRGBColorSpace
       self
     end
-  
+
     COLORNAMES = {
         "lightpink"            => [1.00, 0.71, 0.76],
         "pink"                 => [1.00, 0.75, 0.80],
@@ -178,7 +178,7 @@ module HotCocoa::Graphics
         #"transparent"          => [0.00, 0.00, 0.00, 0.00],
         "bark"                 => [0.25, 0.19, 0.13]
     }
-    
+
     RYBWheel = [
       [  0,   0], [ 15,   8],
       [ 30,  17], [ 45,  26],
@@ -203,7 +203,7 @@ module HotCocoa::Graphics
         end
       end
     end
-  
+
     # create a color with the specified name
     def self.named(name)
       if COLORNAMES[name]
@@ -226,7 +226,7 @@ module HotCocoa::Graphics
       end
       color
     end
-  
+
     # return the name of the nearest named color
     def name
       nearest, d = ["", 1.0]
@@ -244,22 +244,22 @@ module HotCocoa::Graphics
       end
       nearest
     end
-  
+
     # return a copy of this color
     def copy
       Color.new(r, g, b, a)
     end
-  
+
     # print the color's component values
     def to_s
       "color: #{name} (#{r} #{g} #{b} #{a})"
     end
-  
+
     # sort the color by brightness in an array
     def <=> othercolor
        self.brightness <=> othercolor.brightness || self.hue <=> othercolor.hue
     end
-  
+
     # set or retrieve the red component
     def r(val=nil)
       if val
@@ -270,7 +270,7 @@ module HotCocoa::Graphics
         @rgb.redComponent
       end
     end
-  
+
     # set or retrieve the green component
     def g(val=nil)
       if val
@@ -281,7 +281,7 @@ module HotCocoa::Graphics
         @rgb.greenComponent
       end
     end
-  
+
     # set or retrieve the blue component
     def b(val=nil)
       if val
@@ -292,7 +292,7 @@ module HotCocoa::Graphics
         @rgb.blueComponent
       end
     end
-  
+
     # set or retrieve the alpha component
     def a(val=nil)
       if val
@@ -303,7 +303,7 @@ module HotCocoa::Graphics
         @rgb.alphaComponent
       end
     end
-  
+
     # set or retrieve the hue
     def hue(val=nil)
       if val
@@ -314,7 +314,7 @@ module HotCocoa::Graphics
         @rgb.hueComponent
       end
     end
-  
+
     # set or retrieve the saturation
     def saturation(val=nil)
       if val
@@ -325,7 +325,7 @@ module HotCocoa::Graphics
         @rgb.saturationComponent
       end
     end
-  
+
     # set or retrieve the brightness
     def brightness(val=nil)
       if val
@@ -336,75 +336,75 @@ module HotCocoa::Graphics
         @rgb.brightnessComponent
       end
     end
-  
+
     # decrease saturation by the specified amount
     def desaturate(step=0.1)
       saturation(saturation - step)
       self
     end
-  
+
     # increase the saturation by the specified amount
     def saturate(step=0.1)
       saturation(saturation + step)
       self
     end
-  
+
     # decrease the brightness by the specified amount
     def darken(step=0.1)
       brightness(brightness - step)
       self
     end
-  
+
     # increase the brightness by the specified amount
     def lighten(step=0.1)
       brightness(brightness + step)
       self
     end
-  
+
     # set the R,G,B,A values
     def set(r, g, b, a=1.0)
       set_rgb(r, g, b, a)
       self
     end
-  
+
     # adjust the Red, Green, Blue, Alpha values by the specified amounts
     def adjust_rgb(r=0.0, g=0.0, b=0.0, a=0.0)
       r0, g0, b0, a0 = get_rgb
       set_rgb(r0+r, g0+g, b0+b, a0+a)
       self
     end
-  
+
     # return RGBA values
     def get_rgb
       #@rgb.getRed_green_blue_alpha_()
       [@rgb.redComponent, @rgb.greenComponent, @rgb.blueComponent, @rgb.alphaComponent]
     end
-  
+
     # set color using RGBA values
     def set_rgb(r, g, b, a=1.0)
       @rgb = NSColor.colorWithDeviceRed r, green:g, blue:b, alpha:a
       self
     end
-  
+
     # return HSBA values
     def get_hsb
       #@rgb.getHue_saturation_brightness_alpha_()
       [@rgb.hueComponent, @rgb.saturationComponent, @rgb.brightnessComponent, @rgb.alphaComponent]
     end
-  
+
     # set color using HSBA values
     def set_hsb(h,s,b,a=1.0)
       @rgb = NSColor.colorWithDeviceHue h, saturation:s, brightness:b, alpha:a
       self
     end
-  
+
     # adjust Hue, Saturation, Brightness, and Alpha by specified amounts
     def adjust_hsb(h=0.0, s=0.0, b=0.0, a=0.0)
       h0, s0, b0, a0 = get_hsb
       set_hsb(h0+h, s0+s, b0+b, a0+a)
       self
     end
-  
+
     # alter the color by the specified random scaling factor
     # def ish(angle=10.0,d=0.02)
     #   # r,g,b,a = get_rgb
@@ -416,13 +416,13 @@ module HotCocoa::Graphics
     #   analog(angle,d)
     #   self
     # end
-  
+
     # create a random color
     def random
       set_rgb(rand, rand, rand, 1.0)
       self
     end
-  
+
     # rotate the color on the artistic RYB color wheel (0 to 360 degrees)
     def rotate_ryb(angle=180)
 
@@ -430,7 +430,7 @@ module HotCocoa::Graphics
       # (e.g. purple-yellow instead of purple-lime).
       # It is mathematically incorrect but generally assumed
       # to provide better complementary colors.
-      #   
+      #
       # http://en.wikipedia.org/wiki/RYB_color_model
 
       h = hue * 360
@@ -439,13 +439,13 @@ module HotCocoa::Graphics
 
       # Approximation of Itten's RYB color wheel.
       # In HSB, colors hues range from 0-360.
-      # However, on the artistic color wheel these are not evenly distributed. 
+      # However, on the artistic color wheel these are not evenly distributed.
       # The second tuple value contains the actual distribution.
 
       # Given a hue, find out under what angle it is
       # located on the artistic color wheel.
       (RYBWheel.size-1).times do |i|
-        x0,y0 = RYBWheel[i]    
+        x0,y0 = RYBWheel[i]
         x1,y1 = RYBWheel[i+1]
         y1 += 360 if y1 < y0
         if y0 <= h && h <= y1
@@ -453,14 +453,14 @@ module HotCocoa::Graphics
           break
         end
       end
-    
+
       # And the user-given angle (e.g. complement).
       a = (a+angle) % 360
 
       # For the given angle, find out what hue is
       # located there on the artistic color wheel.
       (RYBWheel.size-1).times do |i|
-        x0,y0 = RYBWheel[i]    
+        x0,y0 = RYBWheel[i]
         x1,y1 = RYBWheel[i+1]
         y1 += 360 if y1 < y0
         if x0 <= a && a <= x1
@@ -468,12 +468,12 @@ module HotCocoa::Graphics
           break
         end
       end
-    
+
       h = h % 360
       set_hsb(h/360, self.saturation, self.brightness, self.a)
       self
     end
-  
+
     # rotate the color on the RGB color wheel (0 to 360 degrees)
     def rotate_rgb(angle=180)
       hue = (self.hue + 1.0 * angle / 360) % 1
@@ -488,7 +488,7 @@ module HotCocoa::Graphics
       c.lighten(d * (rand*2-1))
       c.saturate(d * (rand*2-1))
     end
-  
+
     # randomly vary the color within a maximum hue range, saturation range, and brightness range
     def drift(maxhue=0.1,maxsat=0.3,maxbright=maxsat)
       # save original values the first time
@@ -512,7 +512,7 @@ module HotCocoa::Graphics
       self.brightness(randbright)
       self
     end
-  
+
     # convert to the complementary color (the color at opposite on the artistic color wheel)
     def complement
       rotate_ryb(180)
@@ -525,22 +525,22 @@ module HotCocoa::Graphics
     #   @rgb = blended.colorUsingColorSpaceName(NSDeviceRGBColorSpace)
     #   self
     # end
-  
+
     # create a new RGBA color
     def self.rgb(r, g, b, a=1.0)
       Color.new(r,g,b,a)
     end
-  
+
     # create a new HSBA color
     def self.hsb(h, s, b, a=1.0)
       Color.new.set_hsb(h,s,b,a)
     end
-  
+
     # create a new gray color with the specified darkness
     def self.gray(pct=0.5)
       Color.new(pct,pct,pct,1.0)
     end
-  
+
     # return a random color
     def self.random
       Color.new.random
@@ -555,7 +555,7 @@ module HotCocoa::Graphics
     # 6) LIGHT SUPPORTING COMPLEMENT VARIANT: a lighter less saturated version of the complement hue
     def complementary
       colors = []
-    
+
       # A contrasting color: much darker or lighter than the original.
       colors.push(self)
       c = self.copy
@@ -565,13 +565,13 @@ module HotCocoa::Graphics
         c.brightness(1.0 - c.brightness*0.25)
       end
       colors.push(c)
-    
+
       # A soft supporting color: lighter and less saturated.
       c = self.copy
       c.brightness(0.3 + c.brightness)
       c.saturation(0.1 + c.saturation*0.3)
       colors.push(c)
-    
+
       # A contrasting complement: very dark or very light.
       c_comp = self.copy.complement
       c = c_comp.copy
@@ -580,17 +580,17 @@ module HotCocoa::Graphics
       else
         c.brightness(1.0 - c.brightness*0.25)
       end
-      colors.push(c)    
-    
+      colors.push(c)
+
       # The complement
       colors.push(c_comp)
-    
+
       # and a light supporting variant.
       c = c_comp.copy
       c.brightness(0.3 + c.brightness)
       c.saturation(0.1 + c.saturation*0.25)
       colors.push(c)
-    
+
       colors
     end
 
@@ -605,7 +605,7 @@ module HotCocoa::Graphics
         colors.push(comp.copy.rotate_ryb(angle).lighten(0.1))
         colors
     end
-  
+
     # Returns the left half of the split complement.
     # A list is returned with the same darker and softer colors
     # as in the complementary list, but using the hue of the
@@ -618,7 +618,7 @@ module HotCocoa::Graphics
       colors[5].hue(left.hue)
       colors
     end
-  
+
     # Returns the right half of the split complement.
     # A list is returned with the same darker and softer colors
     # as in the complementary list, but using the hue of the
@@ -631,10 +631,10 @@ module HotCocoa::Graphics
       colors[5].hue(right.hue)
       colors
     end
-  
+
     # Returns colors that are next to each other on the wheel.
     # These yield natural color schemes (like shades of water or sky).
-    # The angle determines how far the colors are apart, 
+    # The angle determines how far the colors are apart,
     # making it bigger will introduce more variation.
     # The contrast determines the darkness/lightness of
     # the analogue colors in respect to the given colors.
@@ -658,7 +658,7 @@ module HotCocoa::Graphics
       colors
     end
 
-    # Returns colors in the same hue with varying brightness/saturation.  
+    # Returns colors in the same hue with varying brightness/saturation.
     def monochrome
 
         colors = [self]
@@ -683,10 +683,10 @@ module HotCocoa::Graphics
 
         colors
     end
-  
+
     # Returns a triad of colors.
     # The triad is made up of this color and two other colors
-    # that together make up an equilateral triangle on 
+    # that together make up an equilateral triangle on
     # the artistic color wheel.
     def triad(angle=120)
         colors = [self]
@@ -694,7 +694,7 @@ module HotCocoa::Graphics
         colors.push(copy.rotate_ryb(-angle).lighten(0.1))
         colors
     end
-  
+
     # Returns a tetrad of colors.
     # The tetrad is made up of this color and three other colors
     # that together make up a cross on the artistic color wheel.
@@ -707,7 +707,7 @@ module HotCocoa::Graphics
           c.brightness(c.brightness + 0.2)
         else
           c.brightness(c.brightness - 0.2)
-        end 
+        end
         colors.push(c)
 
         c = copy.rotate_ryb(angle*2)
@@ -716,17 +716,17 @@ module HotCocoa::Graphics
         else
           c.brightness(c.brightness - 0.1)
         end
-      
+
         colors.push(c)
         colors.push(copy.rotate_ryb(angle*3).lighten(0.1))
         colors
     end
-  
+
     # Roughly the complement and some far analogs.
     def compound(flip=false)
-      
+
         d = (flip ? -1 : 1)
-      
+
         colors = [self]
 
         c = copy.rotate_ryb(30*d)
@@ -755,21 +755,21 @@ module HotCocoa::Graphics
 
         colors
     end
-  
+
     # Roughly the complement and some far analogs.
     def flipped_compound
       compound(true)
     end
-  
+
     private
-  
+
       # vary a single color component by a multiplier
       def vary(original, variance)
         newvalue = original + (rand * variance * (rand > 0.5 ? 1 : -1))
         newvalue = inrange(newvalue,0.0,1.0)
         newvalue
       end
-  
+
       # wrap within range
       def _wrap(x, min, threshold, plus)
         if x - min < threshold
@@ -778,7 +778,5 @@ module HotCocoa::Graphics
           x - min
         end
       end
-  
   end
-
 end

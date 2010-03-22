@@ -1,7 +1,6 @@
 HotCocoa::Mappings.map :table_view => :NSTableView do
-  
   defaults :column_resize => :uniform, :frame => DefaultEmptyRect, :layout => {}
-  
+
   constant :column_resize, {
     :none               => NSTableViewNoColumnAutoresizing,
     :uniform            => NSTableViewUniformColumnAutoresizingStyle,
@@ -10,12 +9,12 @@ HotCocoa::Mappings.map :table_view => :NSTableView do
     :last_column_only   => NSTableViewLastColumnOnlyAutoresizingStyle,
     :first_column_only  => NSTableViewFirstColumnOnlyAutoresizingStyle
   }
-  
-  constant :grid_style, { 
-    :none               => NSTableViewGridNone, 
-    :vertical           => NSTableViewSolidVerticalGridLineMask, 
-    :horizontal         => NSTableViewSolidHorizontalGridLineMask, 
-  	:both               => NSTableViewSolidVerticalGridLineMask | NSTableViewSolidHorizontalGridLineMask 
+
+  constant :grid_style, {
+    :none               => NSTableViewGridNone,
+    :vertical           => NSTableViewSolidVerticalGridLineMask,
+    :horizontal         => NSTableViewSolidHorizontalGridLineMask,
+    :both               => NSTableViewSolidVerticalGridLineMask | NSTableViewSolidHorizontalGridLineMask
   }
 
   constant :selection_style, {
@@ -28,41 +27,40 @@ HotCocoa::Mappings.map :table_view => :NSTableView do
   end
 
   custom_methods do
-    
     def data=(data_source)
       data_source = HotCocoa::TableDataSource.new(data_source) if data_source.kind_of?(Array)
       setDataSource(data_source)
     end
-    
+
     def columns=(columns)
       columns.each do |column|
         addTableColumn(column)
       end
     end
-    
+
     def column=(column)
       addTableColumn(column)
     end
-    
+
     def auto_size
       setAutoresizingMask(NSViewHeightSizable|NSViewWidthSizable)
     end
-    
+
     def column_resize=(style)
       setColumnAutoresizingStyle(style)
     end
 
-    def reload 
-   	  reloadData 
-   	end 
-   	
-   	def grid_style=(value) 
-   	  setGridStyleMask(value) 
-   	end
+    def reload
+       reloadData
+     end
+
+     def grid_style=(value)
+       setGridStyleMask(value)
+     end
 
     def on_double_action=(behavior)
       if target && (
-        target.instance_variable_get("@action_behavior") || 
+        target.instance_variable_get("@action_behavior") ||
         target.instance_variable_get("@double_action_behavior"))
           object.instance_variable_set("@double_action_behavior", behavior)
           object = target
@@ -76,12 +74,11 @@ HotCocoa::Mappings.map :table_view => :NSTableView do
       end
       setDoubleAction("perform_double_action:")
     end
-   
+
     def on_double_action(&behavior)
       self.on_double_action = behavior
       self
     end
-
   end
 
   delegating "tableView:willDisplayCell:forTableColumn:row:",               :to => :will_display_cell,      :parameters => [:willDisplayCell, :forTableColumn, :row]
@@ -106,5 +103,4 @@ HotCocoa::Mappings.map :table_view => :NSTableView do
   delegating "tableView:mouseDownInHeaderOfTableColumn:",                   :to => :header_clicked,         :parameters => [:mouseDownInHeaderOfTableColumn]
   delegating "tableView:shouldTrackCell:forTableColumn:row:",               :to => :track_cell?,            :parameters => [:shouldTrackCell, :forTableColumn, :row]
   delegating "tableView:toolTipForCell:rect:tableColumn:row:mouseLocation:",:to => :tooltip_for_cell,       :parameters => [:toolTipForCell, :rect, :tableColumn, :row, :mouseLocation]
-
 end

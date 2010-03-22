@@ -1,5 +1,4 @@
 HotCocoa::Mappings.map :font => :NSFont do
-  
   constant :trait, {
      :italic => NSItalicFontMask,
      :bold => NSBoldFontMask,
@@ -14,9 +13,10 @@ HotCocoa::Mappings.map :font => :NSFont do
      :fixed_pitch => NSFixedPitchFontMask,
      :unitalic => NSUnitalicFontMask
   }
-  
+
   def alloc_with_options(options)
     font = nil
+
     {
       :label => :labelFontOfSize,
       :system => :systemFontOfSize,
@@ -35,10 +35,11 @@ HotCocoa::Mappings.map :font => :NSFont do
         break
       end
     end
+
     font = NSFont.fontWithName(options.delete(:name), size:(options.delete(:size) || 0)) if options.has_key?(:name)
     raise "Cannot create font with the provided options" unless font
+
     font = NSFontManager.sharedFontManager.convertFont(font, toHaveTrait:options.delete(:trait)) if options[:trait]
     font
   end
-  
 end

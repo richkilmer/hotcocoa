@@ -1,12 +1,12 @@
-# Ruby Cocoa Graphics is a graphics library providing a simple object-oriented 
-# interface into the power of Mac OS X's Core Graphics and Core Image drawing libraries.  
-# With a few lines of easy-to-read code, you can write scripts to draw simple or complex 
-# shapes, lines, and patterns, process and filter images, create abstract art or visualize 
+# Ruby Cocoa Graphics is a graphics library providing a simple object-oriented
+# interface into the power of Mac OS X's Core Graphics and Core Image drawing libraries.
+# With a few lines of easy-to-read code, you can write scripts to draw simple or complex
+# shapes, lines, and patterns, process and filter images, create abstract art or visualize
 # scientific data, and much more.
-# 
-# Inspiration for this project was derived from Processing and NodeBox.  These excellent 
-# graphics programming environments are more full-featured than RCG, but they are implemented 
-# in Java and Python, respectively.  RCG was created to offer similar functionality using 
+#
+# Inspiration for this project was derived from Processing and NodeBox.  These excellent
+# graphics programming environments are more full-featured than RCG, but they are implemented
+# in Java and Python, respectively.  RCG was created to offer similar functionality using
 # the Ruby programming language.
 #
 # Author::    James Reynolds  (mailto:drtoast@drtoast.com)
@@ -14,11 +14,9 @@
 # License::   Distributes under the same terms as Ruby
 
 module HotCocoa::Graphics
-  
   class Rope
-  
     attr_accessor :x0, :y0, :x1, :y1, :width, :fibers, :roundness, :strokewidth
-  
+
     def initialize(canvas, options={})
       @canvas       = canvas
       @width        = options[:width] || 200
@@ -26,7 +24,7 @@ module HotCocoa::Graphics
       @roundness    = options[:roundness] || 1.0
       @strokewidth  = options[:strokewidth] || 0.4
     end
-  
+
     def hair(hair_x0=@x0, hair_y0=@y0, hair_x1=@x1, hair_y1=@y1, hair_width=@width, hair_fibers=@fibers)
       @canvas.push
       @canvas.strokewidth(@strokewidth)
@@ -52,7 +50,7 @@ module HotCocoa::Graphics
       end
       @canvas.pop
     end
-  
+
     def ribbon(ribbon_x0=@x0, ribbon_y0=@y0, ribbon_x1=@x1, ribbon_y1=@y1, ribbon_width=@width, ribbon_fibers=@fibers)
       @canvas.push
       @canvas.strokewidth(@strokewidth)
@@ -84,7 +82,7 @@ module HotCocoa::Graphics
         # @canvas.fill(white)
         # @canvas.oval(cpx1,cpy1,5,5,:center)
         # @canvas.nofill
-      
+
         @canvas.beginpath(x0, y0)
         @canvas.curveto(
           cpx0, cpy0,           # control point 1

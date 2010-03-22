@@ -5,7 +5,7 @@
 #
 #   window :frame => [100, 100, 604, 500], :title => "My app", :style => [:titled, :closable, :miniaturizable, :resizable] do |win|
 #     win.contentView.margin  = 0
-#     win.background_color    = color(:name => 'white')  
+#     win.background_color    = color(:name => 'white')
 #     win.will_close { exit }
 #   end
 #
@@ -13,21 +13,20 @@
 #
 
 HotCocoa::Mappings.map :window => :NSWindow do
-    
   defaults  :style => [:titled, :closable, :miniaturizable, :resizable],
-            :backing => :buffered, 
+            :backing => :buffered,
             :defer => true,
             :show => true,
             :view => :layout,
             :default_layout => {}
-            
+
   constant :backing, :buffered => NSBackingStoreBuffered
-  
+
   constant :style,   {
-    :borderless         => NSBorderlessWindowMask, 
-    :titled             => NSTitledWindowMask, 
-    :closable           => NSClosableWindowMask, 
-    :miniaturizable     => NSMiniaturizableWindowMask, 
+    :borderless         => NSBorderlessWindowMask,
+    :titled             => NSTitledWindowMask,
+    :closable           => NSClosableWindowMask,
+    :miniaturizable     => NSMiniaturizableWindowMask,
     :resizable          => NSResizableWindowMask,
     :textured           => NSTexturedBackgroundWindowMask
   }
@@ -36,33 +35,40 @@ HotCocoa::Mappings.map :window => :NSWindow do
     unless options[:frame]
       size = (options.delete(:size) || [400,400])
       width, height = size
+
       screen_frame = NSScreen.screens[0].visibleFrame
       center = options.delete(:center)
-      x = screen_frame.origin.x + (center ? (screen_frame.size.width - width)/2    : 30)
-      y = screen_frame.origin.y + (center ? (screen_frame.size.height - height)/2 : (screen_frame.size.height - height - 30))
+
+      x = screen_frame.origin.x + (center ? (screen_frame.size.width - width) / 2 : 30)
+      y = screen_frame.origin.y + (center ? (screen_frame.size.height - height) / 2 : (screen_frame.size.height - height - 30))
+
       options[:frame] = [x, y, width, height]
     end
-    window = window.initWithContentRect options.delete(:frame), 
-                               styleMask:options.delete(:style), 
-                               backing:options.delete(:backing), 
+
+    window = window.initWithContentRect options.delete(:frame),
+                               styleMask:options.delete(:style),
+                               backing:options.delete(:backing),
                                defer:options.delete(:defer)
+
     default_layout = options.delete(:default_layout)
     if options[:view] == :layout
       options.delete(:view)
-      window.setContentView(HotCocoa::LayoutView.alloc.initWithFrame([0,0,window.contentView.frameSize.width, window.contentView.frameSize.height]))
+      window.setContentView(HotCocoa::LayoutView.alloc.initWithFrame([0, 0,
+                                                        window.contentView.frameSize.width,
+                                                        window.contentView.frameSize.height]))
       window.contentView.default_layout = default_layout
     elsif options[:view] == :nolayout
       options.delete(:view)
     end
+
     window
   end
-    
+
   custom_methods do
-    
     def <<(control)
       contentView.addSubview control
     end
-    
+
     def view
       contentView
     end
@@ -75,19 +81,18 @@ HotCocoa::Mappings.map :window => :NSWindow do
       options[:sent_by] = self
       NotificationListener.new(options, &block)
     end
-    
+
     def show
       display
       makeKeyAndOrderFront(nil)
       orderFrontRegardless
     end
-    
+
     def has_shadow?
       hasShadow
     end
-    
   end
-  
+
   delegating "window:shouldDragDocumentWithEvent:from:withPasteboard:", :to => :should_drag_document?,    :parameters => [:shouldDragDocumentWithEvent, :from, :withPasteboard]
   delegating "window:shouldPopUpDocumentPathMenu:",                     :to => :should_popup_path_menu?,  :parameters => [:shouldPopUpDocumentPathMenu]
   delegating "window:willPositionSheet:usingRect:",                     :to => :will_position_sheet,      :parameters => [:willPositionSheet, :usingRect]
@@ -114,5 +119,4 @@ HotCocoa::Mappings.map :window => :NSWindow do
   delegating "windowWillReturnFieldEditor:toObject:",                   :to => :returning_field_editor,   :parameters => [:toObject]
   delegating "windowWillReturnUndoManager:",                            :to => :returning_undo_manager
   delegating "windowWillUseStandardFrame:defaultFrame:",                :to => :will_use_standard_frame,  :parameters => [:defaultFrame]
-
 end

@@ -1,16 +1,14 @@
 module HotCocoa
-    
   class DelegateBuilder
-    
     attr_reader :control, :delegate, :method_count, :required_methods
-    
+
     def initialize(control, required_methods)
       @control = control
       @required_methods = required_methods
       @method_count = 0
       @delegate = Object.new
     end
-    
+
     def add_delegated_method(block, selector_name, *parameters)
       clear_delegate if required_methods.empty?
       increment_method_count
@@ -18,23 +16,23 @@ module HotCocoa
       create_delegate_method(selector_name, parameters)
       set_delegate if required_methods.empty?
     end
-    
+
     def delegate_to(object, *method_names)
       method_names.each do |method_name|
         control.send(method_name, &object.method(method_name)) if object.respond_to?(method_name)
       end
     end
-    
-    private 
-    
+
+    private
+
       def increment_method_count
         @method_count += 1
       end
-      
+
       def bind_block_to_delegate_instance_variable(block)
         delegate.instance_variable_set(block_instance_variable, block)
       end
-      
+
       def create_delegate_method(selector_name, parameters)
         required_methods.delete(selector_name)
         eval %{
@@ -43,19 +41,19 @@ module HotCocoa
           end
         }
       end
-      
+
       def clear_delegate
         control.setDelegate(nil) if control.delegate
       end
-      
+
       def set_delegate
         control.setDelegate(delegate)
       end
-      
+
       def block_instance_variable
         "@block#{method_count}"
       end
-    
+
       def parameterize_selector_name(selector_name)
         return selector_name unless selector_name.include?(":")
         params = selector_name.split(":")
@@ -65,7 +63,7 @@ module HotCocoa
         end
         result + ")"
       end
-      
+
       def parameter_values_for_mapping(selector_name, parameters)
         return if parameters.empty?
         result = []
@@ -79,7 +77,5 @@ module HotCocoa
         end
         result.join(", ")
       end
-    
   end
-  
 end

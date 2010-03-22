@@ -12,7 +12,7 @@ HotCocoa::Mappings.map :user_defaults => :NSUserDefaults do
     end
     user_defaults
   end
-  
+
   custom_methods do
     def []=(key, value)
       if value.nil?
@@ -26,7 +26,7 @@ HotCocoa::Mappings.map :user_defaults => :NSUserDefaults do
     def [](key)
       objectForKey(key.to_s)
     end
-    
+
     def delete(key)
       removeObjectForKey(key)
       sync

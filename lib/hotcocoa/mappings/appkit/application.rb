@@ -1,17 +1,15 @@
 HotCocoa::Mappings.map :application => :NSApplication do
-  
   def alloc_with_options(options)
     NSApplication.sharedApplication
   end
-  
+
   def handle_block(application, &block)
     application.load_application_menu
     block.call(application)
     application.run
   end
-  
+
   custom_methods do
-    
     def load_application_menu
       begin
         require 'lib/menu'
@@ -21,19 +19,19 @@ HotCocoa::Mappings.map :application => :NSApplication do
       rescue LoadError => e
       end
     end
-    
+
     def name=(name)
       @name = name
     end
-    
+
     def name
       @name
     end
-    
+
     def menu=(menu)
       setMainMenu(menu)
     end
-    
+
 =begin
     def menu(path=nil)
       if path
@@ -43,30 +41,32 @@ HotCocoa::Mappings.map :application => :NSApplication do
       end
     end
 =end
-    def menu; mainMenu; end
-    
+    def menu
+      mainMenu
+    end
+
     def on_hide(menu)
       hide(menu)
     end
-    
+
     def on_about(menu)
       orderFrontStandardAboutPanel(menu)
     end
-    
+
     def on_hide_others(menu)
       hideOtherApplications(menu)
     end
-    
+
     def on_show_all(menu)
       unhideAllApplications(menu)
     end
-    
+
     def on_quit(menu)
       terminate(menu)
     end
 
     private
-    
+
       def find_menu(menu, path)
         key = path.keys.first
         value = path.values.first
@@ -77,7 +77,6 @@ HotCocoa::Mappings.map :application => :NSApplication do
           menu[value]
         end
       end
-    
   end
 
   delegating "application:delegateHandlesKey:",                       :to => :delegate_handles_key?,            :parameters => [:delegateHandlesKey]
@@ -108,5 +107,4 @@ HotCocoa::Mappings.map :application => :NSApplication do
   delegating "applicationWillTerminate:",                             :to => :will_terminate
   delegating "applicationWillUnhide:",                                :to => :will_unhide
   delegating "applicationWillUpdate:",                                :to => :will_update
-  
 end

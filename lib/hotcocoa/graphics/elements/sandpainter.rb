@@ -1,12 +1,12 @@
-# Ruby Cocoa Graphics is a graphics library providing a simple object-oriented 
-# interface into the power of Mac OS X's Core Graphics and Core Image drawing libraries.  
-# With a few lines of easy-to-read code, you can write scripts to draw simple or complex 
-# shapes, lines, and patterns, process and filter images, create abstract art or visualize 
+# Ruby Cocoa Graphics is a graphics library providing a simple object-oriented
+# interface into the power of Mac OS X's Core Graphics and Core Image drawing libraries.
+# With a few lines of easy-to-read code, you can write scripts to draw simple or complex
+# shapes, lines, and patterns, process and filter images, create abstract art or visualize
 # scientific data, and much more.
-# 
-# Inspiration for this project was derived from Processing and NodeBox.  These excellent 
-# graphics programming environments are more full-featured than RCG, but they are implemented 
-# in Java and Python, respectively.  RCG was created to offer similar functionality using 
+#
+# Inspiration for this project was derived from Processing and NodeBox.  These excellent
+# graphics programming environments are more full-featured than RCG, but they are implemented
+# in Java and Python, respectively.  RCG was created to offer similar functionality using
 # the Ruby programming language.
 #
 # Author::    James Reynolds  (mailto:drtoast@drtoast.com)
@@ -17,7 +17,6 @@ module HotCocoa::Graphics
 
   # draw watercolor-like painted strokes (adapted from code by Jared Tarbell - complexification.net)
   class SandPainter
-
     attr_accessor :color, :grains, :grainsize, :maxalpha, :jitter, :huedrift, :saturationdrift, :brightnessdrift
 
     def initialize(canvas, color=Color.red)
@@ -33,9 +32,9 @@ module HotCocoa::Graphics
       @saturationdrift  = 0.3
       @brightnessdrift  = 0.3
     end
-  
+
     # render a line that fades out from ox,oy to x,y
-    def render(ox, oy, x, y) 
+    def render(ox, oy, x, y)
       @canvas.push
       # modulate gain
       @gain += random(-0.050, 0.050)
@@ -45,7 +44,7 @@ module HotCocoa::Graphics
 
       # ramp from 0 to .015 for g = 0 to 1
       w = @gain / (@grains-1)
-    
+
       #raycolor = @color.analog
       #@color.drift(0.2,0.1,0.1)
       @color.drift(huedrift, saturationdrift, brightnessdrift)
@@ -65,7 +64,6 @@ module HotCocoa::Graphics
         #C.oval(ox,oy,@grainsize,@grainsize,:center)
       end
       @canvas.pop
-    
     end
   end
 end

@@ -1,36 +1,34 @@
 module HotCocoa
   module Mappings
     class Mapper
-      
       attr_reader :control_class, :builder_method, :control_module
-      
       attr_accessor :map_bindings
-      
+
       def self.map_class(klass)
         new(klass).include_in_class
       end
-      
+
       def self.map_instances_of(klass, builder_method, &block)
         new(klass).map_method(builder_method, &block)
       end
-      
+
       def self.bindings_modules
         @bindings_module ||= {}
       end
-      
+
       def self.delegate_modules
         @delegate_modules ||= {}
       end
-      
+
       def initialize(klass)
         @control_class = klass
       end
-      
+
       def include_in_class
         @extension_method = :include
         customize(@control_class)
       end
-      
+
       def map_method(builder_method, &block)
         @extension_method = :extend
         @builder_method = builder_method
@@ -62,7 +60,7 @@ module HotCocoa
               eval "control.set#{Mapper.camel_case(key.to_s)}(value)"
             else
               NSLog "Unable to map #{key} as a method"
-            end            
+            end
           end
           if default_empty_rect_used
             control.sizeToFit if control.respondsToSelector(:sizeToFit) == true
@@ -82,7 +80,7 @@ module HotCocoa
         HotCocoa.send(:public, builder_method)
         self
       end
-      
+
       def inherited_constants
         constants = {}
         each_control_ancestor do |ancestor|
@@ -90,7 +88,7 @@ module HotCocoa
         end
         constants
       end
-      
+
       def inherited_delegate_methods
         delegate_methods = {}
         each_control_ancestor do |ancestor|
@@ -98,7 +96,7 @@ module HotCocoa
         end
         delegate_methods
       end
-      
+
       def inherited_custom_methods
         methods = []
         each_control_ancestor do |ancestor|
@@ -106,7 +104,7 @@ module HotCocoa
         end
         methods
       end
-      
+
       def each_control_ancestor
         control_class.ancestors.reverse.each do |ancestor|
           Mappings.mappings.values.each do |mapper|
@@ -114,7 +112,7 @@ module HotCocoa
           end
         end
       end
-      
+
       def customize(control)
         inherited_custom_methods.each do |custom_methods|
           control.send(@extension_method, custom_methods)
@@ -122,11 +120,11 @@ module HotCocoa
         decorate_with_delegate_methods(control)
         decorate_with_bindings_methods(control)
       end
-      
+
       def decorate_with_delegate_methods(control)
         control.send(@extension_method, delegate_module_for_control_class)
       end
-      
+
       def delegate_module_for_control_class
         unless Mapper.delegate_modules.has_key?(control_class)
           delegate_module = Module.new
@@ -155,14 +153,14 @@ module HotCocoa
           end
           Mapper.delegate_modules[control_class] = delegate_module
         end
-        Mapper.delegate_modules[control_class] 
+        Mapper.delegate_modules[control_class]
       end
-      
+
       def decorate_with_bindings_methods(control)
         return if control_class == NSApplication
         control.send(@extension_method, bindings_module_for_control(control)) if @map_bindings
       end
-      
+
       def bindings_module_for_control(control)
         return Mapper.bindings_modules[control_class] if Mapper.bindings_modules.has_key?(control_class)
         instance = if control == control_class
@@ -190,7 +188,7 @@ module HotCocoa
       def remap_constants(tags)
         constants = inherited_constants
         if control_module.defaults
-          control_module.defaults.each do |key, value| 
+          control_module.defaults.each do |key, value|
             tags[key] = value unless tags.has_key?(key)
           end
         end
@@ -204,7 +202,7 @@ module HotCocoa
         end
         result
       end
-      
+
       def self.underscore(string)
         string.gsub(/::/, '/').
           gsub(/([A-Z]+)([A-Z][a-z])/, '\1_\2').
@@ -212,7 +210,7 @@ module HotCocoa
           tr("-", "_").
           downcase
       end
-      
+
       def self.camel_case(string)
         if string !~ /_/ && string =~ /[A-Z]+.*/
           string
@@ -220,8 +218,6 @@ module HotCocoa
           string.split('_').map{ |e| e.capitalize }.join
         end
       end
-
-      
     end
   end
 end

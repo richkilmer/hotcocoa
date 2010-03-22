@@ -1,5 +1,4 @@
 HotCocoa::Mappings.map :xml_parser => :NSXMLParser do
-
   def alloc_with_options(options)
     if options[:url]
       url = options.delete(:url)
@@ -13,14 +12,14 @@ HotCocoa::Mappings.map :xml_parser => :NSXMLParser do
       raise "Must provide either :url, :file, or :data when constructing an NSXMLParser"
     end
   end
-  
+
   delegating "parserDidStartDocument:",                                                       :to => :on_start_document
   delegating "parserDidEndDocument:",                                                         :to => :on_end_document
   delegating "parser:didStartElement:namespaceURI:qualifiedName:attributes:",                 :to => :on_start_element,               :parameters => [:didStartElement, :namespaceURI, :qualifiedName, :attributes]
   delegating "parser:didEndElement:namespaceURI:qualifiedName:",                              :to => :on_end_element,                 :parameters => [:didEndElement, :namespaceURI, :qualifiedName]
   delegating "parser:didStartMappingPrefix:toURI:",                                           :to => :on_start_mapping_prefix,        :parameters => [:didStartMappingPrefix, :toURI]
   delegating "parser:didEndMappingPrefix:",                                                   :to => :on_end_mapping_prefix,          :parameters => [:didEndMappingPrefix]
-  
+
   delegating "parser:foundAttributeDeclarationWithName:forElement:type:defaultValue:",        :to => :on_attribute_declaration,       :parameters => [:foundAttributeDeclarationWithName, :forElement, :type, :defaultValue]
   delegating "parser:foundCDATA:",                                                            :to => :on_cdata,                       :parameters => [:foundCDATA]
   delegating "parser:foundCharacters:",                                                       :to => :on_characters,                  :parameters => [:foundCharacters]
@@ -37,5 +36,4 @@ HotCocoa::Mappings.map :xml_parser => :NSXMLParser do
 
   delegating "parser:parseErrorOccurred:",                                                    :to => :on_parse_error,                 :parameters => [:parseErrorOccurred]
   delegating "parser:validationErrorOccurred:",                                               :to => :on_validation_error,            :parameters => [:validationErrorOccurred]
-
 end

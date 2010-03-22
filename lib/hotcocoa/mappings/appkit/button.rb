@@ -1,9 +1,8 @@
 HotCocoa::Mappings.map :button => :NSButton do
-  
-  defaults :bezel => :rounded, 
+  defaults :bezel => :rounded,
            :frame => DefaultEmptyRect,
            :layout => {}
-  
+
   constant :bezel, {
      :rounded             => NSRoundedBezelStyle,
      :regular_square      => NSRegularSquareBezelStyle,
@@ -20,7 +19,7 @@ HotCocoa::Mappings.map :button => :NSButton do
      :recessed            => NSRecessedBezelStyle,
      :rounded_disclosure  => NSRoundedDisclosureBezelStyle
   }
-  
+
   constant :type, {
      :momentary_light     => NSMomentaryLightButton,
      :push_on_push_off    => NSPushOnPushOffButton,
@@ -48,33 +47,32 @@ HotCocoa::Mappings.map :button => :NSButton do
     :below                => NSImageBelow,
     :above                => NSImageAbove
   }
-  
+
   def init_with_options(button, options)
     button.initWithFrame options.delete(:frame)
   end
 
   custom_methods do
-    
     def bezel=(value)
       setBezelStyle(value)
     end
-    
+
     def type=(value)
       setButtonType(value)
     end
 
     def state=(value)
-      case value 
+      case value
         when :on
           value = NSOnState
         when :off
           value = NSOffState
         when :mixed
           value = NSMixedState
-      end 
+      end
       setState(value)
     end
-    
+
     def on?
       state == NSOnState
     end
@@ -86,7 +84,5 @@ HotCocoa::Mappings.map :button => :NSButton do
     def mixed?
       state == NSMixedState
     end
-    
   end
-  
 end

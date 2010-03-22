@@ -3,11 +3,10 @@ require 'rbconfig'
 
 module HotCocoa
   class Template
-    
     def self.source_directory
       File.expand_path(File.join(File.dirname(__FILE__), "..", ".."))
     end
-    
+
     def self.copy_to(directory, app_name)
       FileUtils.mkdir_p(directory)
       Dir.glob(File.join(source_directory, "template", "**/*")).each do |file|

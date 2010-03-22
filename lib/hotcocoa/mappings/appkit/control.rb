@@ -1,5 +1,4 @@
 HotCocoa::Mappings.map :control => :NSControl do
-
   constant :alignment, {
     :left      => NSLeftTextAlignment,
     :right     => NSRightTextAlignment,
@@ -9,9 +8,8 @@ HotCocoa::Mappings.map :control => :NSControl do
   }
 
   custom_methods do
-   
-    include HotCocoa::Mappings::TargetActionConvenience 
-    
+    include HotCocoa::Mappings::TargetActionConvenience
+
     def text=(text)
       setStringValue(text)
     end
@@ -23,11 +21,9 @@ HotCocoa::Mappings.map :control => :NSControl do
     def to_f
       doubleValue
     end
-    
+
     def to_s
       stringValue
     end
-
   end
-
 end

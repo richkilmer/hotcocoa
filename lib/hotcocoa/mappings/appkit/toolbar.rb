@@ -1,5 +1,4 @@
 HotCocoa::Mappings.map :toolbar => :NSToolbar do
-
   constant :size, {
     :default  => NSToolbarSizeModeDefault,
     :regular  => NSToolbarSizeModeRegular,
@@ -25,9 +24,8 @@ HotCocoa::Mappings.map :toolbar => :NSToolbar do
     toolbar.allowsUserCustomization = options.delete(:allow_customization)
     toolbar
   end
-  
-  custom_methods do
 
+  custom_methods do
     def size=(mode)
       setSizeMode(mode)
     end
@@ -35,19 +33,19 @@ HotCocoa::Mappings.map :toolbar => :NSToolbar do
     def display=(mode)
       setDisplayMode(mode)
     end
-    
+
     def default=(list)
       @default = list.dup
       build_custom_items
     end
-    
+
     def allowed=(list)
       @allowed = list.dup
       build_custom_items
     end
-    
+
     private
-    
+
       def build_custom_items
         if @allowed && @default
           ary = @default.select { |x| x.is_a?(NSToolbarItem) }
@@ -79,7 +77,7 @@ HotCocoa::Mappings.map :toolbar => :NSToolbar do
                 else
                   i
               end
-            end 
+            end
           end
           allowed_items { @allowed }
           default_items { @default }
@@ -87,7 +85,6 @@ HotCocoa::Mappings.map :toolbar => :NSToolbar do
           item_for_identifier { |identifier, will_be_inserted| @custom_items[identifier] }
         end
       end
-    
   end
 
   delegating "toolbar:itemForItemIdentifier:willBeInsertedIntoToolbar:", :to => :item_for_identifier,         :parameters => [:itemForItemIdentifier, :willBeInsertedIntoToolbar], :required => true
@@ -96,5 +93,4 @@ HotCocoa::Mappings.map :toolbar => :NSToolbar do
   delegating "toolbarSelectableItemIdentifiers:",                        :to => :selectable_items
   delegating "toolbarDidRemoveItem:",                                    :to => :did_remove_item,             :parameters => ["toolbarDidRemoveItem.userInfo['item']"]
   delegating "toolbarWillAddItem:",                                      :to => :will_add_item,               :parameters => ["toolbarWillAddItem.userInfo['item']"]
-
 end

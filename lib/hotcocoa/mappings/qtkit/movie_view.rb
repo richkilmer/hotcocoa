@@ -1,5 +1,4 @@
 HotCocoa::Mappings.map :movie_view => :QTMovieView, :framework => :QTKit do
-  
   defaults :layout => {}, :frame => DefaultEmptyRect
 
   def init_with_options(movie_view, options)
@@ -7,11 +6,10 @@ HotCocoa::Mappings.map :movie_view => :QTMovieView, :framework => :QTKit do
   end
 
   custom_methods do
-    
     def controller_visible=(value)
       setControllerVisible(value)
     end
-    
+
     def controller_buttons=(buttons)
       setBackButtonVisible(buttons.include?(:back))
       setCustomButtonVisible(buttons.include?(:custom))
@@ -21,7 +19,5 @@ HotCocoa::Mappings.map :movie_view => :QTMovieView, :framework => :QTKit do
       setVolumeButtonVisible(buttons.include?(:volume))
       setZoomButtonsVisible(buttons.include?(:zoom))
     end
-    
   end
-
 end
