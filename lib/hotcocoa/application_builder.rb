@@ -6,14 +6,13 @@ module HotCocoa
   class ApplicationBuilder
     class Configuration
       attr_reader :name, :identifier, :version, :icon, :resources, :sources
-      attr_reader :info_string, :load, :agent, :stdlib, :data_models
+      attr_reader :info_string, :agent, :stdlib, :data_models
 
       def initialize(file)
         require 'yaml'
         yml = YAML.load(File.read(file))
         @name = yml["name"]
         @identifier = yml["identifier"]
-        @load = yml["load"]
         @version = yml["version"] || "1.0"
         @icon = yml["icon"]
         @info_string = yml["info_string"]
@@ -36,7 +35,7 @@ module HotCocoa
 
     ApplicationBundlePackage = "APPL????"
 
-    attr_accessor :name, :identifier, :load_file, :sources, :overwrite, :icon
+    attr_accessor :name, :identifier, :sources, :overwrite, :icon
     attr_accessor :version, :info_string, :resources, :deploy, :agent, :stdlib, :data_models
 
     def self.build(config, options={:deploy => false})
@@ -51,7 +50,6 @@ module HotCocoa
       builder.deploy = options[:deploy] == true ? true : false
       builder.name = config.name
       builder.identifier = config.identifier
-      builder.load_file = config.load
       builder.icon = config.icon if config.icon_exist?
       builder.version = config.version
       builder.info_string = config.info_string
@@ -164,7 +162,6 @@ module HotCocoa
     end
 
     def copy_sources
-      FileUtils.cp_r load_file, resources_root unless sources.include?(load_file)
       sources.each do |source|
         destination = File.join(resources_root, source)
         FileUtils.mkdir_p(File.dirname(destination)) unless File.exist?(File.dirname(destination))
@@ -248,9 +245,16 @@ module HotCocoa
     def write_ruby_main
       File.open(main_ruby_source_file, "wb") do |f|
         f.puts "$:.map! { |x| x.sub(/^\\/Library\\/Frameworks/, NSBundle.mainBundle.privateFrameworksPath) }" if deploy?
-        f.puts "$:.unshift NSBundle.mainBundle.resourcePath.fileSystemRepresentation"
+        f.puts "resources = NSBundle.mainBundle.resourcePath.fileSystemRepresentation"
+        f.puts "$:.unshift(resources)"
+        f.puts
+        f.puts "Dir.glob(\"\#{resources}/**/*.rb\").each do |file|"
+        f.puts "  next if file == 'rb_main.rb'"
+        f.puts "  require \"\#{file}\""
+        f.puts "end"
+        f.puts
         f.puts "begin"
-        f.puts "  load '#{load_file}'"
+        f.puts "  Kernel.const_get('#{name}').new.start"
         f.puts "rescue Exception => e"
         f.puts "  STDERR.puts e.message"
         f.puts "  e.backtrace.each { |bt| STDERR.puts bt }"
