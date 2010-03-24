@@ -173,7 +173,13 @@ module HotCocoa
       resources.each do |resource|
         destination = File.join(resources_root, resource.split("/")[1..-1].join("/"))
         FileUtils.mkdir_p(File.dirname(destination)) unless File.exist?(File.dirname(destination))
-        FileUtils.cp_r resource, destination
+
+        if resource =~ /\.xib$/
+          destination.gsub!(/.xib/, '.nib')
+          puts `ibtool --compile #{destination} #{resource}`
+        else
+          FileUtils.cp_r(resource, destination)
+        end
       end
     end
 
