@@ -12,7 +12,20 @@ end
 
 desc "Build and execute the application"
 task :run => [:build] do
-  `"./#{AppConfig.name}.app/Contents/MacOS/#{AppConfig.name.gsub(/ /, '')}"`
+  require 'open3'
+  Open3.popen3("./#{AppConfig.name}.app/Contents/MacOS/#{AppConfig.name.gsub(/ /, '')} 2>&1") do |stdin, stdout, stderr|
+    loop do
+      break if(stdout.closed?)
+      if IO.select([stdout], nil, nil, 0.1)
+        begin
+          print(stdout.readpartial(4096))
+        rescue EOFError
+          break
+        end
+        $stdout.flush
+      end
+    end
+  end
 end
 
 desc "Cleanup build files"
