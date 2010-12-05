@@ -58,6 +58,14 @@ end
 
 HotCocoa::Mappings.map :segmented_control => :NSSegmentedControl do
   
+  constant :segment_style, {
+    :rounded          => NSSegmentStyleRounded,
+    :textured_rounded => NSSegmentStyleTexturedRounded,
+    :round_rect       => NSSegmentStyleRoundRect,
+    :capsule          => NSSegmentStyleCapsule,
+    :small_square     => NSSegmentStyleSmallSquare
+  }
+
   defaults :layout => {}, :frame => [0,0,0,0]
   
   def init_with_options(segmented_control, options)
