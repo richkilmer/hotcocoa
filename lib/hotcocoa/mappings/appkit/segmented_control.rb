@@ -78,7 +78,7 @@ HotCocoa::Mappings.map :segmented_control => :NSSegmentedControl do
     end
 
     def [](segment_number)
-      Segment.new(self, segment_number)
+      HotCocoa::SegmentedControlSegment.new(self, segment_number)
     end
 
     def select(segment_number)
