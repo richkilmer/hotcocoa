@@ -19,7 +19,3 @@ spec = Gem::Specification.new do |s|
   s.homepage = "http://github.com/richkilmer/hotcocoa"
 
 end
-
-if $0==__FILE__
-  Gem::Builder.new(spec).build
-end
