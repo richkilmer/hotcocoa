@@ -7,10 +7,10 @@ framework 'Cocoa'
 STDOUT.reopen(IO.for_fd(NSFileHandle.fileHandleWithStandardError.fileDescriptor.to_i, 'w'))
 
 module Hotcocoa
-  VERSION = '0.0.1'
   Views = {}
 end
 
+require 'hotcocoa/version'
 require 'hotcocoa/object_ext'
 require 'hotcocoa/kernel_ext'
 require 'hotcocoa/mappings'

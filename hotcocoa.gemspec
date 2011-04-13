@@ -1,9 +1,10 @@
-require 'rubygems'
+$LOAD_PATH.unshift File.expand_path 'lib'
+require 'hotcocoa/version'
 
 spec = Gem::Specification.new do |s|
-
   s.name = 'hotcocoa'
-  s.version = "0.5.1"
+  s.version = Hotcocoa::VERSION
+
   s.platform = Gem::Platform::RUBY
   s.summary = "Cococa mapping library for MacRuby"
   s.description = "HotCocoa is a Cocoa mapping library for MacRuby.  It simplifies the use of complex Cocoa classes using DSL techniques."
