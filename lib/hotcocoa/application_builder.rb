@@ -172,37 +172,23 @@ module HotCocoa
       end
 
       def write_info_plist_file
+        info_plist = {
+          'CFBundleDevelopmentRegion'       => 'English',
+          'CFBundleExecutable'              => "#{name.gsub(/ /, '')}",
+          'CFBundleIdentifier'              => "#{identifier}",
+          'CFBundleInfoDictionaryVersion'   => '6.0',
+          'CFBundleName'                    => "#{name}",
+          'CFBundlePackageType'             => 'APPL',
+          'CFBundleSignature'               => '????',
+          'CFBundleVersion'                 => "#{version}",
+          'NSPrincipalClass'                => 'NSApplication',
+          'LSUIElement'                     => "#{agent}"
+        }
+        info_plist['CFBundleIconFile']      = "#{name}.icns" if icon
+        info_plist['CFBundleGetInfoString'] = "#{info_string}" if info_string
+
         File.open(info_plist_file, "w") do |f|
-          f.puts %{<?xml version="1.0" encoding="UTF-8"?>}
-          f.puts %{<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">}
-          f.puts %{<plist version="1.0">}
-          f.puts %{<dict>}
-          f.puts %{	<key>CFBundleDevelopmentRegion</key>}
-          f.puts %{ <string>English</string>}
-          f.puts %{ <key>CFBundleIconFile</key>} if icon
-          f.puts %{ <string>#{name}.icns</string>} if icon
-          f.puts %{ <key>CFBundleGetInfoString</key>} if info_string
-          f.puts %{ <string>#{info_string}</string>} if info_string
-          f.puts %{	<key>CFBundleExecutable</key>}
-          f.puts %{	<string>#{name.gsub(/ /, '')}</string>}
-          f.puts %{	<key>CFBundleIdentifier</key>}
-          f.puts %{	<string>#{identifier}</string>}
-          f.puts %{	<key>CFBundleInfoDictionaryVersion</key>}
-          f.puts %{	<string>6.0</string>}
-          f.puts %{	<key>CFBundleName</key>}
-          f.puts %{	<string>#{name}</string>}
-          f.puts %{	<key>CFBundlePackageType</key>}
-          f.puts %{	<string>APPL</string>}
-          f.puts %{	<key>CFBundleSignature</key>}
-          f.puts %{	<string>????</string>}
-          f.puts %{	<key>CFBundleVersion</key>}
-          f.puts %{	<string>#{version}</string>}
-          f.puts %{	<key>NSPrincipalClass</key>}
-          f.puts %{	<string>NSApplication</string>}
-          f.puts %{  <key>LSUIElement</key>}
-          f.puts %{  <string>#{agent}</string>}
-          f.puts %{</dict>}
-          f.puts %{</plist>}
+          f.write info_plist.to_plist
         end
       end
 
@@ -218,10 +204,13 @@ module HotCocoa
             }
           }
         end
+        # @todo should find executables the same way that macrubyc does?
         puts `cd "#{macos_root}" && gcc main.m -o #{objective_c_executable_file} -arch x86_64 -framework MacRuby -framework Foundation -fobjc-gc-only`
         File.unlink(objective_c_source_file)
       end
 
+      # @todo dynamically steal this from the xcode template if it is available
+      #       or at least update this to the current rb_main used in templates
       def write_ruby_main
         File.open(main_ruby_source_file, "wb") do |f|
           f.puts "$:.map! { |x| x.sub(/^\\/Library\\/Frameworks/, NSBundle.mainBundle.privateFrameworksPath) }" if deploy?
