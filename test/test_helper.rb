@@ -1,3 +1,6 @@
+require 'rubygems'
 require 'stringio'
-require 'test/unit'
+gem     'minitest-macruby-pride'
+require 'minitest/autorun'
+require 'minitest/pride'
 require File.dirname(__FILE__) + '/../lib/hotcocoa'
