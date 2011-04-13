@@ -6,7 +6,7 @@ framework 'Cocoa'
 
 STDOUT.reopen(IO.for_fd(NSFileHandle.fileHandleWithStandardError.fileDescriptor.to_i, 'w'))
 
-module Hotcocoa
+module HotCocoa
   Views = {}
 end
 

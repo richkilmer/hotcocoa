@@ -3,7 +3,7 @@ require 'hotcocoa/version'
 
 Gem::Specification.new do |s|
   s.name    = 'hotcocoa'
-  s.version = Hotcocoa::VERSION
+  s.version = HotCocoa::VERSION
 
   s.summary       = 'Cococa mapping library for MacRuby'
   s.description   =<<-EOS
