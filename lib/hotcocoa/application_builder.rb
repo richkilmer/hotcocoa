@@ -209,18 +209,20 @@ module HotCocoa
         File.unlink(objective_c_source_file)
       end
 
-      # @todo dynamically steal this from the xcode template if it is available
-      #       or at least update this to the current rb_main used in templates
+      # Borrow the rb_main template from the MacRuby sources
       def write_ruby_main
         File.open(main_ruby_source_file, "wb") do |f|
-          f.puts "$:.map! { |x| x.sub(/^\\/Library\\/Frameworks/, NSBundle.mainBundle.privateFrameworksPath) }" if deploy?
-          f.puts "$:.unshift NSBundle.mainBundle.resourcePath.fileSystemRepresentation"
-          f.puts "begin"
-          f.puts "  load '#{load_file}'"
-          f.puts "rescue Exception => e"
-          f.puts "  STDERR.puts e.message"
-          f.puts "  e.backtrace.each { |bt| STDERR.puts bt }"
-          f.puts "end"
+          f.write <<-EOF
+framework 'Cocoa'
+main = File.basename(__FILE__, File.extname(__FILE__))
+dir_path = NSBundle.mainBundle.resourcePath.fileSystemRepresentation
+Dir.glob(File.join(dir_path, '*.{rb,rbo}')).map { |x| File.basename(x, File.extname(x)) }.uniq.each do |path|
+  if path != main
+    require(path)
+  end
+end
+NSApplicationMain(0, nil)
+          EOF
         end
       end
 
