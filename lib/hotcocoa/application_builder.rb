@@ -3,13 +3,13 @@ framework 'Foundation'
 require 'fileutils'
 
 module HotCocoa
-  
+
   class ApplicationBuilder
-    
+
     class Configuration
-      
+
       attr_reader :name, :identifier, :version, :icon, :resources, :sources, :info_string, :load, :agent
-      
+
       def initialize(file)
         require 'yaml'
         yml = YAML.load(File.read(file))
@@ -24,7 +24,7 @@ module HotCocoa
         @overwrite = yml["overwrite"] == true ? true : false
         @agent = yml["agent"] == true ? "1" : "0"
       end
-      
+
       def overwrite?
         @overwrite
       end
@@ -34,11 +34,11 @@ module HotCocoa
       end
 
     end
-    
+
     ApplicationBundlePackage = "APPL????"
-    
+
     attr_accessor :name, :identifier, :load_file, :sources, :overwrite, :icon, :version, :info_string, :resources, :deploy, :agent
-    
+
     def self.build(config, options={:deploy => false})
       if !config.kind_of?(Configuration) || !$LOADED_FEATURES.detect {|f| f.include?("standard_rake_tasks")}
         require 'rbconfig'
@@ -80,7 +80,7 @@ module HotCocoa
       @sources = []
       @resources = []
     end
-      
+
     def build
       check_for_bundle_root
       build_bundle_structure
@@ -90,19 +90,19 @@ module HotCocoa
       deploy if deploy?
       copy_icon_file if icon
     end
-   
-    def deploy 
+
+    def deploy
       copy_framework
     end
 
     def deploy?
       @deploy
     end
-    
+
     def overwrite?
       @overwrite
     end
-    
+
     def add_source_path(source_file_pattern)
       Dir.glob(source_file_pattern).each do |source_file|
         sources << source_file
@@ -114,15 +114,15 @@ module HotCocoa
         resources << resource_file
       end
     end
-    
+
     private
-    
+
       def check_for_bundle_root
         if File.exist?(bundle_root) && overwrite?
           `rm -rf #{bundle_root}`
         end
       end
-    
+
       def build_bundle_structure
         Dir.mkdir(bundle_root) unless File.exist?(bundle_root)
         Dir.mkdir(contents_root) unless File.exist?(contents_root)
@@ -130,22 +130,22 @@ module HotCocoa
         Dir.mkdir(macos_root) unless File.exist?(macos_root)
         Dir.mkdir(resources_root) unless File.exist?(resources_root)
       end
-      
+
       def write_bundle_files
         write_pkg_info_file
         write_info_plist_file
         build_executable unless File.exist?(File.join(macos_root, objective_c_executable_file))
         write_ruby_main
       end
-      
+
       def copy_framework
         unless File.exist?(File.join(frameworks_root, 'MacRuby.framework'))
-          FileUtils.mkdir_p frameworks_root 
+          FileUtils.mkdir_p frameworks_root
           FileUtils.cp_r macruby_framework_path, frameworks_root
         end
         `install_name_tool -change #{current_macruby_path}/usr/lib/libmacruby.dylib @executable_path/../Frameworks/MacRuby.framework/Versions/#{current_macruby_version}/usr/lib/libmacruby.dylib '#{macos_root}/#{objective_c_executable_file}'`
       end
-      
+
       def copy_sources
         FileUtils.cp_r load_file, resources_root unless sources.include?(load_file)
         sources.each do |source|
@@ -154,7 +154,7 @@ module HotCocoa
           FileUtils.cp_r source, destination
         end
       end
-      
+
       def copy_resources
         resources.each do |resource|
           destination = File.join(resources_root, resource.split("/")[1..-1].join("/"))
@@ -162,11 +162,11 @@ module HotCocoa
           FileUtils.cp_r resource, destination
         end
       end
-      
+
       def copy_icon_file
         FileUtils.cp(icon, icon_file) unless File.exist?(icon_file)
       end
-      
+
       def write_pkg_info_file
         File.open(pkg_info_file, "wb") {|f| f.write ApplicationBundlePackage}
       end
@@ -205,11 +205,11 @@ module HotCocoa
           f.puts %{</plist>}
         end
       end
-      
+
       def build_executable
-        File.open(objective_c_source_file, "wb") do |f| 
+        File.open(objective_c_source_file, "wb") do |f|
           f.puts %{
-            
+
             #import <MacRuby/MacRuby.h>
 
             int main(int argc, char *argv[])
@@ -222,7 +222,7 @@ module HotCocoa
         puts `cd "#{macos_root}" && gcc main.m -o #{objective_c_executable_file} #{archs} -framework MacRuby -framework Foundation -fobjc-gc-only`
         File.unlink(objective_c_source_file)
       end
-      
+
       def write_ruby_main
         File.open(main_ruby_source_file, "wb") do |f|
           f.puts "$:.map! { |x| x.sub(/^\\/Library\\/Frameworks/, NSBundle.mainBundle.privateFrameworksPath) }" if deploy?
@@ -235,11 +235,11 @@ module HotCocoa
           f.puts "end"
         end
       end
-      
+
       def bundle_root
         "#{name}.app"
       end
-      
+
       def contents_root
         File.join(bundle_root, "Contents")
       end
@@ -247,11 +247,11 @@ module HotCocoa
       def frameworks_root
         File.join(contents_root, "Frameworks")
       end
-      
+
       def macos_root
         File.join(contents_root, "MacOS")
       end
-      
+
       def resources_root
         File.join(contents_root, "Resources")
       end
@@ -259,47 +259,47 @@ module HotCocoa
       def bridgesupport_root
         File.join(resources_root, "BridgeSupport")
       end
-      
+
       def info_plist_file
         File.join(contents_root, "Info.plist")
       end
-      
+
       def icon_file
         File.join(resources_root, "#{name}.icns")
       end
-      
+
       def pkg_info_file
         File.join(contents_root, "PkgInfo")
       end
-      
+
       def objective_c_executable_file
         name.gsub(/ /, '')
       end
-      
+
       def objective_c_source_file
         File.join(macos_root, "main.m")
       end
-      
+
       def main_ruby_source_file
         File.join(resources_root, "rb_main.rb")
       end
-      
+
       def current_macruby_version
         NSFileManager.defaultManager.pathContentOfSymbolicLinkAtPath(File.join(macruby_versions_path, "Current"))
       end
-      
+
       def current_macruby_path
         File.join(macruby_versions_path, current_macruby_version)
       end
-      
+
       def macruby_versions_path
         File.join(macruby_framework_path, "Versions")
       end
-      
+
       def macruby_framework_path
         "/Library/Frameworks/MacRuby.framework"
       end
 
   end
-  
+
 end
