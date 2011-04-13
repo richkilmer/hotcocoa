@@ -14,7 +14,6 @@ HotCocoa is a Cocoa mapping library for MacRuby.  It simplifies the use of compl
   s.homepage      = 'http://github.com/ferrous26/hotcocoa'
   s.licenses      = ['MIT']
 
-  s.rubygems_version = Gem::VERSION
   s.require_paths    = ['lib']
   s.bindir           = ['bin']
   s.executables      = ['hotcocoa']
