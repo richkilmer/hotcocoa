@@ -71,7 +71,7 @@ module HotCocoa
       raise "Given path `#{path}' does not look like an application bundle" unless File.extname(path) == '.app'
       deployer = new
       Dir.chdir(File.dirname(path)) do
-        deployer.name = File.basename(path, '.app') 
+        deployer.name = File.basename(path, '.app')
         deployer.deploy
       end
     end
