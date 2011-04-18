@@ -1,5 +1,4 @@
 class Object
-
   def self.kvo_array(key, &b)
     key = key.to_s
     capitalized_key = key[0].capitalize + key[1..-1]
@@ -24,25 +23,24 @@ class Object
   end
 
   private
-  
+
   def self.define_methods_with_signatures(signatures, &b)
     c = Module.new
     c.module_eval &b
     c.instance_methods.each do |m|
       signature = signatures[m]
       if signature
-      	method = c.instance_method(m)
-      	if signature[:flip]
-      	  method = Proc.new { |a, b| method.bind(self).call(b, a)}
-      	end
-      	c.send(:define_method, signature[:selector], method)
-      	c.send(:remove_method, m)
-      	c.send(:method_signature, signature[:selector], signature[:type_signature])
+        method = c.instance_method(m)
+        if signature[:flip]
+          method = Proc.new { |a, b| method.bind(self).call(b, a)}
+        end
+        c.send(:define_method, signature[:selector], method)
+        c.send(:remove_method, m)
+        c.send(:method_signature, signature[:selector], signature[:type_signature])
       elsif not Module.instance_methods.include?(m)
           raise ArgumentError, "Method `#{m}' isn't a KVO accessor"
       end
     end
     include c
   end
-
 end
