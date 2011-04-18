@@ -1,5 +1,7 @@
 AppConfig = HotCocoa::ApplicationBuilder::Configuration.new("config/build.yml")
 
+# @todo add rake::compiletask
+
 desc "Build a deployable version of the application"
 task :deploy => [:clean] do
   HotCocoa::ApplicationBuilder.build(AppConfig, deploy: true)
