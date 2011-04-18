@@ -1,14 +1,10 @@
 = hotcocoa
 
-* http://github.com/richkilmer/hotcocoa
+* http://github.com/ferrous26/hotcocoa
 
 == DESCRIPTION:
 
 HotCocoa is a thin, idiomatic Ruby layer that sits above Cocoa and other frameworks. HotCocoa used to be included in MacRuby but is now managed as a separate gem.  This will allow HotCocoa to accept contributions and evolve more quickly. To see more information on HotCocoa (including tutorial) see http://macruby.org.
-
-== REQUIREMENTS:
-
-* MacRuby 0.5
 
 == INSTALL:
 
@@ -21,6 +17,7 @@ HotCocoa is a thin, idiomatic Ruby layer that sits above Cocoa and other framewo
 (The MIT License)
 
 Copyright (c) 2009-2010 Richard Kilmer
+Copyright (c) 2011 Mark Rada
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
