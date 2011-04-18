@@ -7,9 +7,9 @@ module HotCocoa
   class ApplicationBuilder
 
     class Configuration
-
-      attr_reader :name, :identifier, :version, :icon, :resources, :sources, :info_string, :load, :agent
-
+      
+      attr_reader :name, :identifier, :version, :icon, :resources, :sources, :info_string, :load, :agent, :stdlib
+      
       def initialize(file)
         require 'yaml'
         yml = YAML.load(File.read(file))
@@ -23,6 +23,7 @@ module HotCocoa
         @resources = yml["resources"] || []
         @overwrite = yml["overwrite"] == true ? true : false
         @agent = yml["agent"] == true ? "1" : "0"
+        @stdlib = yml["stdlib"] == false ? false : true
       end
 
       def overwrite?
@@ -36,9 +37,9 @@ module HotCocoa
     end
 
     ApplicationBundlePackage = "APPL????"
-
-    attr_accessor :name, :identifier, :load_file, :sources, :overwrite, :icon, :version, :info_string, :resources, :deploy, :agent
-
+    
+    attr_accessor :name, :identifier, :load_file, :sources, :overwrite, :icon, :version, :info_string, :resources, :deploy, :agent, :stdlib
+    
     def self.build(config, options={:deploy => false})
       if !config.kind_of?(Configuration) || !$LOADED_FEATURES.detect {|f| f.include?("standard_rake_tasks")}
         require 'rbconfig'
@@ -56,6 +57,7 @@ module HotCocoa
       builder.info_string = config.info_string
       builder.overwrite = config.overwrite?
       builder.agent = config.agent
+      builder.stdlib = config.stdlib
       config.sources.each do |source|
         builder.add_source_path source
       end
@@ -93,6 +95,7 @@ module HotCocoa
 
     def deploy
       copy_framework
+      copy_hotcocoa unless stdlib
     end
 
     def deploy?
@@ -139,13 +142,19 @@ module HotCocoa
       end
 
       def copy_framework
-        unless File.exist?(File.join(frameworks_root, 'MacRuby.framework'))
-          FileUtils.mkdir_p frameworks_root
-          FileUtils.cp_r macruby_framework_path, frameworks_root
-        end
-        `install_name_tool -change #{current_macruby_path}/usr/lib/libmacruby.dylib @executable_path/../Frameworks/MacRuby.framework/Versions/#{current_macruby_version}/usr/lib/libmacruby.dylib '#{macos_root}/#{objective_c_executable_file}'`
+        `macruby_deploy --embed #{name}.app #{ '--no-stdlib' unless stdlib }`
       end
-
+      
+      def copy_hotcocoa
+        `macgem unpack hotcocoa`
+        Dir.glob("hotcocoa-*/lib/*").each do |source|
+          destination = File.join(resources_root, source.split('/').last)
+          FileUtils.mkdir_p(File.dirname(destination)) unless File.exist?(File.dirname(destination))
+          FileUtils.cp_r source, destination
+        end
+        FileUtils.rm_rf Dir.glob("hotcocoa-*").first
+      end
+            
       def copy_sources
         FileUtils.cp_r load_file, resources_root unless sources.include?(load_file)
         sources.each do |source|
