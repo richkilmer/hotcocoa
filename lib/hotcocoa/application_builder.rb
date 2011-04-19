@@ -291,21 +291,5 @@ module HotCocoa
     def main_ruby_source_file
       File.join(resources_root, "rb_main.rb")
     end
-
-    def current_macruby_version
-      NSFileManager.defaultManager.pathContentOfSymbolicLinkAtPath(File.join(macruby_versions_path, "Current"))
-    end
-
-    def current_macruby_path
-      File.join(macruby_versions_path, current_macruby_version)
-    end
-
-    def macruby_versions_path
-      File.join(macruby_framework_path, "Versions")
-    end
-
-    def macruby_framework_path
-      "/Library/Frameworks/MacRuby.framework"
-    end
   end
 end
