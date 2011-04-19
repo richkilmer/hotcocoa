@@ -45,15 +45,17 @@ module HotCocoa
     attr_accessor :name
     attr_accessor :identifier
     attr_accessor :sources
-    attr_accessor :overwrite
     attr_accessor :icon
     attr_accessor :version
     attr_accessor :info_string
     attr_accessor :resources
-    attr_accessor :deploy
     attr_accessor :agent
     attr_accessor :stdlib
     attr_accessor :data_models
+    attr_accessor :overwrite
+    alias_method  :overwrite?, :overwrite
+    attr_accessor :deploy
+    alias_method  :deploy?, :deploy
 
     def self.build(config, options={:deploy => false})
       if !config.kind_of?(Configuration) || !$LOADED_FEATURES.detect {|f| f.include?("standard_rake_tasks")}
@@ -115,14 +117,6 @@ module HotCocoa
     def deploy
       copy_framework
       copy_hotcocoa unless stdlib
-    end
-
-    def deploy?
-      @deploy
-    end
-
-    def overwrite?
-      @overwrite
     end
 
     def add_source_path(source_file_pattern)
