@@ -42,8 +42,18 @@ module HotCocoa
 
     ApplicationBundlePackage = "APPL????"
 
-    attr_accessor :name, :identifier, :sources, :overwrite, :icon
-    attr_accessor :version, :info_string, :resources, :deploy, :agent, :stdlib, :data_models
+    attr_accessor :name
+    attr_accessor :identifier
+    attr_accessor :sources
+    attr_accessor :overwrite
+    attr_accessor :icon
+    attr_accessor :version
+    attr_accessor :info_string
+    attr_accessor :resources
+    attr_accessor :deploy
+    attr_accessor :agent
+    attr_accessor :stdlib
+    attr_accessor :data_models
 
     def self.build(config, options={:deploy => false})
       if !config.kind_of?(Configuration) || !$LOADED_FEATURES.detect {|f| f.include?("standard_rake_tasks")}
