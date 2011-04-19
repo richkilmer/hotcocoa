@@ -35,7 +35,7 @@ module HotCocoa
         @stdlib      = yml['stdlib']    == false ? false : true
       end
 
-      def icon_exist?
+      def icon_exists?
         @icon ? File.exist?(@icon) : false
       end
     end
@@ -66,8 +66,8 @@ module HotCocoa
       builder.deploy = options[:deploy] == true ? true : false
       builder.name = config.name
       builder.identifier = config.identifier
-      builder.icon = config.icon if config.icon_exist?
       builder.version = config.version
+      builder.icon        = config.icon if config.icon_exists?
       builder.info_string = config.info_string
       builder.overwrite = config.overwrite?
       builder.agent = config.agent
