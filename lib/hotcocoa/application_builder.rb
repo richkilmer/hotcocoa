@@ -86,7 +86,6 @@ module HotCocoa
     # Used by the "Embed MacRuby" Xcode target.
     def self.deploy path
       raise "Given path `#{path}' does not exist" unless File.exist?(path)
-      raise "Given path `#{path}' does not look like an application bundle" unless File.extname(path) == '.app'
 
       deployer = new
       Dir.chdir(File.dirname(path)) do
