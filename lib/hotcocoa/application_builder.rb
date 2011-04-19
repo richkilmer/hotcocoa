@@ -1,6 +1,8 @@
 framework 'Foundation'
 
 require 'fileutils'
+require 'rbconfig'
+require 'yaml'
 
 module HotCocoa
   class ApplicationBuilder
@@ -9,7 +11,6 @@ module HotCocoa
       attr_reader :info_string, :agent, :stdlib, :data_models
 
       def initialize(file)
-        require 'yaml'
         yml = YAML.load(File.read(file))
         @name = yml["name"]
         @identifier = yml["identifier"]
@@ -40,7 +41,6 @@ module HotCocoa
 
     def self.build(config, options={:deploy => false})
       if !config.kind_of?(Configuration) || !$LOADED_FEATURES.detect {|f| f.include?("standard_rake_tasks")}
-        require 'rbconfig'
         puts "Your Rakefile needs to be updated.  Please copy the Rakefile from:"
         puts File.expand_path(File.join(Config::CONFIG['datadir'], "hotcocoa_template", "Rakefile"))
         exit
