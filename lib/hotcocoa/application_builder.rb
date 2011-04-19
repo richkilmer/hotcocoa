@@ -7,26 +7,32 @@ require 'yaml'
 module HotCocoa
   class ApplicationBuilder
     class Configuration
-      attr_reader :name, :identifier, :version, :icon, :resources, :sources
-      attr_reader :info_string, :agent, :stdlib, :data_models
+      attr_reader :name
+      attr_reader :identifier
+      attr_reader :version
+      attr_reader :icon
+      attr_reader :resources
+      attr_reader :sources
+      attr_reader :info_string
+      attr_reader :agent
+      attr_reader :stdlib
+      attr_reader :data_models
+      attr_reader :overwrite
+      alias_method :overwrite?, :overwrite
 
-      def initialize(file)
-        yml = YAML.load(File.read(file))
-        @name = yml["name"]
-        @identifier = yml["identifier"]
-        @version = yml["version"] || "1.0"
-        @icon = yml["icon"]
-        @info_string = yml["info_string"]
-        @sources = yml["sources"] || []
-        @resources = yml["resources"] || []
-        @data_models = yml["data_models"] || []
-        @overwrite = yml["overwrite"] == true ? true : false
-        @agent = yml["agent"] == true ? "1" : "0"
-        @stdlib = yml["stdlib"] == false ? false : true
-      end
-
-      def overwrite?
-        @overwrite
+      def initialize file
+        yml          = YAML.load(File.read(file))
+        @name        = yml['name']
+        @identifier  = yml['identifier']
+        @icon        = yml['icon']
+        @info_string = yml['info_string']
+        @version     = yml['version']     || '1.0'
+        @sources     = yml['sources']     || []
+        @resources   = yml['resources']   || []
+        @data_models = yml['data_models'] || []
+        @overwrite   = yml['overwrite'] == true  ? true  : false
+        @agent       = yml['agent']     == true  ? '1'   : '0'
+        @stdlib      = yml['stdlib']    == false ? false : true
       end
 
       def icon_exist?
