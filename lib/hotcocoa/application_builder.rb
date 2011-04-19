@@ -115,8 +115,8 @@ module HotCocoa
     end
 
     def deploy
-      copy_framework
-      copy_hotcocoa unless stdlib
+      options = "#{ '--no-stdlib --gem hotcocoa' unless stdlib }"
+      `macruby_deploy --embed #{options} #{name}.app`
     end
 
     def add_source_path(source_file_pattern)
@@ -155,20 +155,6 @@ module HotCocoa
       write_info_plist_file
       build_executable unless File.exist?(File.join(macos_root, objective_c_executable_file))
       write_ruby_main
-    end
-
-    def copy_framework
-      `macruby_deploy --embed #{name}.app #{ '--no-stdlib' unless stdlib }`
-    end
-
-    def copy_hotcocoa
-      `macgem unpack hotcocoa`
-      Dir.glob("hotcocoa-*/lib/*").each do |source|
-        destination = File.join(resources_root, source.split('/').last)
-        FileUtils.mkdir_p(File.dirname(destination)) unless File.exist?(File.dirname(destination))
-        FileUtils.cp_r source, destination
-      end
-      FileUtils.rm_rf Dir.glob("hotcocoa-*").first
     end
 
     def copy_sources
