@@ -59,7 +59,8 @@ module HotCocoa
     attr_accessor :deploy
     alias_method  :deploy?, :deploy
 
-    def self.build(config, options={:deploy => false})
+    def self.build config, opts = {}
+      options = { deploy: false }.merge opts
 
       builder             = new
       builder.deploy      = options[:deploy]
