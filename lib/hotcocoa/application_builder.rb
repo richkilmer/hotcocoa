@@ -5,7 +5,9 @@ require 'rbconfig'
 require 'yaml'
 
 module HotCocoa
+
   class ApplicationBuilder
+
     class Configuration
       attr_reader :name
       attr_reader :identifier
@@ -58,27 +60,22 @@ module HotCocoa
     alias_method  :deploy?, :deploy
 
     def self.build(config, options={:deploy => false})
-      if !config.kind_of?(Configuration) || !$LOADED_FEATURES.detect {|f| f.include?("standard_rake_tasks")}
-        puts "Your Rakefile needs to be updated.  Please copy the Rakefile from:"
-        puts File.expand_path(File.join(Config::CONFIG['datadir'], "hotcocoa_template", "Rakefile"))
-        exit
-      end
 
-      builder = new
-      builder.deploy = options[:deploy] == true ? true : false
-      builder.name = config.name
-      builder.identifier = config.identifier
-      builder.version = config.version
-      builder.icon        = config.icon if config.icon_exists?
+      builder             = new
+      builder.deploy      = options[:deploy]
+      builder.name        = config.name
+      builder.identifier  = config.identifier
+      builder.version     = config.version
       builder.info_string = config.info_string
-      builder.overwrite = config.overwrite?
-      builder.agent = config.agent
-      builder.stdlib = config.stdlib
+      builder.overwrite   = config.overwrite?
+      builder.agent       = config.agent
+      builder.stdlib      = config.stdlib
+      builder.icon        = config.icon if config.icon_exists?
 
-      config.sources.each { |source| builder.add_source_path(source) }
+      config.sources.each   { |source| builder.add_source_path(source) }
       config.resources.each { |resource| builder.add_resource_path(resource) }
       config.data_models.each do |data|
-        next unless File.extname(data) == ".xcdatamodel"
+        next unless File.extname(data) == '.xcdatamodel'
         builder.add_data_model(data)
       end
 
@@ -86,7 +83,7 @@ module HotCocoa
     end
 
     # Used by the "Embed MacRuby" Xcode target.
-    def self.deploy(path)
+    def self.deploy path
       raise "Given path `#{path}' does not exist" unless File.exist?(path)
       raise "Given path `#{path}' does not look like an application bundle" unless File.extname(path) == '.app'
 
@@ -98,8 +95,8 @@ module HotCocoa
     end
 
     def initialize
-      @sources = []
-      @resources = []
+      @sources     = []
+      @resources   = []
       @data_models = []
     end
 
@@ -119,19 +116,19 @@ module HotCocoa
       `macruby_deploy --embed #{options} #{name}.app`
     end
 
-    def add_source_path(source_file_pattern)
+    def add_source_path source_file_pattern
       Dir.glob(source_file_pattern).each do |source_file|
         sources << source_file
       end
     end
 
-    def add_resource_path(resource_file_pattern)
+    def add_resource_path resource_file_pattern
       Dir.glob(resource_file_pattern).each do |resource_file|
         resources << resource_file
       end
     end
 
-    def add_data_model(model)
+    def add_data_model model
       Dir.glob(model).each { |data| data_models << data }
     end
 
@@ -213,7 +210,7 @@ module HotCocoa
     end
 
     def build_executable
-      File.open(objective_c_source_file, "wb") do |f|
+      File.open(objective_c_source_file, 'wb') do |f|
         f.puts %{
           #import <MacRuby/MacRuby.h>
 
