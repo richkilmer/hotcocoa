@@ -266,10 +266,6 @@ NSApplicationMain(0, nil)
       File.join(contents_root, "Resources")
     end
 
-    def bridgesupport_root
-      File.join(resources_root, "BridgeSupport")
-    end
-
     def info_plist_file
       File.join(contents_root, "Info.plist")
     end
