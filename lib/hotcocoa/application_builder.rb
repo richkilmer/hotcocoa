@@ -224,23 +224,25 @@ module HotCocoa
       File.unlink(objective_c_source_file)
     end
 
+    # Borrow rb_main from MacRuby Xcode templates
     def write_ruby_main
-      File.open(main_ruby_source_file, "wb") do |f|
-        f.puts "$:.map! { |x| x.sub(/^\\/Library\\/Frameworks/, NSBundle.mainBundle.privateFrameworksPath) }" if deploy?
-        f.puts "resources = NSBundle.mainBundle.resourcePath.fileSystemRepresentation"
-        f.puts "$:.unshift(resources)"
-        f.puts
-        f.puts "Dir.glob(\"\#{resources}/**/*.rb\").each do |file|"
-        f.puts "  next if file == 'rb_main.rb'"
-        f.puts "  require \"\#{file}\""
-        f.puts "end"
-        f.puts
-        f.puts "begin"
-        f.puts "  Kernel.const_get('#{name}').new.start"
-        f.puts "rescue Exception => e"
-        f.puts "  STDERR.puts e.message"
-        f.puts "  e.backtrace.each { |bt| STDERR.puts bt }"
-        f.puts "end"
+      File.open(main_ruby_source_file, 'wb') do |f|
+        f.puts <<-EOF
+# Borrowed from the MacRuby sources on April 18, 2011
+framework 'Cocoa'
+
+# Loading all the Ruby project files.
+main = File.basename(__FILE__, File.extname(__FILE__))
+dir_path = NSBundle.mainBundle.resourcePath.fileSystemRepresentation
+Dir.glob(File.join(dir_path, '*.{rb,rbo}')).map { |x| File.basename(x, File.extname(x)) }.uniq.each do |path|
+  if path != main
+    require(path)
+  end
+end
+
+# Starting the Cocoa main loop.
+NSApplicationMain(0, nil)
+        EOF
       end
     end
 
