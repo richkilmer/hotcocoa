@@ -198,38 +198,22 @@ module HotCocoa
     end
 
     def write_info_plist_file
-      File.open(info_plist_file, "w") do |f|
-        f.puts %{<?xml version="1.0" encoding="UTF-8"?>}
-        f.puts %{<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">}
-        f.puts %{<plist version="1.0">}
-        f.puts %{<dict>}
-        f.puts %{  <key>CFBundleDevelopmentRegion</key>}
-        f.puts %{  <string>English</string>}
-        f.puts %{  <key>CFBundleIconFile</key>} if icon
-        f.puts %{  <string>#{name}.icns</string>} if icon
-        f.puts %{  <key>CFBundleGetInfoString</key>} if info_string
-        f.puts %{  <string>#{info_string}</string>} if info_string
-        f.puts %{  <key>CFBundleExecutable</key>}
-        f.puts %{  <string>#{name.gsub(/ /, '')}</string>}
-        f.puts %{  <key>CFBundleIdentifier</key>}
-        f.puts %{  <string>#{identifier}</string>}
-        f.puts %{  <key>CFBundleInfoDictionaryVersion</key>}
-        f.puts %{  <string>6.0</string>}
-        f.puts %{  <key>CFBundleName</key>}
-        f.puts %{  <string>#{name}</string>}
-        f.puts %{  <key>CFBundlePackageType</key>}
-        f.puts %{  <string>APPL</string>}
-        f.puts %{  <key>CFBundleSignature</key>}
-        f.puts %{  <string>????</string>}
-        f.puts %{  <key>CFBundleVersion</key>}
-        f.puts %{  <string>#{version}</string>}
-        f.puts %{  <key>NSPrincipalClass</key>}
-        f.puts %{  <string>NSApplication</string>}
-        f.puts %{  <key>LSUIElement</key>}
-        f.puts %{  <string>#{agent}</string>}
-        f.puts %{</dict>}
-        f.puts %{</plist>}
-      end
+      info = {
+        'CFBundleDevelopmentRegion'     => 'English',
+        'CFBundleExecutable'            => name.gsub(/ /, ''),
+        'CFBundleIdentifier'            => identifier,
+        'CFBundleInfoDictionaryVersion' => '6.0',
+        'CFBundleName'                  => name,
+        'CFBundlePackageType'           => 'APPL',
+        'CFBundleSignature'             => '????',
+        'CFBundleVersion'               => version,
+        'NSPrincipalClass'              => 'NSApplication',
+        'LSUIElement'                   => agent
+      }
+      info['CFBundleIconFile'] = "#{name}.icns" if icon
+      info['CFBundleGetInfoString'] = info_string if info_string
+
+      File.open(info_plist_file, 'w') { |f| f.puts info.to_plist }
     end
 
     def build_executable
