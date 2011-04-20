@@ -22,7 +22,7 @@ class TestObjectExt < MiniTest::Unit::TestCase
   end
 
   def test_should_normally_raise_a_NameError_if_a_const_cannot_be_found
-    assert_raise(NameError) do
+    assert_raises NameError do
       Object.full_const_get('DoesNotExist::ForSure')
     end
   end
