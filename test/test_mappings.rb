@@ -117,6 +117,6 @@ class TestMappings < MiniTest::Unit::TestCase
   end
 
   def test_reload
-    flunk 'Pending.'
+    skip 'Pending.'
   end
 end
