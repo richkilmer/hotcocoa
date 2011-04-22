@@ -23,7 +23,7 @@ class TestMapper < MiniTest::Unit::TestCase
   end
 
   def test_convert_from_camelcase_to_underscore
-    assert sample_mapper.underscore("SampleCamelCasedWord"), 'sample_camel_cased_word'
+    assert sample_mapper.class.underscore("SampleCamelCasedWord"), 'sample_camel_cased_word'
   end
 
   def test_include_in_class
