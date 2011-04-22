@@ -3,6 +3,7 @@ unless $:.include?(File.dirname(__FILE__)) || $:.include?(File.expand_path(File.
 end
 
 framework 'Cocoa'
+require   'set'
 
 STDOUT.reopen(IO.for_fd(NSFileHandle.fileHandleWithStandardError.fileDescriptor.to_i, 'w'))
 
