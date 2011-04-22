@@ -77,9 +77,8 @@ class TestMappings < MiniTest::Unit::TestCase
   end
 
   def test_should_do_nothing_if_the_framework_loaded_is_not_registered
-    assert_nothing_raised do
-      Mappings.framework_loaded('FrameworkDoesNotExist')
-    end
+    Mappings.framework_loaded('FrameworkDoesNotExist')
+    assert true # hack, we want to test that nothing is raised by the above call
   end
 
   def test_should_resolve_a_constant_when_a_framework_thats_registered_with #map, is loaded" do
