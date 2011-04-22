@@ -227,11 +227,12 @@ module HotCocoa
       end
 
       def self.underscore(string)
-        string.gsub(/::/, '/').
-          gsub(/([A-Z]+)([A-Z][a-z])/, '\1_\2').
-          gsub(/([a-z\d])([A-Z])/, '\1_\2').
-          tr("-", "_").
-          downcase
+        new_string = string.gsub(/::/, '/')
+        new_string.gsub!(/([A-Z]+)([A-Z][a-z])/, '\1_\2')
+        new_string.gsub!(/([a-z\d])([A-Z])/, '\1_\2')
+        new_string.tr!("-", "_")
+        new_string.downcase!
+        new_string
       end
 
       def self.camel_case(string)
