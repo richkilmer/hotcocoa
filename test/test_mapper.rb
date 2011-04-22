@@ -32,19 +32,19 @@ class TestMapper < MiniTest::Unit::TestCase
 
     assert_equal m.instance_variable_get('@extension_method'), :include
 
-    flunk 'Pending.'
+    skip 'Pending.'
   end
 
   def test_each_control_ancestor
-    flunk 'Pending.'
+    skip 'Pending.'
   end
 
   def test_map_class
-    flunk 'Pending.'
+    skip 'Pending.'
   end
 
   def test_map_instances_of
-    flunk 'Pending.'
+    skip 'Pending.'
   end
 
   private
