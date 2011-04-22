@@ -1,6 +1,6 @@
 HotCocoa::Mappings.map :button => :NSButton do
   defaults :bezel => :rounded,
-           :frame => DefaultEmptyRect,
+           :frame => CGRectZero,
            :layout => {}
 
   constant :bezel, {

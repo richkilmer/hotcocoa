@@ -46,7 +46,7 @@ module HotCocoa
           map = inst.remap_constants(map)
           inst.map_bindings = map.delete(:map_bindings)
 
-          default_empty_rect_used = (map[:frame].__id__ == DefaultEmptyRect.__id__)
+          default_empty_rect_used = (map[:frame].__id__ == CGRectZero.__id__)
           control = inst.respond_to?(:init_with_options) ? inst.init_with_options(inst.control_class.alloc, map) : inst.alloc_with_options(map)
 
           Views[guid] = control if guid

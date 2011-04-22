@@ -1,5 +1,5 @@
 HotCocoa::Mappings.map :box => :NSBox do
-  defaults :frame => DefaultEmptyRect, :layout => {}
+  defaults :frame => CGRectZero, :layout => {}
 
   constant :title_position, {
     :none           => NSNoTitle,

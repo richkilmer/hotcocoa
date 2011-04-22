@@ -16,7 +16,7 @@ HotCocoa::Mappings.map :text_field => :NSTextField do
     :center => NSCenterTextAlignment
   }
 
-  defaults :selectable => true, :editable => true, :layout => {}, :frame => DefaultEmptyRect
+  defaults :selectable => true, :editable => true, :layout => {}, :frame => CGRectZero
 
   def init_with_options(text_field, options)
     text_field.initWithFrame options.delete(:frame)

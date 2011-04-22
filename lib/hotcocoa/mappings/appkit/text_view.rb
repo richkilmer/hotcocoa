@@ -1,5 +1,5 @@
 HotCocoa::Mappings.map :text_view => :NSTextView do
-  defaults :layout => {}, :frame => DefaultEmptyRect
+  defaults :layout => {}, :frame => CGRectZero
 
   def init_with_options(text_view, options)
     if options[:container]

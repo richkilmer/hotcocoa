@@ -1,5 +1,5 @@
 HotCocoa::Mappings.map :view => :NSView do
-  defaults :frame => DefaultEmptyRect,
+  defaults :frame => CGRectZero,
            :layout => {}
 
   constant :auto_resize, {

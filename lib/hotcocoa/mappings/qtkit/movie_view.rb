@@ -1,5 +1,5 @@
 HotCocoa::Mappings.map :movie_view => :QTMovieView, :framework => :QTKit do
-  defaults :layout => {}, :frame => DefaultEmptyRect
+  defaults :layout => {}, :frame => CGRectZero
 
   def init_with_options(movie_view, options)
     movie_view.initWithFrame(options.delete(:frame))

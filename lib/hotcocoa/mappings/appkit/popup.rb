@@ -80,7 +80,7 @@ end
 
 HotCocoa::Mappings.map :popup => :NSPopUpButton do
   defaults :pulls_down => false,
-           :frame => DefaultEmptyRect,
+           :frame => CGRectZero,
            :layout => {}
 
   def init_with_options(popup, options)

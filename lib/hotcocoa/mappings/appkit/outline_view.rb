@@ -1,5 +1,5 @@
 HotCocoa::Mappings.map :outline_view => :NSOutlineView do
-  defaults :column_resize => :uniform, :frame => DefaultEmptyRect, :layout => {}
+  defaults :column_resize => :uniform, :frame => CGRectZero, :layout => {}
 
   constant :column_resize, {
     :none               => NSTableViewNoColumnAutoresizing,

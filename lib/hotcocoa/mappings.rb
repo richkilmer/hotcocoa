@@ -6,8 +6,6 @@ module HotCocoa
       end
     end
 
-    DefaultEmptyRect = [0, 0, 0, 0]
-
     module TargetActionConvenience
       def on_action=(behavior)
         if target && (

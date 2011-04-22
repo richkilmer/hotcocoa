@@ -1,5 +1,5 @@
 HotCocoa::Mappings.map :web_view => :WebView , :framework => :WebKit do
-  defaults :layout => {}, :frame => DefaultEmptyRect
+  defaults :layout => {}, :frame => CGRectZero
 
   def init_with_options(web_view, options)
     web_view.initWithFrame(options.delete(:frame))
