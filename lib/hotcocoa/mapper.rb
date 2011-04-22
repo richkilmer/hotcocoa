@@ -74,7 +74,7 @@ module HotCocoa
           end
 
           if default_empty_rect_used
-            control.sizeToFit if control.respondsToSelector(:sizeToFit) == true
+            control.sizeToFit if control.respondsToSelector(:sizeToFit)
           end
 
           if control_block
