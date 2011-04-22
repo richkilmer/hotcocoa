@@ -235,12 +235,8 @@ module HotCocoa
         new_string
       end
 
-      def self.camel_case(string)
-        if string !~ /_/ && string =~ /[A-Z]+.*/
-          string
-        else
-          string.split('_').map{ |e| e.capitalize }.join
-        end
+      def self.camel_case string
+        string.gsub /(?:^|_)(.)/ do $1.upcase end
       end
     end
   end
