@@ -226,7 +226,7 @@ module HotCocoa
         result
       end
 
-      def self.underscore(string)
+      def self.underscore string
         new_string = string.gsub(/::/, '/')
         new_string.gsub!(/([A-Z]+)([A-Z][a-z])/, '\1_\2')
         new_string.gsub!(/([a-z\d])([A-Z])/, '\1_\2')
