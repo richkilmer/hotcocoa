@@ -1,7 +1,13 @@
 module HotCocoa
+
   module Mappings
+
     class Mapper
-      attr_reader :control_class, :builder_method, :control_module
+
+      attr_reader :control_class
+      attr_reader :builder_method
+      attr_reader :control_module
+
       attr_accessor :map_bindings
 
       def self.map_class(klass)
