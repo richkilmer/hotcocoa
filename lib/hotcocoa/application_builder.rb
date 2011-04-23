@@ -15,7 +15,6 @@ module HotCocoa
       attr_reader :icon
       attr_reader :resources
       attr_reader :sources
-      attr_reader :info_string
       attr_reader :agent
       attr_reader :stdlib
       attr_reader :data_models
@@ -27,7 +26,6 @@ module HotCocoa
         @name        = yml['name']
         @identifier  = yml['identifier']
         @icon        = yml['icon']
-        @info_string = yml['info_string']
         @version     = yml['version']     || '1.0'
         @sources     = yml['sources']     || []
         @resources   = yml['resources']   || []
@@ -49,7 +47,6 @@ module HotCocoa
     attr_accessor :sources
     attr_accessor :icon
     attr_accessor :version
-    attr_accessor :info_string
     attr_accessor :resources
     attr_accessor :agent
     attr_accessor :stdlib
@@ -67,7 +64,6 @@ module HotCocoa
       builder.name        = config.name
       builder.identifier  = config.identifier
       builder.version     = config.version
-      builder.info_string = config.info_string
       builder.overwrite   = config.overwrite?
       builder.agent       = config.agent
       builder.stdlib      = config.stdlib
@@ -204,7 +200,6 @@ module HotCocoa
         'LSUIElement'                   => agent
       }
       info['CFBundleIconFile'] = "#{name}.icns" if icon
-      info['CFBundleGetInfoString'] = info_string if info_string
 
       File.open(info_plist_file, 'w') { |f| f.puts info.to_plist }
     end
