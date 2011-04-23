@@ -8,6 +8,11 @@ module HotCocoa
 
   class ApplicationBuilder
 
+    ##
+    # @todo support CFBundleDocumentTypes
+    # @todo support CFBundleShortVersionString
+    # @todo support NSHumanReadableCopyright
+    # @todo support arbitrary info.plist key/value pairs
     class Configuration
 
       # Name of the app
@@ -230,16 +235,17 @@ module HotCocoa
 
     def write_info_plist_file
       info = {
-        'CFBundleDevelopmentRegion'     => 'English',
-        'CFBundleExecutable'            => name.gsub(/ /, ''),
-        'CFBundleIdentifier'            => identifier,
-        'CFBundleInfoDictionaryVersion' => '6.0',
         'CFBundleName'                  => name,
+        'CFBundleIdentifier'            => identifier,
         'CFBundleVersion'               => version,
         'CFBundlePackageType'           => type,
         'CFBundleSignature'             => signature,
+        'CFBundleExecutable'            => name.gsub(/\s+/, ''),
+        'CFBundleDevelopmentRegion'     => 'English',
+        'CFBundleInfoDictionaryVersion' => '6.0',
         'NSPrincipalClass'              => 'NSApplication',
-        'LSUIElement'                   => agent
+        'LSUIElement'                   => agent,
+        'LSMinimumSystemVersion'        => '10.6.7',
       }
       info['CFBundleIconFile'] = "#{name}.icns" if icon
 
