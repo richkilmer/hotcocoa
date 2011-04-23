@@ -6,3 +6,4 @@ resources:
   - resources/**/*.*
 sources:
   - lib/**/*.rb
+signature: girb

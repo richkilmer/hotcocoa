@@ -67,6 +67,22 @@ class TestConfiguration < MiniTest::Unit::TestCase
     assert_equal false, conf.stdlib
   end
 
+  def test_type_attribute
+    conf = Configuration.new HOTCONSOLE
+    assert_equal 'APPL', conf.type
+
+    conf = Configuration.new EMPTY_APP
+    assert_equal 'BNDL', conf.type
+  end
+
+  def test_signature_attribute
+    conf = Configuration.new EMPTY_APP
+    assert_equal '????', conf.signature
+
+    conf = Configuration.new HOTCONSOLE
+    assert_equal 'girb', conf.signature
+  end
+
   def test_icon_exists?
     conf = Configuration.new HOTCONSOLE
     refute conf.icon_exists?

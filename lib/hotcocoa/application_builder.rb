@@ -42,6 +42,18 @@ module HotCocoa
       #  add to the app bundle
       attr_reader :data_models
 
+      # Four letter code identifying bundle type, the default value is 'APPL'
+      # to specify the bundle is an application
+      attr_reader :type
+
+      # Four letter code that is a signature of the bundle, defaults to '????'
+      # since most apps never set this value
+      # @exapmle TextEdit
+      #  'ttxt'
+      # @example Mail
+      #  'emal'
+      attr_reader :signature
+
       # @return [Boolean] Always make a clean build of the app
       attr_reader :overwrite
       alias_method :overwrite?, :overwrite
@@ -56,6 +68,8 @@ module HotCocoa
         @sources     = yml['sources']     || [] # this should be mandatory?
         @resources   = yml['resources']   || []
         @data_models = yml['data_models'] || []
+        @type        = yml['type']        || 'APPL'
+        @signature   = yml['signature']   || '????'
         @overwrite   = yml['overwrite'] == true  ? true  : false
         @agent       = yml['agent']     == true  ? '1'   : '0'
         @stdlib      = yml['stdlib']    == false ? false : true
@@ -66,8 +80,6 @@ module HotCocoa
       end
     end
 
-    ApplicationBundlePackage = "APPL????"
-
     attr_accessor :name
     attr_accessor :identifier
     attr_accessor :sources
@@ -77,6 +89,8 @@ module HotCocoa
     attr_accessor :agent
     attr_accessor :stdlib
     attr_accessor :data_models
+    attr_accessor :type
+    attr_accessor :signature
     attr_accessor :overwrite
     alias_method  :overwrite?, :overwrite
     attr_accessor :deploy
@@ -93,6 +107,8 @@ module HotCocoa
       builder.overwrite   = config.overwrite?
       builder.agent       = config.agent
       builder.stdlib      = config.stdlib
+      builder.type        = config.type
+      builder.signature   = config.signature
       builder.icon        = config.icon if config.icon_exists?
 
       config.sources.each   { |source| builder.add_source_path(source) }
@@ -209,7 +225,7 @@ module HotCocoa
     end
 
     def write_pkg_info_file
-      File.open(pkg_info_file, "wb") {|f| f.write ApplicationBundlePackage}
+      File.open(pkg_info_file, 'wb') { |f| f.write "#{type}#{signature}" }
     end
 
     def write_info_plist_file
@@ -219,9 +235,9 @@ module HotCocoa
         'CFBundleIdentifier'            => identifier,
         'CFBundleInfoDictionaryVersion' => '6.0',
         'CFBundleName'                  => name,
-        'CFBundlePackageType'           => 'APPL',
-        'CFBundleSignature'             => '????',
         'CFBundleVersion'               => version,
+        'CFBundlePackageType'           => type,
+        'CFBundleSignature'             => signature,
         'NSPrincipalClass'              => 'NSApplication',
         'LSUIElement'                   => agent
       }
