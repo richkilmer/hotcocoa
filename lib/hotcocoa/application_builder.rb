@@ -9,25 +9,51 @@ module HotCocoa
   class ApplicationBuilder
 
     class Configuration
+
+      # Name of the app
       attr_reader :name
+
+      # @return [String] Reverse URL unique identifier
+      # @example Identifier for Mail.app
+      #  'com.apple.mail'
       attr_reader :identifier
+
+      # @return [String] Version of the app
       attr_reader :version
+
+      # Path to the icon file
       attr_reader :icon
+
+      # @return [Array<String>] Directories containing resources that need to
+      #  copied into the app bundle
       attr_reader :resources
+
+      # @return [Array<String>] Directories containing the source code that
+      #  needs to be copied into the app bundle
       attr_reader :sources
+
+      # @return [Boolean] Whether the app is an daemon with UI or a regular app
       attr_reader :agent
+
+      # @return [Boolean] Whether to include the Ruby stdlib in the app
       attr_reader :stdlib
+
+      # @return [Array<String>] Any `.xcdatamodel` directories to compile and
+      #  add to the app bundle
       attr_reader :data_models
+
+      # @return [Boolean] Always make a clean build of the app
       attr_reader :overwrite
       alias_method :overwrite?, :overwrite
 
+      # @todo validation (sources should not be an empty array)
       def initialize file
         yml          = YAML.load(File.read(file))
-        @name        = yml['name']
-        @identifier  = yml['identifier']
-        @icon        = yml['icon']
+        @name        = yml['name'] # mandatory
+        @identifier  = yml['identifier'] # mandatory
+        @icon        = yml['icon'] # mandatory
         @version     = yml['version']     || '1.0'
-        @sources     = yml['sources']     || []
+        @sources     = yml['sources']     || [] # this should be mandatory?
         @resources   = yml['resources']   || []
         @data_models = yml['data_models'] || []
         @overwrite   = yml['overwrite'] == true  ? true  : false
