@@ -251,7 +251,9 @@ module HotCocoa
           }
         }
       end
-      puts `cd '#{macos_root}' && gcc main.m -o #{objective_c_executable_file} -arch x86_64 -framework MacRuby -framework Foundation -fobjc-gc-only`
+      Dir.chdir(macos_root) do
+        puts `gcc main.m -o #{objective_c_executable_file} -arch x86_64 -framework MacRuby -framework Foundation -fobjc-gc-only`
+      end
       File.unlink(objective_c_source_file)
     end
 
