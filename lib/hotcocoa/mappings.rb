@@ -1,7 +1,7 @@
 module HotCocoa
   module Mappings
     def self.reload
-      Dir.glob(File.join(File.dirname(__FILE__), "mappings", "*", "*.rb")).each do |mapping|
+      Dir.glob(File.join(File.dirname(__FILE__), "mappings", "**", "*.rb")).each do |mapping|
         require mapping
       end
     end
