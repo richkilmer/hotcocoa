@@ -29,12 +29,12 @@ module HotCocoa
       # Path to the icon file
       attr_reader :icon
 
-      # @return [Array<String>] Directories containing resources that need to
-      #  copied into the app bundle
+      # @return [Array<String>] Globbing patterns describing where to find
+      #  resources that need to be copied into the app bundle
       attr_reader :resources
 
-      # @return [Array<String>] Directories containing the source code that
-      #  needs to be copied into the app bundle
+      # @return [Array<String>] Globbing patterns describing where to find
+      #  source code that needs to be copied into the app bundle
       attr_reader :sources
 
       # @return [Boolean] Whether the app is an daemon with UI or a regular app
@@ -85,42 +85,32 @@ module HotCocoa
       end
     end
 
-    attr_accessor :name
-    attr_accessor :identifier
-    attr_accessor :sources
-    attr_accessor :icon
-    attr_accessor :version
-    attr_accessor :resources
-    attr_accessor :agent
-    attr_accessor :stdlib
-    attr_accessor :data_models
-    attr_accessor :type
-    attr_accessor :signature
-    attr_accessor :overwrite
-    alias_method  :overwrite?, :overwrite
+
+    # @return [Boolean] Whether or not to build the app bundle for deployment
+    #  by calling `macruby_deploy` on the generated app bundle
     attr_accessor :deploy
     alias_method  :deploy?, :deploy
+
+    # @return [Array<String>]
+    attr_accessor :sources
+
+    # @return [Array<String>]
+    attr_accessor :resources
+
+    # @return [Array<String>]
+    attr_accessor :data_models
 
     def self.build config, opts = {}
       options = { deploy: false }.merge opts
 
-      builder             = new
-      builder.deploy      = options[:deploy]
-      builder.name        = config.name
-      builder.identifier  = config.identifier
-      builder.version     = config.version
-      builder.overwrite   = config.overwrite?
-      builder.agent       = config.agent
-      builder.stdlib      = config.stdlib
-      builder.type        = config.type
-      builder.signature   = config.signature
-      builder.icon        = config.icon if config.icon_exists?
+      builder        = new
+      builder.config = config
+      builder.deploy = options[:deploy]
 
       config.sources.each   { |source| builder.add_source_path(source) }
       config.resources.each { |resource| builder.add_resource_path(resource) }
       config.data_models.each do |data|
-        next unless File.extname(data) == '.xcdatamodel'
-        builder.add_data_model(data)
+        builder.add_data_model(data) if File.extname(data) == '.xcdatamodel'
       end
 
       builder.build
@@ -139,8 +129,8 @@ module HotCocoa
       copy_sources
       copy_resources
       compile_data_models
-      deploy if deploy?
-      copy_icon_file if icon
+      deploy if config.deploy?
+      copy_icon_file if config.icon_exists?
     end
 
     def add_source_path source_file_pattern
@@ -156,14 +146,16 @@ module HotCocoa
     end
 
     def add_data_model model
-      Dir.glob(model).each { |data| data_models << data }
+      Dir.glob(model).each do |data|
+        data_models << data
+      end
     end
 
 
     private
 
     def check_for_bundle_root
-      FileUtils.rm_rf bundle_root if File.exist?(bundle_root) && overwrite?
+      FileUtils.rm_rf bundle_root if File.exist?(bundle_root) && config.overwrite?
     end
 
     def build_bundle_structure
@@ -197,7 +189,7 @@ module HotCocoa
           destination.gsub!(/.xib/, '.nib')
           puts `ibtool --compile #{destination} #{resource}`
         else
-          FileUtils.cp_r(resource, destination)
+          FileUtils.cp_r resource, destination
         end
       end
     end
@@ -209,28 +201,29 @@ module HotCocoa
     end
 
     def copy_icon_file
-      FileUtils.cp(icon, icon_file) unless File.exist?(icon_file)
+      FileUtils.cp config.icon, icon_file
     end
 
     def write_pkg_info_file
-      File.open(pkg_info_file, 'wb') { |f| f.write "#{type}#{signature}" }
+      File.open(pkg_info_file, 'wb') { |f| f.write "#{config.type}#{config.signature}" }
     end
 
     def write_info_plist_file
+      # http://developer.apple.com/library/mac/#documentation/General/Reference/InfoPlistKeyReference/Articles/AboutInformationPropertyListFiles.html%23//apple_ref/doc/uid/TP40009254-SW1
       info = {
-        'CFBundleName'                  => name,
-        'CFBundleIdentifier'            => identifier,
-        'CFBundleVersion'               => version,
-        'CFBundlePackageType'           => type,
-        'CFBundleSignature'             => signature,
-        'CFBundleExecutable'            => objective_c_executable_file,
-        'CFBundleDevelopmentRegion'     => 'English',
-        'CFBundleInfoDictionaryVersion' => '6.0',
-        'NSPrincipalClass'              => 'NSApplication',
-        'LSUIElement'                   => agent,
-        'LSMinimumSystemVersion'        => '10.6.7',
+        CFBundleName:                  config.name,
+        CFBundleIdentifier:            config.identifier,
+        CFBundleVersion:               config.version,
+        CFBundlePackageType:           config.type,
+        CFBundleSignature:             config.signature,
+        CFBundleExecutable:            objective_c_executable_file,
+        CFBundleDevelopmentRegion:     'English',
+        CFBundleInfoDictionaryVersion: '6.0',
+        NSPrincipalClass:              'NSApplication',
+        LSUIElement:                   config.agent,
+        LSMinimumSystemVersion:        '10.6.7', # should match MacRuby
       }
-      info['CFBundleIconFile'] = "#{name}.icns" if icon
+      info[:CFBundleIconFile] = config.icon if config.icon_exists?
 
       File.open(info_plist_file, 'w') { |f| f.write info.to_plist }
     end
@@ -240,6 +233,7 @@ module HotCocoa
       `macruby_deploy --embed #{options} #{bundle_root}`
     end
 
+    # @todo something better than puts `gcc`
     def build_executable
       File.open(objective_c_source_file, 'wb') do |f|
         f.write %{
@@ -304,7 +298,7 @@ NSApplicationMain(0, nil)
     end
 
     def icon_file
-      File.join(resources_root, "#{name}.icns")
+      File.join(resources_root, "#{config.name}.icns")
     end
 
     def pkg_info_file
@@ -312,7 +306,7 @@ NSApplicationMain(0, nil)
     end
 
     def objective_c_executable_file
-      name.gsub(/\s+/, '')
+      config.name.gsub(/\s+/, '')
     end
 
     def objective_c_source_file
