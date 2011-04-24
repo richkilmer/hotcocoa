@@ -126,16 +126,6 @@ module HotCocoa
       builder.build
     end
 
-    # Used by the "Embed MacRuby" Xcode target.
-    def self.deploy path
-
-      deployer = new
-      Dir.chdir(File.dirname(path)) do
-        deployer.name = File.basename(path, '.app')
-        deployer.deploy
-      end
-    end
-
     def initialize
       @sources     = []
       @resources   = []
