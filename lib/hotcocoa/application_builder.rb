@@ -248,12 +248,12 @@ module HotCocoa
       }
       info['CFBundleIconFile'] = "#{name}.icns" if icon
 
-      File.open(info_plist_file, 'w') { |f| f.puts info.to_plist }
+      File.open(info_plist_file, 'w') { |f| f.write info.to_plist }
     end
 
     def build_executable
       File.open(objective_c_source_file, 'wb') do |f|
-        f.puts %{
+        f.write %{
           #import <MacRuby/MacRuby.h>
 
           int main(int argc, char *argv[])
@@ -269,7 +269,7 @@ module HotCocoa
     # Borrow rb_main from MacRuby Xcode templates
     def write_ruby_main
       File.open(main_ruby_source_file, 'wb') do |f|
-        f.puts <<-EOF
+        f.write <<-EOF
 # Borrowed from the MacRuby sources on April 18, 2011
 framework 'Cocoa'
 
