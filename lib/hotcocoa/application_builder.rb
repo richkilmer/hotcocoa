@@ -240,7 +240,7 @@ module HotCocoa
         'CFBundleVersion'               => version,
         'CFBundlePackageType'           => type,
         'CFBundleSignature'             => signature,
-        'CFBundleExecutable'            => name.gsub(/\s+/, ''),
+        'CFBundleExecutable'            => objective_c_executable_file,
         'CFBundleDevelopmentRegion'     => 'English',
         'CFBundleInfoDictionaryVersion' => '6.0',
         'NSPrincipalClass'              => 'NSApplication',
@@ -322,7 +322,7 @@ NSApplicationMain(0, nil)
     end
 
     def objective_c_executable_file
-      name.gsub(/ /, '')
+      name.gsub(/\s+/, '')
     end
 
     def objective_c_source_file
