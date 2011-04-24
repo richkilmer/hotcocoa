@@ -128,7 +128,6 @@ module HotCocoa
 
     # Used by the "Embed MacRuby" Xcode target.
     def self.deploy path
-      raise "Given path `#{path}' does not exist" unless File.exist?(path)
 
       deployer = new
       Dir.chdir(File.dirname(path)) do
