@@ -143,11 +143,6 @@ module HotCocoa
       copy_icon_file if icon
     end
 
-    def deploy
-      options = "#{ '--no-stdlib --gem hotcocoa' unless stdlib }"
-      `macruby_deploy --embed #{options} #{name}.app`
-    end
-
     def add_source_path source_file_pattern
       Dir.glob(source_file_pattern).each do |source_file|
         sources << source_file
@@ -238,6 +233,11 @@ module HotCocoa
       info['CFBundleIconFile'] = "#{name}.icns" if icon
 
       File.open(info_plist_file, 'w') { |f| f.write info.to_plist }
+    end
+
+    def deploy
+      options = "#{ '--no-stdlib --gem hotcocoa' unless config.stdlib }"
+      `macruby_deploy --embed #{options} #{bundle_root}`
     end
 
     def build_executable
