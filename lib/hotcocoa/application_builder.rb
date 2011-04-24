@@ -175,12 +175,11 @@ module HotCocoa
       Dir.glob(model).each { |data| data_models << data }
     end
 
+
     private
 
     def check_for_bundle_root
-      if File.exist?(bundle_root) && overwrite?
-        `rm -rf #{bundle_root}`
-      end
+      FileUtils.rm_rf bundle_root if File.exist?(bundle_root) && overwrite?
     end
 
     def build_bundle_structure
