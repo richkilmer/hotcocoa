@@ -1,6 +1,10 @@
 AppConfig = HotCocoa::ApplicationBuilder::Configuration.new("config/build.yml")
 
-# @todo add rake::compiletask
+require 'rake/compiletask'
+Rake::CompileTask do |t|
+  t.files   = AppConfig.sources.map { |pattern| FileList[pattern] }.flatten
+  t.verbose = true
+end
 
 desc "Build a deployable version of the application"
 task :deploy => [:clean] do
