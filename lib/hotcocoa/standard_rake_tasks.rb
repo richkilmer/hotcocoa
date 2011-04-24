@@ -1,4 +1,4 @@
-AppConfig = HotCocoa::ApplicationBuilder::Configuration.new("config/build.yml")
+AppConfig = HotCocoa::ApplicationBuilder::Configuration.new( 'config/build.yml' )
 
 require 'rake/compiletask'
 Rake::CompileTask do |t|
@@ -6,22 +6,22 @@ Rake::CompileTask do |t|
   t.verbose = true
 end
 
-desc "Build a deployable version of the application"
 task :deploy => [:clean] do
   HotCocoa::ApplicationBuilder.build(AppConfig, deploy: true)
+desc 'Build a deployable version of the application'
 end
 
-desc "Build the application"
+desc 'Build the application'
 task :build do
-  HotCocoa::ApplicationBuilder.build(AppConfig)
+  HotCocoa::ApplicationBuilder.build AppConfig
 end
 
-desc "Build and execute the application"
+desc 'Build and execute the application'
 task :run => [:build] do
   `"./#{AppConfig.name}.app/Contents/MacOS/#{AppConfig.name.gsub(/ /, '')}"`
 end
 
-desc "Cleanup build files"
+desc 'Cleanup build files'
 task :clean do
   `/bin/rm -rf "#{AppConfig.name}.app"`
 end
