@@ -1,14 +1,15 @@
+# -*- coding: utf-8 -*-
 # Object.full_const_get was taken from the ‘extlib’ project:
 # http://github.com/sam/extlib which is released under a MIT License and
 # copyrighted by Sam Smoot (2008).
 
 class Object
 
-  # @param name<String> The name of the constant to get, e.g. "Merb::Router".
-  #
-  # @return <Object> The constant corresponding to the name.
-  def full_const_get(name)
-    list = name.split("::")
+  # @param [String] name The name of the constant to get,
+  #  e.g. "HotCocoa::Mappings"
+  # @return The constant corresponding to the name, if it exists
+  def full_const_get name
+    list = name.split('::')
     list.shift if list.first.empty?
     obj = self
 
@@ -20,4 +21,5 @@ class Object
 
     obj
   end
+
 end
