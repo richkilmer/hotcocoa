@@ -6,9 +6,9 @@ Rake::CompileTask do |t|
   t.verbose = true
 end
 
-task :deploy => [:clean] do
-  HotCocoa::ApplicationBuilder.build(AppConfig, deploy: true)
 desc 'Build a deployable version of the application'
+task :deploy do
+  HotCocoa::ApplicationBuilder.build AppConfig, deploy: true
 end
 
 desc 'Build the application'
