@@ -6,7 +6,7 @@
 
 This is a fork of HotCocoa that is, at the moment, very unstable and
 broken. I am fixing things, adding tests, documentation, and todo
-items as get more familiar with the source.
+items as I get more familiar with the source.
 
 Eventually, maybe, this will be stable and up to date with the latest
 MacRuby version.
