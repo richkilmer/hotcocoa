@@ -226,7 +226,7 @@ module HotCocoa
         LSUIElement:                   config.agent,
         LSMinimumSystemVersion:        '10.6.7', # should match MacRuby
       }
-      info[:CFBundleIconFile] = config.icon if config.icon_exists?
+      info[:CFBundleIconFile] = icon_file if config.icon_exists?
 
       File.open(info_plist_file, 'w') { |f| f.write info.to_plist }
     end
