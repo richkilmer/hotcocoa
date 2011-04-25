@@ -68,7 +68,7 @@ module HotCocoa
         yml          = YAML.load(File.read(file))
         @name        = yml['name'] # mandatory
         @identifier  = yml['identifier'] # mandatory
-        @icon        = yml['icon'] # mandatory
+        @icon        = yml['icon']
         @version     = yml['version']     || '1.0'
         @sources     = yml['sources']     || [] # this should be mandatory?
         @resources   = yml['resources']   || []
