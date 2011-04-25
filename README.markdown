@@ -1,18 +1,32 @@
-= hotcocoa
+# hotcocoa
 
-* http://github.com/ferrous26/hotcocoa
+* [http://github.com/ferrous26/hotcocoa](http://github.com/ferrous26/hotcocoa)
 
-== DESCRIPTION:
+## NOTE
 
-HotCocoa is a thin, idiomatic Ruby layer that sits above Cocoa and other frameworks. HotCocoa used to be included in MacRuby but is now managed as a separate gem.  This will allow HotCocoa to accept contributions and evolve more quickly. To see more information on HotCocoa (including tutorial) see http://macruby.org.
+This is a fork of HotCocoa that is, at the moment, very unstable and
+broken. I am fixing things, adding tests, documentation, and todo
+items as get more familiar with the source.
 
-== INSTALL:
+Eventually, maybe, this will be stable and up to date with the latest
+MacRuby version.
+
+## DESCRIPTION:
+
+HotCocoa is a thin, idiomatic Ruby layer that sits above Cocoa and
+other frameworks. HotCocoa used to be included in MacRuby but is now
+managed as a separate gem.  This will allow HotCocoa to accept
+contributions and evolve more quickly. To see more information on
+HotCocoa (including tutorial) see
+[http://macruby.org](http://macruby.org).
+
+## INSTALL:
 
 * sudo macgem install hotcocoa
 
 (Please note 'macgem' instead of 'gem')
 
-== LICENSE:
+## LICENSE:
 
 (The MIT License)
 
