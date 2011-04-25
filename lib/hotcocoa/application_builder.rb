@@ -85,6 +85,9 @@ module HotCocoa
       end
     end
 
+    # @return [HotCocoa::ApplicationBuilder::Configuration] the cached
+    #  app configuration options
+    attr_accessor :config
 
     # @return [Boolean] Whether or not to build the app bundle for deployment
     #  by calling `macruby_deploy` on the generated app bundle
