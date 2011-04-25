@@ -1,6 +1,0 @@
-- update build system
-	- use macruby_deploy as much as possible
-
-- fix all failing tests
-- add mapping for NSNetService and NSNetServiceBrowser
-
