@@ -36,7 +36,7 @@ HotCocoa::Mappings.map :window => :NSWindow do
       size = (options.delete(:size) || [400,400])
       width, height = size
 
-      screen_frame = NSScreen.screens[0].visibleFrame
+      screen_frame = NSScreen.mainScreen.visibleFrame
       center = options.delete(:center)
 
       x = screen_frame.origin.x + (center ? (screen_frame.size.width - width) / 2 : 30)
