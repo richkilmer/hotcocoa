@@ -9,18 +9,19 @@ Gem::Specification.new do |s|
   s.description   =<<-EOS
 HotCocoa is a Cocoa mapping library for MacRuby.  It simplifies the use of complex Cocoa classes using DSL techniques.
   EOS
-  s.author        = ['Richard Kilmer', 'Mark Rada']
+  s.authors       = ['Richard Kilmer',     'Mark Rada']
   s.email         = ['rich@infoether.com', 'mrada@marketcircle.com']
   s.homepage      = 'http://github.com/ferrous26/hotcocoa'
   s.licenses      = ['MIT']
+  s.has_rdoc      = 'yard'
+  s.bindir        = 'bin'
+  s.executables  << 'hotcocoa'
 
-  s.require_paths    = ['lib']
-  s.bindir           = ['bin']
-  s.executables      = ['hotcocoa']
-
-  s.files            = Dir.glob("{lib,template,test,bin}/**/*") + ['History.txt']
+  s.files            = Dir.glob("{lib,template,bin}/**/*")
   s.test_files       = Dir.glob('test/**/*.rb')
-  s.extra_rdoc_files = [ 'Rakefile', 'README.rdoc' ]
+  s.extra_rdoc_files = [ 'Rakefile', 'README.markdown', 'History.txt' ]
 
-  s.add_development_dependency 'minitest-macruby-pride',  ['~> 2.2.0']
+  s.add_development_dependency 'minitest-macruby-pride', ['~> 2.2.0']
+  s.add_development_dependency 'yard',                   ['~> 0.6.8']
+  s.add_development_dependency 'redcarpet',              ['~> 1.11.0']
 end
