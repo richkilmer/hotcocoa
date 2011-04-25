@@ -1,0 +1,6 @@
+--no-cache
+--no-output
+--verbose
+--markup markdown
+--readme README.markdown
+lib/**/*.rb

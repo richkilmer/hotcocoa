@@ -39,3 +39,6 @@ task :console do
   irb = ENV['RUBY_VERSION'] ? 'irb' : 'macirb'
   sh "#{irb} -Ilib -rhotcocoa"
 end
+
+require 'yard'
+YARD::Rake::YardocTask.new
