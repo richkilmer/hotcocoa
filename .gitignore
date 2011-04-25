@@ -1,2 +1,4 @@
 *.app
 *.gem
+.yardoc
+Gemfile.lock
