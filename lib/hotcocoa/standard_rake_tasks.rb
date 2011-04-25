@@ -1,7 +1,7 @@
 AppConfig = HotCocoa::ApplicationBuilder::Configuration.new( 'config/build.yml' )
 
 require 'rake/compiletask'
-Rake::CompileTask do |t|
+Rake::CompileTask.new do |t|
   t.files   = AppConfig.sources.map { |pattern| FileList[pattern] }.flatten
   t.verbose = true
 end
