@@ -3,6 +3,9 @@ require   'set'
 
 STDOUT.reopen(IO.for_fd(NSFileHandle.fileHandleWithStandardError.fileDescriptor.to_i, 'w'))
 
+##
+# HotCocoa is a Cocoa mapping library for MacRuby. It simplifies the use
+# of complex Cocoa classes using DSL techniques.
 module HotCocoa
   Views = {}
 end
