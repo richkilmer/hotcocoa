@@ -1,40 +1,49 @@
 # Originally imported from the MacRuby sources
 
-class TestMappings < MiniTest::Unit::TestCase
 
+class TestMappingsTypes < MiniTest::Unit::TestCase
+  include HotCocoa
+
+  def test_has_two_Hash_attributes_named_mappings_and_frameworks
+    assert Mappings.mappings.is_a?(Hash)
+    assert Mappings.frameworks.is_a?(Hash)
+  end
+
+end
+
+
+class TestMappingsMappings < MiniTest::Unit::TestCase
   include HotCocoa
 
   def teardown
     Mappings.mappings[:klass] = nil
   end
 
-  def test_should_have_two_Hash_attributes_named_mappings_and_frameworks
-    assert Mappings.mappings.is_a?(Hash)
-    assert Mappings.frameworks.is_a?(Hash)
-  end
-
-  def test_should_create_a_mapping_to_a_class_with_a_Class_instance_given_to #map" do
-    Mappings.map(:klass => SampleClass) {}
+  def test_creates_a_mapping_to_a_class_with_a_Class_instance_given_to_map
+    Mappings.map( klass: SampleClass ) { }
     assert_equal SampleClass, Mappings.mappings[:klass].control_class
   end
 
-  def test_should_create_a_mapping_to_a_class_with_a_string_name_of_the_class_given_to_map
-    Mappings.map(:klass => 'SampleClass') {}
+  def test_creates_a_mapping_to_a_class_with_a_String_given_to_map
+    Mappings.map( klass: 'SampleClass' ) { }
     assert_equal SampleClass, Mappings.mappings[:klass].control_class
   end
 
-  def test_should_create_a_mapping_to_a_class_with_a_symbol_name_of_the_class_given_to_map
-    Mappings.map(:klass => :SampleClass) {}
+  def test_creates_a_mapping_to_a_class_with_a_Symbol_given_to_map
+    Mappings.map( klass: :SampleClass ) { }
     assert_equal SampleClass, Mappings.mappings[:klass].control_class
   end
 
-  def test_should_register_the_key_in_the_options_given_to_map_as_the_builder_method
-    Mappings.map(:klass => SampleClass) {}
+  def test_registers_the_first_key_in_the_options_given_to_map_as_the_builder_method
+    Mappings.map( klass: SampleClass ) { }
+    assert_equal Mappings.mappings[:klass].builder_method, :klass
+
+    Mappings.map( klass: SampleClass, other_key: 'value' ) {}
     assert_equal Mappings.mappings[:klass].builder_method, :klass
   end
 
-  def test_should_use_the_block_given_to_map_as_the_control_module_body
-    Mappings.map(:klass => SampleClass) do
+  def test_uses_the_block_given_to_map_as_the_control_module_body
+    Mappings.map( klass: SampleClass ) do
       def a_control_module_instance_method; end
     end
 
