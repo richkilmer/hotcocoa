@@ -277,7 +277,7 @@ NSApplicationMain(0, nil)
     end
 
     def bundle_root
-      "#{name}.app"
+      "#{config.name}.app"
     end
 
     def contents_root
