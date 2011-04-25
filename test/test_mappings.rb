@@ -1,4 +1,4 @@
-# Imported from the MacRuby sources
+# Originally imported from the MacRuby sources
 
 class Mock
   def call!
@@ -16,11 +16,9 @@ class TestMappings < MiniTest::Unit::TestCase
 
   def teardown
     Mappings.mappings[:klass] = nil
-    Mappings.frameworks["theframework"] = nil
-    Mappings.loaded_frameworks.delete('theframework')
   end
 
-  def test_should_have_two_Hash_attributes_named #mappings and #frameworks" do
+  def test_should_have_two_Hash_attributes_named_mappings_and_frameworks
     assert Mappings.mappings.is_a?(Hash)
     assert Mappings.frameworks.is_a?(Hash)
   end
@@ -54,6 +52,13 @@ class TestMappings < MiniTest::Unit::TestCase
             instance_methods.include?(:a_control_module_instance_method)
   end
 
+end
+
+
+class TestMap < MiniTest::Unit::TestCase
+
+  include HotCocoa
+
   def test_should_create_a_mapping_to_a_class_in_a_framework_with_map
     mock = Mock.new
 
@@ -63,6 +68,29 @@ class TestMappings < MiniTest::Unit::TestCase
     Mappings.frameworks["theframework"].last.call
 
     assert mock.called?
+  end
+
+  def test_reload
+    file = File.join(`git rev-parse --show-toplevel`.chomp,
+                     'lib/hotcocoa/mappings/test.rb')
+    File.open(file,'w') { |f| f.puts 'class MyTestClass; end' }
+
+    HotCocoa::Mappings.reload
+    assert defined?(:MyTestClass)
+  ensure
+    FileUtils.rm file
+  end
+
+end
+
+
+class TestFrameworkLazyLoading < MiniTest::Unit::TestCase
+
+  include HotCocoa
+
+  def teardown
+    Mappings.frameworks['theframework'] = nil
+    Mappings.loaded_frameworks.delete('theframework')
   end
 
   def test_should_execute_the_frameworks_callbacks_when_framework_loaded_is_called
@@ -98,11 +126,12 @@ class TestMappings < MiniTest::Unit::TestCase
   end
 
   def test_should_keep_a_unique_list_of_loaded_frameworks
-    assert_difference("Mappings.loaded_frameworks.length", +1) do
-      Mappings.framework_loaded('TheFramework')
-      Mappings.framework_loaded('TheFramework')
-    end
+    frameworks_before = Mappings.loaded_frameworks.length
+    Mappings.framework_loaded('TheFramework')
+    Mappings.framework_loaded('TheFramework')
+    frameworks_after = Mappings.loaded_frameworks.length
 
+    assert (frameworks_after - frameworks_before) == 1
     assert Mappings.loaded_frameworks.include?('theframework')
   end
 
@@ -110,19 +139,9 @@ class TestMappings < MiniTest::Unit::TestCase
     Mappings.framework_loaded('TheFramework')
     assert Mappings.loaded_framework?('TheFramework')
 
-    assert !Mappings.loaded_framework?('IHasNotBeenLoaded')
-    assert !Mappings.loaded_framework?(nil)
-    assert !Mappings.loaded_framework?('')
+    refute Mappings.loaded_framework?('IHasNotBeenLoaded')
+    refute Mappings.loaded_framework?(nil)
+    refute Mappings.loaded_framework?('')
   end
 
-  def test_reload
-    file = File.join(`git rev-parse --show-toplevel`.chomp,
-                     'lib/hotcocoa/mappings/test.rb')
-    File.open(file,'w') { |f| f.puts 'class MyTestClass; end' }
-
-    HotCocoa::Mappings.reload
-    assert defined?(:MyTestClass)
-  ensure
-    FileUtils.rm file
-  end
 end
