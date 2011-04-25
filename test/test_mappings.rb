@@ -63,10 +63,10 @@ class TestMap < MiniTest::Unit::TestCase
   def test_reload
     file = File.join(`git rev-parse --show-toplevel`.chomp,
                      'lib/hotcocoa/mappings/test.rb')
-    File.open(file,'w') { |f| f.puts 'class MyTestClass; end' }
+    File.open(file,'w') { |f| f.puts 'class MyReloadingTestClass; end' }
 
     HotCocoa::Mappings.reload
-    assert defined?(:MyTestClass)
+    assert defined?(:MyReloadingTestClass)
   ensure
     FileUtils.rm file
   end
