@@ -1,9 +1,12 @@
 module HotCocoa
+
   module Mappings
+
+    ##
+    # Load __EVERYTHING__ in `hotcocoa/lib/hotcocoa/mappings`, recursively
     def self.reload
-      Dir.glob(File.join(File.dirname(__FILE__), "mappings", "**", "*.rb")).each do |mapping|
-        require mapping
-      end
+      mappings = File.join(File.dirname(__FILE__), "mappings", "**", "*.rb")
+      Dir.glob(mappings).each { |mapping| require mapping }
     end
 
     module TargetActionConvenience

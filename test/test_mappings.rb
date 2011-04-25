@@ -116,6 +116,13 @@ class TestMappings < MiniTest::Unit::TestCase
   end
 
   def test_reload
-    skip 'Pending.'
+    file = File.join(`git rev-parse --show-toplevel`.chomp,
+                     'lib/hotcocoa/mappings/test.rb')
+    File.open(file,'w') { |f| f.puts 'class MyTestClass; end' }
+
+    HotCocoa::Mappings.reload
+    assert defined?(:MyTestClass)
+  ensure
+    FileUtils.rm file
   end
 end
