@@ -1,15 +1,5 @@
 # Originally imported from the MacRuby sources
 
-class Mock
-  def call!
-    @called = true
-  end
-
-  def called?
-    @called
-  end
-end
-
 class TestMappings < MiniTest::Unit::TestCase
 
   include HotCocoa
@@ -60,14 +50,14 @@ class TestMap < MiniTest::Unit::TestCase
   include HotCocoa
 
   def test_should_create_a_mapping_to_a_class_in_a_framework_with_map
-    mock = Mock.new
+    map_block_called = false
 
     Mappings.map(:klass => 'SampleClass', :framework => 'TheFramework') do
-      mock.call!
+      map_block_called = true
     end
     Mappings.frameworks["theframework"].last.call
 
-    assert mock.called?
+    assert map_block_called
   end
 
   def test_reload
@@ -94,14 +84,16 @@ class TestFrameworkLazyLoading < MiniTest::Unit::TestCase
   end
 
   def test_should_execute_the_frameworks_callbacks_when_framework_loaded_is_called
-    mocks = Array.new(2) { Mock.new }
-
-    mocks.each do |mock|
-      Mappings.on_framework('TheFramework') { mock.call! }
+    mocks = Array.new(2) do
+      mock = MiniTest::Mock.new
+      mock.expect :call, true, []
+      mock
     end
+
+    mocks.each { |mock| Mappings.on_framework('TheFramework') do mock.call end }
     Mappings.framework_loaded('TheFramework')
 
-    mocks.each { |mock| assert mock.called? }
+    mocks.each { |mock| assert mock.verify }
   end
 
   def test_should_do_nothing_if_the_framework_loaded_is_not_registered
