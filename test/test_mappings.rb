@@ -54,22 +54,22 @@ class TestMappingsMappings < MiniTest::Unit::TestCase
 end
 
 
-class TestMap < MiniTest::Unit::TestCase
-
+class TestMappingsMap < MiniTest::Unit::TestCase
   include HotCocoa
 
-  def test_should_create_a_mapping_to_a_class_in_a_framework_with_map
+  # @todo This test needs to be expanded upon
+  def test_creates_a_mapping_to_a_class_in_a_framework
     map_block_called = false
 
-    Mappings.map(:klass => 'SampleClass', :framework => 'TheFramework') do
+    Mappings.map( klass: 'SampleClass', framework: 'OpenCL' ) do
       map_block_called = true
     end
-    Mappings.frameworks["theframework"].last.call
+    Mappings.frameworks['OpenCL'].last.call
 
     assert map_block_called
   end
 
-  def test_reload
+  def test_reload_loads_all_mappings
     file = File.join(`git rev-parse --show-toplevel`.chomp,
                      'lib/hotcocoa/mappings/test.rb')
     File.open(file,'w') { |f| f.puts 'class MyReloadingTestClass; end' }
@@ -84,49 +84,34 @@ end
 
 
 class TestFrameworkLazyLoading < MiniTest::Unit::TestCase
-
   include HotCocoa
 
-  def teardown
-    Mappings.frameworks['theframework'] = nil
-    Mappings.loaded_frameworks.delete('theframework')
-  end
-
-  def test_should_execute_the_frameworks_callbacks_when_framework_loaded_is_called
+  def test_executes_the_frameworks_callbacks_when_framework_loaded_is_called
     mocks = Array.new(2) do
       mock = MiniTest::Mock.new
       mock.expect :call, true, []
       mock
     end
 
-    mocks.each { |mock| Mappings.on_framework('TheFramework') do mock.call end }
-    Mappings.framework_loaded('TheFramework')
+    mocks.each { |mock| Mappings.on_framework('IMCore') do mock.call end }
+    framework 'IMCore'
 
     mocks.each { |mock| assert mock.verify }
   end
 
-  def test_should_resolve_a_constant_when_a_framework_thats_registered_with #map, is loaded" do
-    assert_nothing_raised(NameError) do
-      Mappings.map(:klass => 'ClassFromFramework', :framework => 'TheFramework') {}
-    end
-
-    # The mapping should not yet exist
-    assert_nil Mappings.mappings[:klass]
-
-    # now we actually define the class and fake the loading of the framework
-    eval "class ::ClassFromFramework; end"
-    Mappings.framework_loaded('TheFramework')
-
-    # It should be loaded by now
-    assert_equal ClassFromFramework, Mappings.mappings[:klass].control_class
+  # e.g. To define a movie view you need QTKit loaded, but you will use
+  #      the symbols from QTKit during the definition before the
+  #      framework is loaded
+  def test_resolves_a_constant_from_a_framework_that_has_not_been_loaded
+    Mappings.map( cw_config: 'CWConfiguration', framework: 'CoreWLAN' ) { }
+    # The mapping should not yet exist, so it will not resolve
+    assert_nil Mappings.mappings[:cw_config]
+    framework 'CoreWLAN'
+    assert_equal CWConfiguration, Mappings.mappings[:cw_config].control_class
   end
 
-  end
-
-  def test_should_return_whether_or_not_a_framework_has_been_loaded_yet
-    Mappings.framework_loaded('TheFramework')
-    assert Mappings.loaded_framework?('TheFramework')
-
+  def test_returns_whether_or_not_a_framework_has_been_loaded_yet
+    assert Mappings.loaded_framework?('Cocoa')
     refute Mappings.loaded_framework?('IHasNotBeenLoaded')
     refute Mappings.loaded_framework?(nil)
     refute Mappings.loaded_framework?('')
