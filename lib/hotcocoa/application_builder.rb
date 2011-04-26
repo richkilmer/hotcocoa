@@ -132,7 +132,7 @@ module HotCocoa
       copy_sources
       copy_resources
       compile_data_models
-      deploy if config.deploy?
+      embed_framework if deploy?
       copy_icon_file if config.icon_exists?
     end
 
@@ -231,9 +231,9 @@ module HotCocoa
       File.open(info_plist_file, 'w') { |f| f.write info.to_plist }
     end
 
-    def deploy
       options = "#{ '--no-stdlib --gem hotcocoa' unless config.stdlib }"
       `macruby_deploy --embed #{options} #{bundle_root}`
+    def embed_framework
     end
 
     # @todo something better than puts `gcc`
