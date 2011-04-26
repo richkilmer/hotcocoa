@@ -231,9 +231,9 @@ module HotCocoa
       File.open(info_plist_file, 'w') { |f| f.write info.to_plist }
     end
 
-      options = "#{ '--no-stdlib --gem hotcocoa' unless config.stdlib }"
-      `macruby_deploy --embed #{options} #{bundle_root}`
     def embed_framework
+      options = config.stdlib ? '' : '--no-stdlib'
+      `macruby_deploy --embed --gem hotcocoa #{options} #{bundle_root}`
     end
 
     # @todo something better than puts `gcc`
