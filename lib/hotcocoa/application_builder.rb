@@ -13,6 +13,7 @@ module HotCocoa
     # @todo support CFBundleShortVersionString
     # @todo support NSHumanReadableCopyright
     # @todo support arbitrary info.plist key/value pairs
+    # @todo support embedding other gems
     class Configuration
 
       # Name of the app
