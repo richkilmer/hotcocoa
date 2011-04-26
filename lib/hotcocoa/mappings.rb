@@ -87,11 +87,6 @@ module HotCocoa
       @frameworks ||= {}
     end
 
-    # Returns the Set of loaded frameworks.
-    def self.loaded_frameworks
-      @loaded_frameworks ||= Set.new
-    end
-
     # Registers a given framework as being loaded.
     def self.framework_loaded
       frameworks.keys.each do |key|

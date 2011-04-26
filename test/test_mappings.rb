@@ -121,14 +121,6 @@ class TestFrameworkLazyLoading < MiniTest::Unit::TestCase
     assert_equal ClassFromFramework, Mappings.mappings[:klass].control_class
   end
 
-  def test_should_keep_a_unique_list_of_loaded_frameworks
-    frameworks_before = Mappings.loaded_frameworks.length
-    Mappings.framework_loaded('TheFramework')
-    Mappings.framework_loaded('TheFramework')
-    frameworks_after = Mappings.loaded_frameworks.length
-
-    assert (frameworks_after - frameworks_before) == 1
-    assert Mappings.loaded_frameworks.include?('theframework')
   end
 
   def test_should_return_whether_or_not_a_framework_has_been_loaded_yet
