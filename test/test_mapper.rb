@@ -35,18 +35,6 @@ class TestMapper < MiniTest::Unit::TestCase
     skip 'Pending.'
   end
 
-  def test_each_control_ancestor
-    skip 'Pending.'
-  end
-
-  def test_map_class
-    skip 'Pending.'
-  end
-
-  def test_map_instances_of
-    skip 'Pending.'
-  end
-
   private
 
   def sample_mapper(flush = false)
