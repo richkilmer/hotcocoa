@@ -38,7 +38,6 @@ module Kernel
   }
 
   ##
-  # @todo better error generation
   # @todo encoding format can be pushed upstream?
   #
   # override macruby's built-in {kernel#to_plist} method to support
@@ -58,7 +57,7 @@ module Kernel
     data  = NSPropertyListSerialization.dataFromPropertyList  self,
                                                       format: format_const,
                                             errorDescription: error
-    error[0] ? raise( Exception, error.localizedDescription ) : data.to_str
+    error[0] ? raise( Exception, error[0] ) : data.to_str
   end
 
 end
