@@ -1,5 +1,4 @@
 framework 'Cocoa'
-require   'set'
 
 STDOUT.reopen(IO.for_fd(NSFileHandle.fileHandleWithStandardError.fileDescriptor.to_i, 'w'))
 
