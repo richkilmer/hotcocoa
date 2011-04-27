@@ -26,7 +26,6 @@ module HotCocoa
   end
 end
 
-class Object
   def to_plist(format=:xml)
     format = case format
       when :xml
@@ -44,5 +43,6 @@ class Object
                                                      format:format,
                                            errorDescription:nil)
     NSMutableString.alloc.initWithData(data, encoding:NSUTF8StringEncoding)
+module Kernel
   end
 end
