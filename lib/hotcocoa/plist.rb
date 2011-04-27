@@ -34,7 +34,7 @@ module Kernel
   # A mapping, lol
   PLIST_FORMATS = {
     xml:    NSPropertyListXMLFormat_v1_0,
-    binary: nspropertylistbinaryformat_v1_0
+    binary: NSPropertyListBinaryFormat_v1_0
   }
 
   ##
