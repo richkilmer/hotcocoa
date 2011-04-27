@@ -15,7 +15,7 @@ module HotCocoa
     module TargetActionConvenience
 
       ##
-      #
+      # @todo testing
       def on_action= behavior
         if target && (
             target.instance_variable_get(:@action_behavior) ||
@@ -37,6 +37,8 @@ module HotCocoa
         setAction('perform_action:')
       end
 
+      ##
+      # @todo testing
       def on_action &behavior
         self.on_action = behavior
         self
@@ -44,6 +46,7 @@ module HotCocoa
     end
 
     ##
+    # @todo testing
     # @todo Needs docs for all possible invocations and examples!
     #
     # Create a new mapping. There are several ways to call this method
@@ -73,6 +76,8 @@ module HotCocoa
     end
 
     ##
+    # @todo testing
+    #
     # Registers `mapped_name` as a {Mapper#builder_method} for the given
     # `mapped_value`. The `block` is used as the {Mapper#builder_method}'s
     # body.
@@ -82,6 +87,8 @@ module HotCocoa
     end
 
     ##
+    # @todo testing
+    #
     # Registers `mapped_name` as a {Mapper#builder_method} for the given
     # `constant` string which will be looked up. The `block` is used as
     # the {Mapper#builder_method}'s body.
