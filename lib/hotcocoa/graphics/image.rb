@@ -470,7 +470,7 @@ module HotCocoa::Graphics
         ".jpeg" => NSJPEGFileType,
         ".tif" => NSTIFFFileType
       }
-      format = image_types[File.extname(filename)]
+      format = image_types[File.extname(filename).downcase]
       raise ArgumentError, "unknown file type" if format.nil?
 
       bitmapRep = NSBitmapImageRep.alloc.initWithCIImage(@ciimage)
