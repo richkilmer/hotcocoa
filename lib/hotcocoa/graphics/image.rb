@@ -462,6 +462,22 @@ module HotCocoa::Graphics
       colors
     end
 
+    def save(filename, properties = nil)
+      image_types = {
+        ".png" => NSPNGFileType,
+        ".gif" => NSGIFFileType,
+        ".jpg" => NSJPEGFileType,
+        ".jpeg" => NSJPEGFileType,
+        ".tif" => NSTIFFFileType
+      }
+      format = image_types[File.extname(filename).downcase]
+      raise ArgumentError, "unknown file type" if format.nil?
+
+      bitmapRep = NSBitmapImageRep.alloc.initWithCIImage(@ciimage)
+      blob = bitmapRep.representationUsingType(format, properties:properties)
+      blob.writeToFile(filename, atomically:true)
+    end
+
     private
 
     # apply the named CoreImage filter using a hash of parameters
