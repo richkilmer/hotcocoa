@@ -19,6 +19,7 @@ else
   file_to_copy = nil
 end
 
+require 'rubygems'
 require 'hotcocoa/template'
 HotCocoa::Template.copy_to(project_name, project_name.split("_").collect(&:capitalize).join(" "))
 
