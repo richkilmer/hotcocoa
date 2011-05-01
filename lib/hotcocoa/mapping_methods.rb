@@ -1,4 +1,7 @@
 module HotCocoa
+
+  ##
+  # The set of methods that are available when creating a mapping.
   module MappingMethods
 
     ##
