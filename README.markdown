@@ -4,12 +4,9 @@
 
 ## NOTE
 
-This is a fork of HotCocoa that is, at the moment, very unstable and
-broken. I am fixing things, adding tests, documentation, and todo
-items as I get more familiar with the source.
-
-Eventually, maybe, this will be stable and up to date with the latest
-MacRuby version.
+This is a fork of HotCocoa that is having documentation and regression
+tests added to it. If you find issues with hot cocoa you can open
+issues and I will *try* to fix them.
 
 ## DESCRIPTION:
 
@@ -22,9 +19,9 @@ HotCocoa (including tutorial) see
 
 ## INSTALL:
 
-* sudo macgem install hotcocoa
+* sudo macrake install
 
-(Please note 'macgem' instead of 'gem')
+This fork is only available from source right now.
 
 ## LICENSE:
 
