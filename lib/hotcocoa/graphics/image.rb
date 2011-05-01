@@ -462,13 +462,28 @@ module HotCocoa::Graphics
       colors
     end
 
+    # Save the CIImage into file.
+    # @param [String] filename
+    #   The File Name that save the image.
+    # @param [Hash] properties
+    #   The properties that appoint the image quality, etc.
+    # @example
+    #   image = HotCocoa::Graphics::Image.new("input.jpg")
+    #   image.resize(64, 64)
+    #   properties = {"NSImageCompressionFactor" => 0.75}
+    #   image.save("output.jpg", properties)
+    # @return
+    #   true if the image could be written; otherwise, false.
     def save(filename, properties = nil)
       image_types = {
+        ".bmp" => NSBMPFileType,
         ".png" => NSPNGFileType,
         ".gif" => NSGIFFileType,
         ".jpg" => NSJPEGFileType,
         ".jpeg" => NSJPEGFileType,
-        ".tif" => NSTIFFFileType
+        ".tif" => NSTIFFFileType,
+        ".j2k" => NSJPEG2000FileType,
+        ".jp2" => NSJPEG2000FileType,
       }
       format = image_types[File.extname(filename).downcase]
       raise ArgumentError, "unknown file type" if format.nil?
