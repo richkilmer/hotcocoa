@@ -1,12 +1,21 @@
 # hotcocoa
 
 * [http://github.com/ferrous26/hotcocoa](http://github.com/ferrous26/hotcocoa)
+* [Documentation](http://rdoc.info/github/ferrous26/hotcocoa/master/frames) WIP
 
 ## Note
 
 This is a fork of HotCocoa that is having documentation and regression
 tests added to it. If you find issues with hot cocoa you can open
 issues and I will *try* to fix them.
+
+## Documentation
+
+Documentation is a work in progress; some of the documentation is
+being ported from the MacRuby website where it is still available.
+
+The documentation does not include the mappings right now due to the
+way that mappings are implemented; a YARD plug-in is needed for that.
 
 ## Description
 
