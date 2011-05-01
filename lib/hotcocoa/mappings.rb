@@ -45,6 +45,8 @@ module HotCocoa
       end
     end
 
+    # @group Creating a new mapping
+
     ##
     # @todo testing
     # @todo Needs docs for all possible invocations and examples!
@@ -101,6 +103,8 @@ module HotCocoa
     def self.mappings
       @mappings ||= {}
     end
+
+    # @group Lazy framework loading
 
     ##
     # Registers a callback for after the specified framework has been
