@@ -15,7 +15,7 @@ module HotCocoa
     #
     # @overload defaults
     #   Get the hash of defaults
-    #   @return [Hash,nil] The hash of
+    #   @return [Hash,nil]
     # @overload defaults key1: value1, key2: value2, ...
     #   Set the hash of defaults
     #   @param [Hash]
@@ -51,7 +51,7 @@ module HotCocoa
     #   button :state => NSOnState
     #
     # @param [Symbol] name
-    # @param [Hash{ Symbol => Constant }] constants
+    # @param [Hash{Symbol=>Constant}] constants
     def constant name, constants
       constants_map[name] = constants
     end

@@ -55,7 +55,7 @@ module HotCocoa
     # for different cases, only some are currently documented.
     #
     # @overload map( window: NSWindow )
-    # @overload map( movie_view: 'QTMovieView', framework: 'QTKit' )
+    # @overload map( window: 'NSWindow', framework: 'AppKit' )
     #   In order to define a mapping without loading the dependant framework
     def self.map options, &block
       framework    = options.delete(:framework)

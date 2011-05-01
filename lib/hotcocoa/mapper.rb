@@ -232,6 +232,8 @@ module HotCocoa
         result
       end
 
+      ##
+      # Borrowed from Active Support.
       def self.underscore string
         new_string = string.gsub(/::/, '/')
         new_string.gsub!(/([A-Z]+)([A-Z][a-z])/, '\1_\2')
@@ -241,6 +243,8 @@ module HotCocoa
         new_string
       end
 
+      ##
+      # Borrowed from Active Support.
       def self.camel_case string
         string.gsub /(?:^|_)(.)/ do $1.upcase end
       end

@@ -1,7 +1,10 @@
 require 'hotcocoa'
 
 class HotCocoaApplication
-  attr_accessor :shared_application, :application_controller, :controllers
+
+  attr_accessor :shared_application
+  attr_accessor :application_controller
+  attr_accessor :controllers
 
   include HotCocoa
 

@@ -2,13 +2,13 @@
 
 * [http://github.com/ferrous26/hotcocoa](http://github.com/ferrous26/hotcocoa)
 
-## NOTE
+## Note
 
 This is a fork of HotCocoa that is having documentation and regression
 tests added to it. If you find issues with hot cocoa you can open
 issues and I will *try* to fix them.
 
-## DESCRIPTION:
+## Description
 
 HotCocoa is a thin, idiomatic Ruby layer that sits above Cocoa and
 other frameworks. HotCocoa used to be included in MacRuby but is now
@@ -17,13 +17,13 @@ contributions and evolve more quickly. To see more information on
 HotCocoa (including tutorial) see
 [http://macruby.org](http://macruby.org).
 
-## INSTALL:
+## Install
 
 * sudo macrake install
 
 This fork is only available from source right now.
 
-## LICENSE:
+## License
 
 (The MIT License)
 

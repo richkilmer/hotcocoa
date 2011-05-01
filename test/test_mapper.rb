@@ -35,6 +35,7 @@ class TestMapper < MiniTest::Unit::TestCase
     skip 'Pending.'
   end
 
+
   private
 
   def sample_mapper(flush = false)
