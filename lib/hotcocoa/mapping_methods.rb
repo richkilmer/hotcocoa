@@ -28,10 +28,41 @@ module HotCocoa
       end
     end
 
-    def constant(name, constants)
+    ##
+    # Create a mapping of a constant type to an enumeration of constants.
+    #
+    # A constant mapping allows the use of short symbol names to be used
+    # in place of long constant names in the scope of the wrapped class.
+    #
+    # You can create as many different constant mappings as you want, or
+    # you can create no mappings; you can still use the original constants.
+    #
+    # Constant mappings are inherited.
+    #
+    # @example Normal usage
+    #   constant :state, {
+    #     on:    NSOnState,
+    #     off:   NSOffState,
+    #     mixed: NSMixedState
+    #   }
+    #   # then you can initalize an object with the following
+    #   button :state => :on
+    #   # instead of
+    #   button :state => NSOnState
+    #
+    # @param [Symbol] name
+    # @param [Hash{ Symbol => Constant }] constants
+    def constant name, constants
       constants_map[name] = constants
     end
 
+    ##
+    # @todo Can we use attr_accessor :constants_map instead?
+    #
+    # A mapping of constant mappings that were created with calls to
+    # {#constant}.
+    #
+    # @return [Hash{ Symbol => Hash{ Symbol => Constant } }]
     def constants_map
       @constants_map ||= {}
     end
