@@ -38,3 +38,5 @@ class __APPLICATION_NAME__
   def on_bring_all_to_front(menu)
   end
 end
+
+__APPLICATION_NAME__.new.start
