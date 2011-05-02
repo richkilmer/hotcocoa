@@ -36,10 +36,10 @@ class HotCocoaApplication
   def controller(controller_name)
     controller_name_string = controller_name.to_s
 
-    controller_class = if Object.const_get(controller_name_string !~ /_/ && controller_name_string =~ /[A-Z]+.*/
+    controller_class = if Object.const_get(controller_name_string !~ /_/ && controller_name_string =~ /[A-Z]+.*/)
       controller_name_string
     else
-      controller_name_string.split('_').map {|e| e.capitalize}.join)
+      controller_name_string.split('_').map {|e| e.capitalize}.join
     end
 
     @controllers[controller_name] || create_controller_instance(controller_name, controller_class)
