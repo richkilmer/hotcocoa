@@ -1,5 +1,5 @@
 require 'rake'
-task :default => :build
+task :default => [:compile, :build]
 
 require 'rake/compiletask'
 Rake::CompileTask.new do |t|
