@@ -1,5 +1,5 @@
 require 'rake'
-task :default => :test
+task :default => :build
 
 require 'rake/compiletask'
 Rake::CompileTask.new do |t|
@@ -40,5 +40,9 @@ task :console do
   sh "#{irb} -Ilib -rhotcocoa"
 end
 
-require 'yard'
-YARD::Rake::YardocTask.new
+begin
+  require 'yard'
+  YARD::Rake::YardocTask.new
+rescue LoadError
+  warn "yard (or a dependency) not available. Install it with: macgem install yard"
+end
