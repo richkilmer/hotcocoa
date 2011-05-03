@@ -67,7 +67,39 @@ module HotCocoa
       @constants_map ||= {}
     end
 
-    def custom_methods(&block)
+    ##
+    # Custom methods are modules that are mixed into the class being
+    # mapped; they provide idiomatic Ruby methods for the mapped
+    # Objective-C class instances.
+    #
+    # @example
+    #   custom_methods do
+    #     def bezel= value
+    #       setBezelStyle(value)
+    #     end
+    #     def on?
+    #       state == NSOnState
+    #     end
+    #   end
+    #
+    # The first method in the example, #bezel=, provides a better method
+    # name than #setBezelStyle. Although we could provide idiomatic Ruby
+    # methods for every Objective-C method, the number of these methods
+    # is huge. The general principle is to customize where the custom
+    # method provides something better or new functionality, not just to
+    # add snake\_cased versions of Objective-C methods.
+    #
+    # Custom methods, like constant mappings, are inherited by
+    # subclasses and can be used as the keys for arguments to object
+    # constructors.
+    #
+    # @yield A block that will be evaluated in the context of a new module
+    #
+    # @overload custom_methods do ... end
+    #   Create and cache a new module to mix into the mapped class
+    # @overload custom_methods
+    #   @return [Module,nil] Return the Module if it exists, otherwise nil.
+    def custom_methods &block
       if block
         @custom_methods = Module.new
         @custom_methods.module_eval(&block)
