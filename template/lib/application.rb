@@ -1,4 +1,4 @@
-require 'rubygems'
+require 'rubygems' # disable this for a deployed application
 require 'hotcocoa'
 
 class __APPLICATION_NAME__

@@ -62,7 +62,7 @@ module HotCocoa
     # A mapping of constant mappings that were created with calls to
     # {#constant}.
     #
-    # @return [Hash{ Symbol => Hash{ Symbol => Constant } }]
+    # @return [Hash{Symbol=>Hash{Symbol=>Constant}}]
     def constants_map
       @constants_map ||= {}
     end

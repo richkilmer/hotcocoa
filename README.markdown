@@ -7,7 +7,7 @@
 
 This is a fork of HotCocoa that is having documentation and regression
 tests added to it. If you find issues with hot cocoa you can open
-issues and I will *try* to fix them.
+issues and I will try to fix them.
 
 ## Documentation
 
