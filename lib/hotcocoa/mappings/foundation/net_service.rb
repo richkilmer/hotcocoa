@@ -51,11 +51,12 @@ HotCocoa::Mappings.map bonjour_service: NSNetService do
   #                      an empty string which advertises in all domains
   # @key [String] type specify the type of service to advertise, such as
   #                    '_http._tcp.' for an HTTP service or '_ssh._tcp.'
-  #                    for SSH
+  #                    for SSH; can only be set at initialization
   # @key [String] name specify the name for the service, this can be free
-  #                    form but should avoid non-ascii characters
-  # @key [Fixnum] port specify the port to advertise the service on, this
-  #                    paramter is optional
+  #                    form but should avoid non-ascii characters; can
+  #                    only be set at initialization
+  # @key [Fixnum] port specify the port to advertise the service on, must
+  #                    be set at initialization
   def init_with_options service, opts
     selector = 'initWithDomain:type:name:'
     args     = [ opts.delete(:domain),
