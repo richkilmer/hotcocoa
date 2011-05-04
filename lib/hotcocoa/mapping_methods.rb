@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 module HotCocoa
 
   ##
@@ -108,12 +109,103 @@ module HotCocoa
       end
     end
 
-    def delegating(name, options)
+    ##
+    # Delegation is a pattern that is used pervasively in Cocoa to
+    # facilitate customization of controls; it is a powerful tool, but
+    # is a little more complex to setup than custom methods.
+    #
+    # Normally, you would implement the delegate methods in a class of
+    # your own. You would then set an instance of that class as the
+    # delegate of the control.
+    #
+    # In Hot Cocoa, delegate methods are replaced with Ruby blocks and
+    # the need to set a delegate is completely removed.
+    #
+    # @example Comparison
+    #
+    #   # the traditional way of delegation:
+    #   class MyDelegate
+    #     def windowWillClose(sender)
+    #       # perform something
+    #     end
+    #   end
+    #   window.setDelegate(MyDelegate.new)
+    #
+    #   # is simplified to the Ruby code:
+    #   window.will_close { 'performed something' }
+    #
+    # Each method for a delegate has to be mapped with an individual
+    # delegating call.
+    #
+    # To enable this, you map individual delegate selectors to a string
+    # name, then map parameters that are passed to that delegate method
+    # to the block parameters.
+    #
+    # @example Simple delegation
+    #
+    #   HotCocoa::Mapping.map(window: NSWindow) do
+    #     delegating 'windowWillClose:', :to => :will_close
+    #   end
+    #
+    # This creates a `#will_close` method that accepts a block.
+    #
+    # The generated `#windowWillClose` method calls that block when
+    # Cocoa calls the `#windowWillClose` method.
+    #
+    # When a delegate needs to forward parameters to the block, the
+    # definition becomes a little more complex:
+    #
+    # @example Delegation with parameters
+    #
+    #   HotCocoa::Mapping.map(window: NSWindow) do
+    #       delegating 'window:willPositionSheet:usingRect:',
+    #                  :to         => :will_position_sheet,
+    #                  :parameters => [:willPositionSheet, :usingRect]
+    #   end
+    #
+    #   # using the method would look like:
+    #   window.will_position_sheet {|sheet, rect| ... }
+    #
+    # The `:parameters` list contains the corresponding selector name
+    # from the Objective-C selector. Even though the delegate method
+    # normally has three parameters (window, willPositionSheet, and
+    # usingRect), the block will only be passed the last two.
+    #
+    # It’s also possible to pre-process a parameter, in cases where you
+    # have to invoke a more complex calling on the parameter:
+    #
+    # @example Pre-processing a parameter
+    #
+    #   HotCocoa::Mapping.map(:window => :NSWindow do
+    #     delegating "windowDidExpose:",
+    #       :to         => :did_expose,
+    #       :parameters => ["windowDidExpose.userInfo['NSExposedRect']"]
+    #   end
+    #
+    #   # using this method would look like:
+    #   window.did_expose { | rect| ... }
+    #
+    # Here we want to walk the first parameter’s `userInfo` dictionary,
+    # get the `NSExposedRect` rectangle, and pass it as a parameter to the
+    # `#did_expose` block.
+    #
+    # @param [String,Symbol] name
+    # @param [Hash{:to=>:ruby_name, :parameters=>Array<String>}] options
+    #   the `:to' key must be included, but `:parameters` is optional
+    def delegating name, options
       delegate_map[name] = options
     end
 
+    ##
+    # @todo Can we use attr_accessor :delegate_map instead?
+    #
+    # A mapping of constant mappings that were created with calls to
+    # {#delegating}.
+    #
+    # @return [Hash{Symbol=>Hash{Symbol=>SEL}}]
     def delegate_map
       @delegate_map ||= {}
     end
+
   end
 end
