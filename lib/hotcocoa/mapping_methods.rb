@@ -119,7 +119,8 @@ module HotCocoa
     # delegate of the control.
     #
     # In Hot Cocoa, delegate methods are replaced with Ruby blocks and
-    # the need to set a delegate is completely removed.
+    # the need to set a delegate is completely removed, see the
+    # "Comparison" example.
     #
     # @example Comparison
     #
@@ -139,7 +140,7 @@ module HotCocoa
     #
     # To enable this, you map individual delegate selectors to a string
     # name, then map parameters that are passed to that delegate method
-    # to the block parameters.
+    # to the block parameters as in the "Simple Delegation" example.
     #
     # @example Simple delegation
     #
@@ -153,7 +154,8 @@ module HotCocoa
     # Cocoa calls the `#windowWillClose` method.
     #
     # When a delegate needs to forward parameters to the block, the
-    # definition becomes a little more complex:
+    # definition becomes a little more complex as shown in the
+    # "Delegation with parameters" example.
     #
     # @example Delegation with parameters
     #
@@ -172,11 +174,12 @@ module HotCocoa
     # usingRect), the block will only be passed the last two.
     #
     # It’s also possible to pre-process a parameter, in cases where you
-    # have to invoke a more complex calling on the parameter:
+    # have to invoke a more complex calling on the parameter as shown in
+    # the "Pre-processing a parameter" example.
     #
     # @example Pre-processing a parameter
     #
-    #   HotCocoa::Mapping.map(:window => :NSWindow do
+    #   HotCocoa::Mapping.map(:window => :NSWindow) do
     #     delegating "windowDidExpose:",
     #       :to         => :did_expose,
     #       :parameters => ["windowDidExpose.userInfo['NSExposedRect']"]
@@ -191,7 +194,7 @@ module HotCocoa
     #
     # @param [String,Symbol] name
     # @param [Hash{:to=>:ruby_name, :parameters=>Array<String>}] options
-    #   the `:to' key must be included, but `:parameters` is optional
+    #   the `:to` key must be included, but `:parameters` is optional
     def delegating name, options
       delegate_map[name] = options
     end
