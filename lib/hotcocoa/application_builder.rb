@@ -13,7 +13,6 @@ module HotCocoa
     # @todo support CFBundleShortVersionString
     # @todo support NSHumanReadableCopyright
     # @todo support arbitrary info.plist key/value pairs
-    # @todo support embedding other gems
     class Configuration
 
       # Name of the app
@@ -60,6 +59,10 @@ module HotCocoa
       #  'emal'
       attr_reader :signature
 
+      # @return [Array<String>] An array of gem names to embed in the app
+      #   bundle during deployment
+      attr_reader :gems
+
       # @return [Boolean] Always make a clean build of the app
       attr_reader :overwrite
       alias_method :overwrite?, :overwrite
@@ -74,6 +77,7 @@ module HotCocoa
         @sources     = yml['sources']     || [] # this should be mandatory?
         @resources   = yml['resources']   || []
         @data_models = yml['data_models'] || []
+        @gems        = yml['gems']        || []
         @type        = yml['type']        || 'APPL'
         @signature   = yml['signature']   || '????'
         @overwrite   = yml['overwrite'] == true  ? true  : false
@@ -232,9 +236,10 @@ module HotCocoa
       File.open(info_plist_file, 'w') { |f| f.write info.to_plist }
     end
 
-    def embed_framework
-      options = config.stdlib ? '' : '--no-stdlib'
-      `macruby_deploy --embed --gem hotcocoa #{options} #{bundle_root}`
+    def embed_framework # and also gems
+      options = config.stdlib ? '' : '--no-stdlib '
+      config.gems.each { |gem| options << "--gem #{gem} " }
+      puts `macruby_deploy --embed --gem hotcocoa #{options} #{bundle_root}`
     end
 
     # @todo something better than puts `gcc`
