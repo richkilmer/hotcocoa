@@ -1,7 +1,7 @@
 ##
 # @todo In this test class, there is a base set of tests
 #       that each mapping should have
-class TestBonjourService < MiniTest::Unit::TestCase
+class TestBonjourMappings < MiniTest::Unit::TestCase
   include HotCocoa
 
   def test_defaults_kick_in
@@ -52,7 +52,25 @@ class TestBonjourService < MiniTest::Unit::TestCase
   end
 
   def test_delegating_resolving
-    skip 'TODO'
+    service = bonjour_service type:'_fake._tcp.',
+                              name:'HotCocoa Test',
+                              port: 9091
+    browser = bonjour_browser
+
+    found_service = nil
+    browser.did_find_service { |new_service, more|
+      found_service = new_service
+    }
+
+    service.publish
+    browser.search_for_services '_fake._tcp.'
+    run_run_loop
+
+    refute_nil found_service
+    found_service.resolve
+
+    run_run_loop
+    assert_equal 9091, found_service.port
   end
 
   def test_delegation_TXT_record
