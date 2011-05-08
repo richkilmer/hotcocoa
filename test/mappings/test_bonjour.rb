@@ -55,17 +55,16 @@ class TestBonjourMappings < MiniTest::Unit::TestCase
     service = bonjour_service type:'_fake._tcp.',
                               name:'HotCocoa Test',
                               port: 9091
-    browser = bonjour_browser
-
+    service.publish
     found_service = nil
+
+    browser = bonjour_browser
     browser.did_find_service { |new_service, more|
       found_service = new_service
     }
-
-    service.publish
     browser.search_for_services '_fake._tcp.'
-    run_run_loop
 
+    run_run_loop
     refute_nil found_service
     found_service.resolve
 
