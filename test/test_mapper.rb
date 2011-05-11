@@ -35,6 +35,12 @@ class TestMapper < MiniTest::Unit::TestCase
     skip 'Pending.'
   end
 
+  def test_custom_methods_override_existing_methods
+    service = HotCocoa.bonjour_service type:'_test._tcp.', name:'HotCocoa Test'
+    assert_respond_to service, :resolve
+    assert_equal -1, service.method(:resolve).arity
+  end
+
 
   private
 
