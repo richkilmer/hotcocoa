@@ -22,6 +22,13 @@ HotCocoa::Mappings.map bonjour_service: NSNetService do
     no_auto_rename: NSNetServiceNoAutoRename
   }
 
+  custom_methods do
+    def resolve timeout = 60.0
+      puts 'lol'
+      resolveWithTimeout(timeout)
+    end
+  end
+
   delegating 'netServiceWillPublish:',
              :to => :will_publish
   delegating 'netService:didNotPublish:',
