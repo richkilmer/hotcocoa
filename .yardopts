@@ -4,3 +4,5 @@
 --markup markdown
 --readme README.markdown
 lib/**/*.rb
+-
+History.txt
