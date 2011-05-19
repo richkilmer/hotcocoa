@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 module HotCocoa
 
   ##
@@ -6,6 +7,8 @@ module HotCocoa
   module MappingMethods
 
     ##
+    # @method defaults key: value, other_key: other_value, ...
+    #
     # You can provide a hash of default options in the definition of
     # your mapping. This is very useful for many Cocoa classes, because
     # there are so many options to set at initialization.
@@ -30,6 +33,8 @@ module HotCocoa
     end
 
     ##
+    # @method constant group, [constant1, constant2, ...]
+    #
     # Create a mapping of a constant type to an enumeration of constants.
     #
     # A constant mapping allows the use of short symbol names to be used
@@ -58,6 +63,8 @@ module HotCocoa
     end
 
     ##
+    # @method constants_map
+    #
     # @todo Can we use attr_accessor :constants_map instead?
     #
     # A mapping of constant mappings that were created with calls to
@@ -69,6 +76,8 @@ module HotCocoa
     end
 
     ##
+    # @method custom_methods do ... end
+    #
     # Custom methods are modules that are mixed into the class being
     # mapped; they provide idiomatic Ruby methods for the mapped
     # Objective-C class instances.
@@ -110,6 +119,8 @@ module HotCocoa
     end
 
     ##
+    # @method delegating objc_method, :to => ruby_method, :parameters => [dudes]
+    #
     # Delegation is a pattern that is used pervasively in Cocoa to
     # facilitate customization of controls; it is a powerful tool, but
     # is a little more complex to setup than custom methods.
@@ -200,6 +211,8 @@ module HotCocoa
     end
 
     ##
+    # @method delegate_map
+    #
     # @todo Can we use attr_accessor :delegate_map instead?
     #
     # A mapping of constant mappings that were created with calls to
