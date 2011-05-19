@@ -18,9 +18,8 @@ HotCocoa is a Cocoa mapping library for MacRuby.  It simplifies the use of compl
   s.executables  << 'hotcocoa'
 
   s.files            = Dir.glob("{lib,template,bin}/**/*")
-  s.test_files       = Dir.glob('test/**/*.rb')
+  s.test_files       = Dir.glob('test/**/*.rb') + ['Rakefile']
   s.extra_rdoc_files = [
-                        'Rakefile',
                         'README.markdown',
                         'History.txt',
                         '.yardopts'
