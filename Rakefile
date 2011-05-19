@@ -1,4 +1,5 @@
 task :default => :build
+task :build   => :gem
 
 require 'rake/compiletask'
 Rake::CompileTask.new do |t|
