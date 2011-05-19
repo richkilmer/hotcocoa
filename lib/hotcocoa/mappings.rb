@@ -48,7 +48,7 @@ module HotCocoa
     # @group Creating a new mapping
 
     ##
-    # @macro [attach] map
+    # @macro [new] HotCocoa::Mappings.map
     #   Maps $1
     #
     # @method map :hotcocoa_name => cocoa_class, [framework: 'FrameworkName'] do ... end
