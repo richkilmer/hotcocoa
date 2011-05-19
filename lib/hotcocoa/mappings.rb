@@ -48,6 +48,8 @@ module HotCocoa
     # @group Creating a new mapping
 
     ##
+    # @method map :hotcocoa_name => cocoa_class, [framework: 'FrameworkName'] do ... end
+    #
     # @todo testing
     # @todo Needs docs for all possible invocations and examples!
     #
