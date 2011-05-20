@@ -1,10 +1,12 @@
 task :default => :build
 task :build   => :gem
 
-require 'rake/compiletask'
-Rake::CompileTask.new do |t|
-  t.files   = FileList["lib/**/*.rb"]
-  t.verbose = true
+if MACRUBY_VERSION.to_f > 0.10
+  require 'rake/compiletask'
+  Rake::CompileTask.new do |t|
+    t.files   = FileList["lib/**/*.rb"]
+    t.verbose = true
+  end
 end
 
 desc 'Clean MacRuby binaries'

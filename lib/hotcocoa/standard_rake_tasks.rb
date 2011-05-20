@@ -1,9 +1,11 @@
 AppConfig = HotCocoa::ApplicationBuilder::Configuration.new( 'config/build.yml' )
 
-require 'rake/compiletask'
-Rake::CompileTask.new do |t|
-  t.files   = AppConfig.sources.map { |pattern| FileList[pattern] }.flatten
-  t.verbose = true
+if MACRUBY_VERSION.to_f > 0.10
+  require 'rake/compiletask'
+  Rake::CompileTask.new do |t|
+    t.files   = AppConfig.sources.map { |pattern| FileList[pattern] }.flatten
+    t.verbose = true
+  end
 end
 
 desc 'Build a deployable version of the application'
