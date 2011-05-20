@@ -32,6 +32,7 @@ Rake::GemPackageTask.new(spec) do |pkg|
 end
 
 require 'rubygems/installer'
+desc 'Install hotcocoa'
 task :install => :gem do
   Gem::Installer.new("pkg/#{spec.file_name}").install
 end
