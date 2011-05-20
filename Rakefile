@@ -33,7 +33,7 @@ end
 
 require 'rubygems/installer'
 task :install => :gem do
-  Gem::Installer.new(spec.file_name).install
+  Gem::Installer.new("pkg/#{spec.file_name}").install
 end
 
 desc 'Start up IRb with Hot Cocoa loaded'
