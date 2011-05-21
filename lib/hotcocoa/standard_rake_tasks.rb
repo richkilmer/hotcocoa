@@ -1,6 +1,6 @@
 AppConfig = HotCocoa::ApplicationBuilder::Configuration.new( 'config/build.yml' )
 
-if MACRUBY_VERSION.to_f > 0.10
+if MACRUBY_REVISION.match(/^git commit/)
   require 'rake/compiletask'
   Rake::CompileTask.new do |t|
     t.files   = AppConfig.sources.map { |pattern| FileList[pattern] }.flatten
