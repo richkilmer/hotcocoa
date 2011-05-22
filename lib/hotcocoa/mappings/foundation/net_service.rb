@@ -1,3 +1,9 @@
+class NSNetService
+  def resolve timeout = 60.0
+    resolveWithTimeout(timeout)
+  end
+end
+
 HotCocoa::Mappings.map bonjour_service: NSNetService do
 
   defaults domain: ''
@@ -21,12 +27,6 @@ HotCocoa::Mappings.map bonjour_service: NSNetService do
   constant :options, {
     no_auto_rename: NSNetServiceNoAutoRename
   }
-
-  custom_methods do
-    def resolve timeout = 60.0
-      resolveWithTimeout(timeout)
-    end
-  end
 
   delegating 'netServiceWillPublish:',
              :to => :will_publish
