@@ -1,4 +1,7 @@
-AppConfig = HotCocoa::ApplicationBuilder::Configuration.new( 'config/build.yml' )
+unless defined?(AppConfigFile)
+  AppConfigFile = 'config/build.yml'
+end
+AppConfig = HotCocoa::ApplicationBuilder::Configuration.new(AppConfigFile)
 
 if MACRUBY_VERSION.to_f > 0.10
   require 'rake/compiletask'
