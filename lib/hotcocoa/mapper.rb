@@ -66,7 +66,6 @@ class HotCocoa::Mappings::Mapper
       map  = self.remap_constants(map)
       self.map_bindings = map.delete(:map_bindings)
 
-      default_empty_rect_used = (map[:frame].__id__ == CGRectZero.__id__)
       control = self.respond_to?(:init_with_options) ? self.init_with_options(self.control_class.alloc, map) : self.alloc_with_options(map)
 
       Views[guid] = control if guid
@@ -93,7 +92,7 @@ class HotCocoa::Mappings::Mapper
         end
       end
 
-      if default_empty_rect_used
+      if map[:frame].__id__ == CGRectZero.__id__
         control.sizeToFit if control.respondsToSelector(:sizeToFit)
       end
 
