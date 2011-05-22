@@ -55,7 +55,7 @@ class HotCocoa::Mappings::Mapper
 
     # the first two lines here seem silly, can we get rid of them?
     mod = (class << self; self; end)
-    mod.extend MappingMethods
+    mod.extend HotCocoa::MappingMethods
     mod.module_eval(&block)
 
     @control_module = mod
@@ -68,7 +68,7 @@ class HotCocoa::Mappings::Mapper
 
       control = self.respond_to?(:init_with_options) ? self.init_with_options(self.control_class.alloc, map) : self.alloc_with_options(map)
 
-      Views[guid] = control if guid
+      HotCocoa::Views[guid] = control if guid
       self.customize(control)
       map.each do |key, value|
         if control.respond_to?("#{key}=")
@@ -144,7 +144,7 @@ class HotCocoa::Mappings::Mapper
 
   def each_control_ancestor
     control_class.ancestors.reverse.each do |ancestor|
-      Mappings.mappings.values.each do |mapper|
+      HotCocoa::Mappings.mappings.values.each do |mapper|
         yield mapper if mapper.control_class == ancestor
       end
     end
