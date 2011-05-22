@@ -80,7 +80,7 @@ class HotCocoa::Mappings::Mapper
             control.send(new_key, value)
 
           else
-            control.send("#{key}")
+            control.send(key)
 
           end
         elsif control.respond_to?("set#{Mapper.camel_case(key)}")
@@ -100,7 +100,7 @@ class HotCocoa::Mappings::Mapper
         if self.respond_to?(:handle_block)
           self.handle_block(control, &control_block)
         else
-            control_block.call(control)
+          control_block.call(control)
         end
       end
       control
@@ -121,7 +121,7 @@ class HotCocoa::Mappings::Mapper
   def inherited_constants
     constants = {}
     each_control_ancestor do |ancestor|
-      constants = constants.merge(ancestor.control_module.constants_map)
+      constants.merge!(ancestor.control_module.constants_map)
     end
     constants
   end
@@ -129,7 +129,7 @@ class HotCocoa::Mappings::Mapper
   def inherited_delegate_methods
     delegate_methods = {}
     each_control_ancestor do |ancestor|
-      delegate_methods = delegate_methods.merge(ancestor.control_module.delegate_map)
+      delegate_methods.merge!(ancestor.control_module.delegate_map)
     end
     delegate_methods
   end
