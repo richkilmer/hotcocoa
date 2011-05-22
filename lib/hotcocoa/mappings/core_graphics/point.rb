@@ -1,9 +1,9 @@
 class CGPoint
   ##
-  # (see #carbonize!)
+  # (see #carbonize)
   #
   # This is done in-place, but will return nil if the point is not on a screen.
-  def flip!
+  def carbonize!
     NSScreen.screens.each do |screen|
       if NSPointInRect(self, screen.frame)
         self.y = screen.frame.size.height - self.y + (2 * screen.frame.origin.y)
@@ -12,7 +12,6 @@ class CGPoint
     end
     nil
   end
-  alias_method :carbonize!, :flip!
 
   ##
   # Assumes the point represents a point on a screen that treats the
@@ -22,10 +21,9 @@ class CGPoint
   # co-ordinates).
   #
   # @return [CGPoint,nil]
-  def flip
+  def carbonize
     point = self.dup
     point.carbonize!
     point
   end
-  alias_method :carbonize, :flip
 end
