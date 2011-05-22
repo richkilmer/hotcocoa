@@ -15,4 +15,7 @@ class MiniTest::Unit::TestCase
 end
 
 class SampleClass
+  def some_method
+    false
+  end
 end
