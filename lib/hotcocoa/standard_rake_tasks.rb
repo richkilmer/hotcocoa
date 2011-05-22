@@ -20,10 +20,10 @@ end
 
 desc 'Build and execute the application'
 task :run => [:build] do
-  `open "#{AppConfig.name}.app"`
+  sh "open '#{AppConfig.name}.app'"
 end
 
 desc 'Cleanup build files'
 task :clean do
-  `/bin/rm -rf "#{AppConfig.name}.app"`
+  sh "/bin/rm -rf '#{AppConfig.name}.app'"
 end
