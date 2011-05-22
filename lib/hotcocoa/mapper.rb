@@ -32,7 +32,7 @@ class HotCocoa::Mappings::Mapper
     attr_reader :delegate_modules
   end
 
-  @bindings_module = {}
+  @bindings_modules = {}
   @delegate_modules = {}
 
   attr_reader :control_class
