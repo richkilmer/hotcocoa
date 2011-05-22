@@ -72,19 +72,19 @@ class HotCocoa::Mappings::Mapper
       self.customize(control)
       map.each do |key, value|
         if control.respond_to?("#{key}=")
-          eval "control.#{key} = value"
+          control.send("#{key}=", value)
 
         elsif control.respond_to?(key)
           new_key = (key.start_with?('set') ? key : "set#{key[0].capitalize}#{key[1..-1]}")
           if control.respond_to?(new_key)
-            eval "control.#{new_key}(value)"
+            control.send(new_key, value)
 
           else
             control.send("#{key}")
 
           end
         elsif control.respond_to?("set#{Mapper.camel_case(key)}")
-          eval "control.set#{Mapper.camel_case(key)}(value)"
+          control.send("set#{Mapper.camel_case(key)}", value)
 
         else
           NSLog "Unable to map #{key} as a method"
