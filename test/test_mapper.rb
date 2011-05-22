@@ -4,7 +4,7 @@ class TestMapper < MiniTest::Unit::TestCase
 
   include HotCocoa::Mappings
 
-  def test_should_have_two_hash_attributes_named #bindings and #delegate" do
+  def test_should_have_two_hash_attributes_named_bindings_and_delegate
     assert Mapper.bindings_modules.is_a?(Hash)
     assert Mapper.delegate_modules.is_a?(Hash)
   end
@@ -37,8 +37,12 @@ class TestMapper < MiniTest::Unit::TestCase
 
   def test_custom_methods_override_existing_methods
     service = HotCocoa.bonjour_service type:'_test._tcp.', name:'HotCocoa Test'
-    assert_respond_to service, :resolve
     assert_equal -1, service.method(:resolve).arity
+
+    service = NSNetService.alloc.initWithDomain '',
+                                           type:'_test._tcp.',
+                                           name:'HotCocoa Test'
+    assert_equal 0, service.method(:resolve).arity
   end
 
 

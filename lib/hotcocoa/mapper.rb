@@ -2,6 +2,8 @@ module HotCocoa
 
   module Mappings
 
+    ##
+    # Does most of the heavy lifiting when it comes to HotCocoa mappings.
     class Mapper
 
       attr_reader :control_class
