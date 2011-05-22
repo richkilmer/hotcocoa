@@ -75,7 +75,7 @@ class HotCocoa::Mappings::Mapper
           eval "control.#{key} = value"
 
         elsif control.respond_to?(key)
-          new_key = (key.start_with?('set') ? key : "set#{key[0].capitalize}#{key[1..(key.length - 1)]}")
+          new_key = (key.start_with?('set') ? key : "set#{key[0].capitalize}#{key[1..-1]}")
           if control.respond_to?(new_key)
             eval "control.#{new_key}(value)"
 
