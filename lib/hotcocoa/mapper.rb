@@ -59,17 +59,18 @@ class HotCocoa::Mappings::Mapper
     mod.module_eval(&block)
 
     @control_module = mod
+    inst = self # why can't I get rid of this variable and just use self?!?
     HotCocoa.send(:define_method, builder_method) do |*args, &control_block|
       map  = (args.length == 1 ? args[0] : args[1]) || {}
       guid =  args.length == 1 ? nil     : args[0]
 
-      map  = self.remap_constants(map)
-      self.map_bindings = map.delete(:map_bindings)
+      map  = inst.remap_constants(map)
+      inst.map_bindings = map.delete(:map_bindings)
 
-      control = self.respond_to?(:init_with_options) ? self.init_with_options(self.control_class.alloc, map) : self.alloc_with_options(map)
+      control = inst.respond_to?(:init_with_options) ? inst.init_with_options(inst.control_class.alloc, map) : inst.alloc_with_options(map)
 
       HotCocoa::Views[guid] = control if guid
-      self.customize(control)
+      inst.customize(control)
       map.each do |key, value|
         if control.respond_to?("#{key}=")
           control.send("#{key}=", value)
@@ -97,8 +98,8 @@ class HotCocoa::Mappings::Mapper
       end
 
       if control_block
-        if self.respond_to?(:handle_block)
-          self.handle_block(control, &control_block)
+        if inst.respond_to?(:handle_block)
+          inst.handle_block(control, &control_block)
         else
           control_block.call(control)
         end
