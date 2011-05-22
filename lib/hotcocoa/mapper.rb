@@ -83,8 +83,8 @@ class HotCocoa::Mappings::Mapper
             control.send(key)
 
           end
-        elsif control.respond_to?("set#{Mapper.camel_case(key)}")
-          control.send("set#{Mapper.camel_case(key)}", value)
+        elsif control.respond_to?("set#{HotCocoa::Mappings::Mapper.camel_case(key)}")
+          control.send("set#{HotCocoa::Mappings::Mapper..camel_case(key)}", value)
 
         else
           NSLog "Unable to map #{key} as a method"
@@ -163,7 +163,7 @@ class HotCocoa::Mappings::Mapper
   end
 
   def delegate_module_for_control_class
-    unless Mapper.delegate_modules.has_key?(control_class)
+    unless HotCocoa::Mappings::Mapper.delegate_modules.has_key?(control_class)
       delegate_module = Module.new
       required_methods = []
       delegate_methods = inherited_delegate_methods
@@ -193,11 +193,12 @@ class HotCocoa::Mappings::Mapper
         EOM
       end
 
-      Mapper.delegate_modules[control_class] = delegate_module
+      HotCocoa::Mappings::Mapper.delegate_modules[control_class] = delegate_module
     end
 
-    Mapper.delegate_modules[control_class]
+    HotCocoa::Mappings::Mapper.delegate_modules[control_class]
   end
+
 
   def decorate_with_bindings_methods(control)
     return if control_class == NSApplication
@@ -205,7 +206,7 @@ class HotCocoa::Mappings::Mapper
   end
 
   def bindings_module_for_control(control)
-    return Mapper.bindings_modules[control_class] if Mapper.bindings_modules.has_key?(control_class)
+    return HotCocoa::Mappings::Mapper.bindings_modules[control_class] if HotCocoa::Mappings::Mapper.bindings_modules.has_key?(control_class)
 
     instance = if control == control_class
                  control_class.alloc.init
@@ -216,7 +217,7 @@ class HotCocoa::Mappings::Mapper
     bindings_module = Module.new
     instance.exposedBindings.each do |exposed_binding|
       bindings_module.module_eval <<-EOM
-        def #{Mapper.underscore(exposed_binding)}= value
+        def #{HotCocoa::Mappings::Mapper.underscore(exposed_binding)}= value
           if value.kind_of?(Hash)
             options = value.delete(:options)
             bind "#{exposed_binding}", toObject:value.keys.first, withKeyPath:value.values.first, options:options
@@ -227,7 +228,7 @@ class HotCocoa::Mappings::Mapper
       EOM
     end
 
-    Mapper.bindings_modules[control_class] = bindings_module
+    HotCocoa::Mappings::Mapper.bindings_modules[control_class] = bindings_module
     bindings_module
   end
 
@@ -249,4 +250,5 @@ class HotCocoa::Mappings::Mapper
     end
     result
   end
+
 end
