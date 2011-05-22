@@ -191,62 +191,62 @@ class HotCocoa::Mappings::Mapper
             @_delegate_builder.delegate_to(object, #{delegate_methods.values.map {|method| ":#{method[:to]}"}.join(', ')})
           end
         EOM
-
-        Mapper.delegate_modules[control_class] = delegate_module
       end
 
-      Mapper.delegate_modules[control_class]
+      Mapper.delegate_modules[control_class] = delegate_module
     end
 
-    def decorate_with_bindings_methods(control)
-      return if control_class == NSApplication
-      control.send(@extension_method, bindings_module_for_control(control)) if @map_bindings
-    end
+    Mapper.delegate_modules[control_class]
+  end
 
-    def bindings_module_for_control(control)
-      return Mapper.bindings_modules[control_class] if Mapper.bindings_modules.has_key?(control_class)
+  def decorate_with_bindings_methods(control)
+    return if control_class == NSApplication
+    control.send(@extension_method, bindings_module_for_control(control)) if @map_bindings
+  end
 
-      instance = if control == control_class
-                   control_class.alloc.init
-                 else
-                   control
-                 end
+  def bindings_module_for_control(control)
+    return Mapper.bindings_modules[control_class] if Mapper.bindings_modules.has_key?(control_class)
 
-      bindings_module = Module.new
-      instance.exposedBindings.each do |exposed_binding|
-        bindings_module.module_eval <<-EOM
-          def #{Mapper.underscore(exposed_binding)}= value
-            if value.kind_of?(Hash)
-              options = value.delete(:options)
-              bind "#{exposed_binding}", toObject:value.keys.first, withKeyPath:value.values.first, options:options
-            else
-              set#{exposed_binding.capitalize}(value)
-            end
+    instance = if control == control_class
+                 control_class.alloc.init
+               else
+                 control
+               end
+
+    bindings_module = Module.new
+    instance.exposedBindings.each do |exposed_binding|
+      bindings_module.module_eval <<-EOM
+        def #{Mapper.underscore(exposed_binding)}= value
+          if value.kind_of?(Hash)
+            options = value.delete(:options)
+            bind "#{exposed_binding}", toObject:value.keys.first, withKeyPath:value.values.first, options:options
+          else
+            set#{exposed_binding.capitalize}(value)
           end
-        EOM
-      end
-
-      Mapper.bindings_modules[control_class] = bindings_module
-      bindings_module
+        end
+      EOM
     end
 
-    def remap_constants tags
-      constants = inherited_constants
-      if control_module.defaults
-        control_module.defaults.each do |key, value|
-          tags[key] = value unless tags.has_key?(key)
-        end
-      end
+    Mapper.bindings_modules[control_class] = bindings_module
+    bindings_module
+  end
 
-      result = {}
-      tags.each do |tag, value|
-        if constants[tag]
-          result[tag] = value.kind_of?(Array) ? value.inject(0) { |a, i| a | constants[tag][i] } : constants[tag][value]
-        else
-          result[tag] = value
-        end
+  def remap_constants tags
+    constants = inherited_constants
+    if control_module.defaults
+      control_module.defaults.each do |key, value|
+        tags[key] = value unless tags.has_key?(key)
       end
-      result
     end
+
+    result = {}
+    tags.each do |tag, value|
+      if constants[tag]
+        result[tag] = value.kind_of?(Array) ? value.inject(0) { |a, i| a | constants[tag][i] } : constants[tag][value]
+      else
+        result[tag] = value
+      end
+    end
+    result
   end
 end
