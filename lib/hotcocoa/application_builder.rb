@@ -3,6 +3,7 @@ framework 'Foundation'
 require 'fileutils'
 require 'rbconfig'
 require 'yaml'
+require 'rake'
 
 module HotCocoa
 
@@ -141,26 +142,36 @@ module HotCocoa
       copy_icon_file if config.icon_exists?
     end
 
-    def add_source_path source_file_pattern
-      Dir.glob(source_file_pattern).each do |source_file|
-        sources << source_file
-      end
+    def add_source_path(source_file_pattern)
+      add_path(sources, source_file_pattern)
     end
 
-    def add_resource_path resource_file_pattern
-      Dir.glob(resource_file_pattern).each do |resource_file|
-        resources << resource_file
-      end
+    def add_resource_path(resource_file_pattern)
+      add_path(resources, resource_file_pattern)
     end
 
-    def add_data_model model
-      Dir.glob(model).each do |data|
-        data_models << data
-      end
+    def add_data_model(model)
+      add_path(data_models, model)
     end
 
 
     private
+
+    # Add paths identified by spec to the given collection. Used by
+    # add_source_path, add_resource_path, and add_data_model.
+    def add_path(collection, spec)
+      if spec.is_a?(Hash)
+        excludes = spec['excludes'] || []
+        includes = spec['includes'] || []
+        files = spec['files'] || spec['glob']
+        file_list = FileList[files]
+        [excludes].flatten.each do |exclusion| file_list.exclude(exclusion) end
+        [includes].flatten.each do |inclusion| file_list.include(inclusion) end
+      else
+        file_list = FileList[spec]
+      end
+      collection.concat(file_list.to_a)
+    end
 
     def check_for_bundle_root
       FileUtils.rm_rf bundle_root if File.exist?(bundle_root) && config.overwrite?
