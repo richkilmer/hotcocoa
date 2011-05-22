@@ -25,7 +25,7 @@ class HotCocoa::Mappings::Mapper
     ##
     # Borrowed from Active Support.
     def camel_case string
-      string.gsub /(?:^|_)(.)/ do $1.upcase end
+      string.to_s.gsub /(?:^|_)(.)/ do $1.upcase end
     end
 
     attr_reader :bindings_modules
@@ -84,8 +84,8 @@ class HotCocoa::Mappings::Mapper
             control.send("#{key}")
 
           end
-        elsif control.respond_to?("set#{Mapper.camel_case(key.to_s)}")
-          eval "control.set#{Mapper.camel_case(key.to_s)}(value)"
+        elsif control.respond_to?("set#{Mapper.camel_case(key)}")
+          eval "control.set#{Mapper.camel_case(key)}(value)"
 
         else
           NSLog "Unable to map #{key} as a method"
