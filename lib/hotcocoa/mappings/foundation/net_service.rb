@@ -24,7 +24,6 @@ HotCocoa::Mappings.map bonjour_service: NSNetService do
 
   custom_methods do
     def resolve timeout = 60.0
-      puts 'lol'
       resolveWithTimeout(timeout)
     end
   end
