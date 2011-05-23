@@ -3,10 +3,10 @@ module HotCocoa
   module Mappings
 
     ##
-    # Load __EVERYTHING__ in `hotcocoa/lib/hotcocoa/mappings`, recursively
+    # Load __EVERYTHING__ in `lib/hotcocoa/mappings`, recursively
     def self.reload
-      mappings = File.join(File.dirname(__FILE__), "mappings", "**", "*.rb")
-      Dir.glob(mappings).each { |mapping| require mapping }
+      mappings = File.join(File.dirname(__FILE__), 'mappings', '**', '*.rb')
+      Dir.glob(mappings).each { |mapping| require mapping.chomp!('.rb') }
     end
 
     ##
