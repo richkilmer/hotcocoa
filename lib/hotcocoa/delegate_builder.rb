@@ -15,7 +15,7 @@ class HotCocoa::DelegateBuilder
   def add_delegated_method block, selector_name, *parameters
     clear_delegate if required_methods.empty?
 
-    increment_method_count
+    @method_count += 1
     bind_block_to_delegate_instance_variable(block)
     create_delegate_method(selector_name, parameters)
 
@@ -29,10 +29,6 @@ class HotCocoa::DelegateBuilder
   end
 
   private
-
-  def increment_method_count
-    @method_count += 1
-  end
 
   def bind_block_to_delegate_instance_variable block
     delegate.instance_variable_set(block_instance_variable, block)
