@@ -59,15 +59,25 @@ class HotCocoa::DelegateBuilder
     "@block#{method_count}"
   end
 
+  ##
+  # Take an Objective-C selector and create a parameter list to be used
+  # in creating method's using #eval
+  #
+  # @example
+  #   parameterize_selector_name('myDelegateMethod') # => 'myDeletageMethod'
+  #   parameterize_selector_name('myDelegateMethod:withArgument:') # => 'myDeletageMethod p1, withArgumnet:p2'
+  #
+  # @param [String] selector_name
+  # @return [String]
   def parameterize_selector_name selector_name
     return selector_name unless selector_name.include?(':')
 
     params = selector_name.split(':')
-    result = "#{params.shift}(p1"
+    result = "#{params.shift} p1"
     params.each_with_index do |param, i|
       result << ", #{param}:p#{i + 2}"
     end
-    result + ')'
+    result
   end
 
   def parameter_values_for_mapping selector_name, parameters
