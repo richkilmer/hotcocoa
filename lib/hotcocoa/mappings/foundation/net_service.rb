@@ -1,3 +1,9 @@
+class NSNetService
+  def resolve timeout = 60.0
+    resolveWithTimeout(timeout)
+  end
+end
+
 HotCocoa::Mappings.map bonjour_service: NSNetService do
 
   defaults domain: ''
@@ -22,13 +28,6 @@ HotCocoa::Mappings.map bonjour_service: NSNetService do
     no_auto_rename: NSNetServiceNoAutoRename
   }
 
-  custom_methods do
-    def resolve timeout = 60.0
-      puts 'lol'
-      resolveWithTimeout(timeout)
-    end
-  end
-
   delegating 'netServiceWillPublish:',
              :to => :will_publish
   delegating 'netService:didNotPublish:',
@@ -49,11 +48,7 @@ HotCocoa::Mappings.map bonjour_service: NSNetService do
   delegating 'netServiceDidStop:',
              :to => :did_stop
 
-  # @note Right now I have to specify that domain has a default
-  #       argument, but the YARD plugin will have to look at the
-  #       keys defined in defaults and see if the key is defined
-  #       there
-
+  ##
   # @key [String] domain specify the domain to advertise in, defaults to
   #                      an empty string which advertises in all domains
   # @key [String] type specify the type of service to advertise, such as

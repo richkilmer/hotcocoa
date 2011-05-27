@@ -1,25 +1,24 @@
-# Imported from MacRuby sources
+# Originally imported from MacRuby sources
 
 class TestMapper < MiniTest::Unit::TestCase
-
   include HotCocoa::Mappings
 
-  def test_should_have_two_hash_attributes_named #bindings and #delegate" do
-    assert Mapper.bindings_modules.is_a?(Hash)
-    assert Mapper.delegate_modules.is_a?(Hash)
+  def test_has_two_hash_attributes_named_bindings_and_delegate
+    assert_instance_of Hash, Mapper.bindings_modules
+    assert_instance_of Hash, Mapper.delegate_modules
   end
 
   [ :control_class, :builder_method, :control_module,
     :map_bindings, :map_bindings= ].each do |method|
 
-    define_method "test_should_have_a_#{method}_attribute" do
-      assert_respond_to(sample_mapper, method)
+    define_method "test_has_a_#{method}_attribute" do
+      assert_respond_to sample_mapper, method
     end
 
   end
 
-  def test_should_set_its_control_class_on_initialization
-    assert_equal(sample_mapper(true).control_class, SampleClass)
+  def test_sets_its_control_class_on_initialization
+    assert_equal sample_mapper(true).control_class, SampleClass
   end
 
   def test_convert_from_camelcase_to_underscore
@@ -36,9 +35,18 @@ class TestMapper < MiniTest::Unit::TestCase
   end
 
   def test_custom_methods_override_existing_methods
-    service = HotCocoa.bonjour_service type:'_test._tcp.', name:'HotCocoa Test'
-    assert_respond_to service, :resolve
-    assert_equal -1, service.method(:resolve).arity
+    HotCocoa::Mappings.map sample: SampleClass do
+      def alloc_with_options opts
+        SampleClass.new
+      end
+      custom_methods do
+        def some_method
+          true
+        end
+      end
+    end
+    object = HotCocoa.sample
+    assert object.some_method
   end
 
 

@@ -5,9 +5,14 @@
 
 ## Note
 
-This is a fork of HotCocoa that is having documentation and regression
-tests added to it. If you find issues with hot cocoa you can open
-issues and I will try to fix them.
+This is a fork of HotCocoa that is being kept alive by myself and
+other contributors; most of the work now is going in to documentation
+and regression tests, but we are still adding new mappings, improving
+existing mappings, and adding other features that we feel help meet
+the goals of this project.
+
+If you find issues with HotCocoa you can open issues and I (or
+another contributor) will try to fix them.
 
 ## Documentation
 

@@ -64,6 +64,11 @@ module HotCocoa
       #   bundle during deployment
       attr_reader :gems
 
+      # @return [Boolean] Whether or not to embed BridgeSupport files
+      #   embedding the MacRuby framework
+      attr_reader :embed_bs
+      alias_method :embed_bs?, :embed_bs
+
       # @return [Boolean] Always make a clean build of the app
       attr_reader :overwrite
       alias_method :overwrite?, :overwrite
@@ -84,6 +89,7 @@ module HotCocoa
         @overwrite   = yml['overwrite'] == true  ? true  : false
         @agent       = yml['agent']     == true  ? '1'   : '0'
         @stdlib      = yml['stdlib']    == false ? false : true
+        @embed_bs    = yml['embed_bs']  == false ? false : true
       end
 
       def icon_exists?
@@ -250,6 +256,7 @@ module HotCocoa
     def embed_framework # and also gems
       options = config.stdlib ? '' : '--no-stdlib '
       config.gems.each { |gem| options << "--gem #{gem} " }
+      options << '--bs ' if config.embed_bs?
       puts `macruby_deploy --embed --gem hotcocoa #{options} #{bundle_root}`
     end
 

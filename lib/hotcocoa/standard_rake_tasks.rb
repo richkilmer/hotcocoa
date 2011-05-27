@@ -3,7 +3,7 @@ unless defined?(AppConfigFile)
 end
 AppConfig = HotCocoa::ApplicationBuilder::Configuration.new(AppConfigFile)
 
-if MACRUBY_VERSION.to_f > 0.10
+if MACRUBY_REVISION.match(/^git commit/)
   require 'rake/compiletask'
   Rake::CompileTask.new do |t|
     t.files   = AppConfig.sources.map { |pattern| FileList[pattern] }.flatten
@@ -23,10 +23,10 @@ end
 
 desc 'Build and execute the application'
 task :run => [:build] do
-  `open "#{AppConfig.name}.app"`
+  sh "open '#{AppConfig.name}.app'"
 end
 
 desc 'Cleanup build files'
 task :clean do
-  `/bin/rm -rf "#{AppConfig.name}.app"`
+  sh "/bin/rm -rf '#{AppConfig.name}.app'"
 end

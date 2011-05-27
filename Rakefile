@@ -1,7 +1,7 @@
 task :default => :build
 task :build   => :gem
 
-if MACRUBY_VERSION.to_f > 0.10
+if MACRUBY_REVISION.match(/^git commit/)
   require 'rake/compiletask'
   Rake::CompileTask.new do |t|
     t.files   = FileList["lib/**/*.rb"]
