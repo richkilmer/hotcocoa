@@ -1,6 +1,8 @@
 = hotcocoa
 
-* http://github.com/richkilmer/hotcocoa
+The official HotCocoa repository has moved. You can find it here:
+
+* http://github.com/ferrous26/hotcocoa
 
 == DESCRIPTION:
 
