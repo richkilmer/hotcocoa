@@ -2,7 +2,7 @@
 
 The official HotCocoa repository has moved. You can find it here:
 
-* http://github.com/ferrous26/hotcocoa
+* https://github.com/HotCocoa/hotcocoa
 
 == DESCRIPTION:
 
