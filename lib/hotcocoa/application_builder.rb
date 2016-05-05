@@ -218,7 +218,7 @@ module HotCocoa
             }
           }
         end
-        archs = RUBY_ARCH.include?('ppc') ? '-arch ppc' : '-arch i386 -arch x86_64'
+        archs = RUBY_ARCH.include?('ppc') ? '-arch ppc' : '-arch x86_64'
         puts `cd "#{macos_root}" && gcc main.m -o #{objective_c_executable_file} #{archs} -framework MacRuby -framework Foundation -fobjc-gc-only`
         File.unlink(objective_c_source_file)
       end
